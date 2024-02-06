@@ -2,15 +2,44 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
+import axios from 'axios'
 
 function App() {
   const [count, setCount] = useState(0);
 
-  //   function sendReq(): {
-  //     fetch('https://localhost:5001/api/query', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ query: `
+  const getData = async function (
+    queryString: string,
+    graphqlEndpoint: string
+  ) {
+    // graphqlEndpoint = 'https://localhost:5001/api/query';
+    // queryString = `
+    // //     query {
+    // //       CallingCode {
+    // //         name
+    // //         countries {
+    // //           name
+    // //         }
+    // //       }
+    // //     }
+  
+    // // ` ;
+    console.log('in fetch')
+
+    const dataObj = await axios({
+      url: graphqlEndpoint,
+      method: 'post',
+      data: {
+        query: queryString,
+      },
+    });
+
+    console.log(dataObj)
+
+
+    // return { data, response: 'Uncached' };
+  }
+
+  const queryString = `
   //     query {
   //       CallingCode {
   //         name
@@ -20,11 +49,7 @@ function App() {
   //       }
   //     }
 
-  // ` }),
-  // })
-  //   .then(res => res.json())
-  //   .then(res => console.log(res.data));
-  //   }
+  // ` ;
 
   return (
     <>
@@ -38,7 +63,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => getData('https://localhost:5001/api/query', queryString)}>
           count is {count}
         </button>
         <p>
