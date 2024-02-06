@@ -1,11 +1,20 @@
-import {
+// import {
+//   GraphQLSchema,
+//   GraphQLObjectType,
+//   GraphQLString,
+//   // GraphQLInt,
+//   // GraphQLList,
+//   // GraphQLNonNull,
+// } from 'graphql';
+
+const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-} from 'graphql';
+  // GraphQLInt,
+  // GraphQLList,
+  // GraphQLNonNull,
+}  = require ('graphql');
 
 const CountryType = new GraphQLObjectType({
   name: 'Country',
@@ -30,11 +39,20 @@ const languagesType = new GraphQLObjectType({
 });
 
 const RootQuery = new GraphQLObjectType({
-  name: 'Query',
+  name: 'query',
   fields: {
     country: {
       type: CountryType,
-      //resolve:
+      resolve: async () => {
+        //temp deleted parent and args
+        console.log('reached country resolver')
+        try {
+          return await fetch('https://countries.trevorblades.com')
+        }
+        catch (err) {
+          throw err
+        }
+      }
     },
     language: {
       type: languagesType,
@@ -43,6 +61,9 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
-export const schema = new GraphQLSchema({
+// export const schema = new GraphQLSchema({
+//   query: RootQuery,
+// });
+module.exports = {schema: new GraphQLSchema({
   query: RootQuery,
-});
+})}
