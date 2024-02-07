@@ -14,7 +14,10 @@ app.use(express.json());
 
 app.use(express.static(path.resolve(__dirname, '../client')));
 
-app.use('/api/query', createHandler({ schema }));
+app.use('/api/query', createHandler({ schema,
+  context: (req: any) => ({
+    req
+  }), }));
 
 
 //app.use('/graphql', createHandler({ schema }));

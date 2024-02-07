@@ -14,7 +14,7 @@ const {
   GraphQLInt,
   // GraphQLList,
   // GraphQLNonNull,
-}  = require ('graphql');
+} = require('graphql');
 
 const CountryType = new GraphQLObjectType({
   name: 'Country',
@@ -44,22 +44,50 @@ const RootQuery = new GraphQLObjectType({
     country: {
       type: CountryType,
       // args: {},
-      args: { id: { type: GraphQLInt } },
-      resolve: async (args) => {
+      args: { code: { type: GraphQLString } },
+      resolve: async ( parent: any, args: any, context: any) => {
         //temp deleted parent and args
-        console.log(args)
-        console.log('reached country resolver')
-        try {
-          return await fetch('https://countries.trevorblades.com')
-        }
-        catch (err) {
-          throw err
-        }
-      }
+        console.log(parent);
+        console.log(args);
+        console.log(context.req.raw.body);
+        console.log('reached country resolver');
+        return new Promise((resolve, reject) => {
+          fetch(`https://countries.trevorblades.com`, {
+            method: 'POST',
+            // body: JSON.stringify(context.req.raw.body),
+          })
+            .then((data) => data.json())
+            .then((data) => {
+              console.log(data)
+              return data;
+            })
+            .then((result) => {
+              resolve(result);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        });
+        // fetch('https://countries.trevorblades.com')
+        // .then((data) => data.json())
+        // .then((result) => console.log(result))
+
+        // try {
+        //   const response = await fetch('https://countries.trevorblades.com');
+        //   const jsonresponse = response.json();
+        //   console.log(jsonresponse);
+        //   return jsonresponse
+        // } catch (err) {
+        //   throw err;
+        // }
+      },
     },
     language: {
       type: languagesType,
       //resolve
+      resolve: () => {
+        console.log('in language resolver');
+      },
     },
   },
 });
@@ -67,6 +95,8 @@ const RootQuery = new GraphQLObjectType({
 // export const schema = new GraphQLSchema({
 //   query: RootQuery,
 // });
-module.exports = {schema: new GraphQLSchema({
-  query: RootQuery,
-})}
+module.exports = {
+  schema: new GraphQLSchema({
+    query: RootQuery,
+  }),
+};
