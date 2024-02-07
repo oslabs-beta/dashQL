@@ -1,22 +1,24 @@
 import { React, useState } from "react";
 import "../App.css";
-// const getData = async function (
-//     queryString: string,
-//     graphqlEndpoint: string
-//   ) {
 
-//     console.log('in fetch')
 
-//     const dataObj = await axios({
-//       url: graphqlEndpoint,
-//       method: 'post',
-//       data: {
-//         query: queryString,
-//       },
-//     });
 
-//     console.log(dataObj)
-//   }
+
+const getData = async function (
+  ) {
+
+    // console.log('in fetch')
+
+    // const dataObj = await fetch({
+    //   url: graphqlEndpoint,
+    //   method: 'post',
+    //   data: {
+    //     query: queryString,
+    //   },
+    // });
+
+    // console.log(dataObj)
+  }
 
 //   const queryString = `
 //   //     query {
@@ -31,6 +33,11 @@ import "../App.css";
 //   // ` ;
 
 export default function Demo() {
+    const [queryString, setQuery] = useState(
+      "query{people(_id:1){name, mass}}"
+    );
+
+    
   return (
     <div className="demo">
       <h1 id="title">Cache Demo</h1>
@@ -46,7 +53,7 @@ export default function Demo() {
       </section>
       <section className="input">
         <div id="countriesAPI">
-            
+            <button onClick={()=>getData()}></button>
         </div>
         <div id="query">GraphQL Query</div>
         <div id="query-results">Query Results</div>

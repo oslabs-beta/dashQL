@@ -117,6 +117,8 @@ body {
   margin-bottom: 20px;
   border-radius: 15px;
   margin: 10px;
+  display: flex;
+  flex-direction: column;
 }
 #query {
   background-color: grey;
