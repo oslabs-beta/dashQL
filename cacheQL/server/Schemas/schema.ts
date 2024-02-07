@@ -11,7 +11,7 @@ const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  // GraphQLInt,
+  GraphQLInt,
   // GraphQLList,
   // GraphQLNonNull,
 }  = require ('graphql');
@@ -43,8 +43,11 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     country: {
       type: CountryType,
-      resolve: async () => {
+      // args: {},
+      args: { id: { type: GraphQLInt } },
+      resolve: async (args) => {
         //temp deleted parent and args
+        console.log(args)
         console.log('reached country resolver')
         try {
           return await fetch('https://countries.trevorblades.com')
