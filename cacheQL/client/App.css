@@ -6,7 +6,7 @@ body {
   color: #162345;
 }
 
-.navbar {
+/* .navbar {
   background-color: #162345;
   display: flex;
   align-items: center;
@@ -14,7 +14,7 @@ body {
   width: 100%;
   height: 50px;
   color: white;
-}
+} */
 
 #logo {
   align-items: center;
@@ -157,4 +157,34 @@ body {
   margin-bottom: 20px;
   border-radius: 15px;
   margin: 10px;
+}
+
+
+.underline {
+  text-decoration: underline;
+}
+
+.nav {
+  margin-top: -8px;
+}
+
+#root {
+  margin-left: 0px;
+}
+
+#clear-cache {
+  height: 80%;
+  display: flex;
+  align-items: end;
+  /* justify-content: end; */
+  margin: 10px;
+  
+
+}
+#query-results button {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: flex-end;
+  /* margin-bottom: 30px; */
 }
