@@ -27,6 +27,15 @@ const peopleType = new GraphQLObjectType({
     mass: {
       type: GraphQLInt,
     },
+    hair_color: {
+      type: GraphQLString,
+    },
+    eye_color: {
+      type: GraphQLString,
+    },
+    height: {
+      type: GraphQLInt,
+    },
   }),
 });
 
