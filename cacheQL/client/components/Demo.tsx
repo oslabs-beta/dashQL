@@ -3,41 +3,27 @@ import "../App.css";
 
 
 
-
-const getData = async function (
-  ) {
-
-    // console.log('in fetch')
-
-    // const dataObj = await fetch({
-    //   url: graphqlEndpoint,
-    //   method: 'post',
-    //   data: {
-    //     query: queryString,
-    //   },
-    // });
-
-    // console.log(dataObj)
-  }
-
-//   const queryString = `
-//   //     query {
-//   //       CallingCode {
-//   //         name
-//   //         countries {
-//   //           name
-//   //         }
-//   //       }
-//   //     }
-
-//   // ` ;
-
 export default function Demo() {
     const [queryString, setQuery] = useState(
       "query{people(_id:1){name, mass}}"
     );
 
-    
+    const getData = async function (queryStr: string) {
+      console.log("------in fetch---------");
+
+      const response = await fetch("http://localhost:5001/api/query", {
+        method: "POST",
+        body: queryStr,
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        console.log("Error");
+      }
+
+      const data = await response.json();
+      console.log(data);
+    };
+
   return (
     <div className="demo">
       <h1 id="title">Cache Demo</h1>
@@ -53,7 +39,9 @@ export default function Demo() {
       </section>
       <section className="input">
         <div id="countriesAPI">
-            <button onClick={()=>getData()}></button>
+          <h1>Countries API</h1>
+          <p>Select the fields to query:</p>
+          <button onClick={() => getData(queryString)}>Run Query</button>
         </div>
         <div id="query">GraphQL Query</div>
         <div id="query-results">Query Results</div>
