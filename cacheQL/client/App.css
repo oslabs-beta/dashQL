@@ -1,20 +1,14 @@
+/* import '@fontsource-variable/source-code-pro'; */
+
 html,
 body {
   height: 100%;
   width: 100%;
   font-size: 16px;
   color: #162345;
+  
 }
 
-/* .navbar {
-  background-color: #162345;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
-  height: 50px;
-  color: white;
-} */
 
 #logo {
   align-items: center;
@@ -47,7 +41,7 @@ body {
 #left-stats {
   display: flex;
   flex-direction: column;
-  height: 90%;
+  height: 95%;
   width: 50%;
   /* background-color: lightblue; */
   align-items: center;
@@ -59,11 +53,11 @@ body {
 #right-stats {
   display: flex;
   flex-direction: column;
-  height: 90%;
+  height: 95%;
   width: 50%;
   /* background-color: lightgreen; */
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   padding: 20px;
   margin-bottom: 10px;
 }
@@ -87,78 +81,120 @@ body {
 #cache-times {
   display: flex;
   background-color: green;
-  height: 400px;
+  height: 70%;
   width: 90%;
   margin-bottom: 20px;
+  flex:1
 }
 
 #pie-chart {
-  background-color: grey;
-  height: 150px;
-  width: 150px;
-  margin-bottom: 20px;
-  border-radius: 50%;
+  width: 180px;
+  flex:1;
 }
 
 .input {
-  margin-top: 10px;
   display: flex;
   height: 300px;
   width: 95%;
   background-color: lightgray;
   padding: 20px;
   border-radius: 15px;
+  margin: 10px 5px 15px 5px
+}
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 }
 
 #countriesAPI {
-  /* background-color: grey; */
   height: 95%;
-  flex: 1.3;
+  flex: 1;
   margin-bottom: 20px;
-  border-radius: 15px;
   display: flex;
   flex-direction: column;
+  align-items: start;
+  justify-content: start;
 }
 #countriesAPI button {
   width: 100px;
   height: 40px;
   align-self: start;
-  margin: 10px;
+  margin-top: 10px;
   background-color: #162345;
   border-radius: 10px;
   color: white;
+  margin-right: 10px;
 }
+
+#countriesAPI button:hover {
+  cursor: pointer;
+}
+
 #countriesAPI h1 {
   align-self: start;
   border-radius: 10px;
   color: #162345;
-  margin: 10px;
+  margin-top: 10px;
 }
 
 #countriesAPI p {
   align-self: start;
   border-radius: 10px;
   color: #162345;
-  margin: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
+#countriesAPI input {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+#countriesAPI select {
+  margin-bottom: 10px;
+  width: 100px;
+}
+
 
 #query {
-  background-color: grey;
+  background-color: rgb(53, 53, 53);
   height: 95%;
-  flex: 1.7;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-radius: 15px;
-  margin: 10px;
+  /* margin: 10px; */
+  white-space: pre-line;
+  width: 90%;
+}
+#graphql-query-container {
+  display: flex;
+  flex-direction: column;
+  /* margin-right: 20px; */
+  flex: 2;
+  align-items: start;
+  justify-content: start;
+  margin-left: 20px;
+  margin-top: -10px;
 }
 #query-results {
-  background-color: grey;
+  background-color: rgb(53, 53, 53);
   height: 95%;
-  flex: 3;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-radius: 15px;
-  margin: 10px;
+  white-space: pre-line;
+}
+#response-query-container {
+    display: flex;
+    flex-direction: column;
+    /* margin-right: 20px; */
+    flex: 2;
+    margin-top: -10px;
 }
 
+.buttons {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
 
 .underline {
   text-decoration: underline;
@@ -188,3 +224,27 @@ body {
   align-items: flex-end;
   /* margin-bottom: 30px; */
 }
+
+.second-indent {
+  text-indent: 50px;
+  margin: 5px;
+}
+
+.first-indent {
+  text-indent: 25px;
+  margin: 5px;
+}
+
+.query-text {
+  margin: 20px;
+  color: yellow;
+  font-size: 15px;
+  font-family: 'Source Code Pro Variable';
+}
+
+#query-tag {
+  color: rgb(253, 88, 116);
+}
+
+
+
