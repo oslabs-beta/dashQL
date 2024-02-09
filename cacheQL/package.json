@@ -11,19 +11,33 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@fontsource-variable/source-code-pro": "^5.0.17",
+    "@fontsource/open-sans": "^5.0.22",
     "@mui/icons-material": "^5.15.8",
     "@mui/material": "^5.15.7",
     "axios": "^1.6.7",
+
+    "chart.js": "^4.4.1",
+    "cors": "^2.8.5",
+
     "express": "^4.18.2",
     "graphql": "^16.8.1",
     "graphql-http": "^1.22.0",
     "pg": "^8.11.3",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-code-blocks": "^0.1.6",
     "react-dom": "^18.2.0",
+
     "react-router-dom": "^6.22.0",
     "redis": "^4.6.13"
+
+    "react-highlight": "^0.15.0",
+    "react-router-dom": "^6.22.0"
+
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",

@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // import * as express from 'express';
 const express = require('express');
 // import * as path from 'path';
 const path = require('path');
+
 const redisTest = require('./redis');
+
+const cors = require('cors');
 //import queryRouter from './routers/queryRouter';
 // import { schema } from './Schemas/schema';
 const { schema } = require('./Schemas/schema');
@@ -11,6 +15,7 @@ const { createHandler } = require('graphql-http/lib/use/express');
 
 const app = express();
 const PORT = 5001;
+app.use(cors());
 app.use(express.json());
 
 app.use(express.static(path.resolve(__dirname, '../client')));
