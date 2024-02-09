@@ -109,8 +109,8 @@ export default function Demo() {
     setId("1");
     setField(defaultFields);
     setDropdown("people");
-    updateCheckbox1(true);
-    updateCheckbox2(true);
+    updateCheckbox1(false);
+    updateCheckbox2(false);
     setData(undefined);
   }
 
