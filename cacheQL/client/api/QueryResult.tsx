@@ -16,6 +16,7 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
 
   const firstBox = checkbox1 ? `${keys[0]}` : "";
   const secondBox = checkbox2 ? `${keys[1]}` : "";
+  const idBox = id ? `(_id:${id})` : "";
   const end = !firstBox && !secondBox ? null : `}`;
 
   if (data){
@@ -26,7 +27,7 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   return (
     <div className="query-text">
       <div id="query-tag">{`query {`}</div>
-      <div className="first-indent">{`${currentDropdown} (_id: ${id}) {`}</div>
+      <div className="first-indent">{`${currentDropdown} ${idBox} {`}</div>
       <div className="second-indent">{firstValue && checkbox1 ? `${firstBox}: ${firstValue},` : null}</div>
       <div className="second-indent">{secondValue && checkbox2 ? `${secondBox}: ${secondValue},` : null}</div>
       <div className="first-indent">{end}</div>

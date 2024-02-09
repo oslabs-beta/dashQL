@@ -14,8 +14,6 @@ import BarChart from "../api/BarChart";
 import LineChart from "../api/LineChart"; 
 Chart.register(ArcElement);
 
-
-
 type Fields = {
   name: string;
   mass?: string;
@@ -32,16 +30,18 @@ const defaultPlanet: Fields = {
   population: 0,
 };
 
+
 export default function Demo() {
   Chart.register(CategoryScale);
   const [querySend, setSend] = useState("");
   const [currentFields, setField] = useState(defaultFields);
   const [currentDropdown, setDropdown] = useState("people");
-  const [checkbox1, updateCheckbox1] = useState(true);
-  const [checkbox2, updateCheckbox2] = useState(true);
+  const [checkbox1, updateCheckbox1] = useState(false);
+  const [checkbox2, updateCheckbox2] = useState(false);
+  const [checkbox3, updateCheckbox3] = useState(true);
   const [data, setData] = useState(undefined);
-  const [id, setId] = useState("Choose ID");
-  const [resultId, setResultId] = useState("");
+  const [id, setId] = useState("1");
+  const [resultId, setResultId] = useState("1");
   const [fetchData, setFetch] = useState(false);
   const [chartData, setChartData] = useState({
     labels: Data.map((data) => data.year), 
@@ -61,8 +61,8 @@ export default function Demo() {
 
   async function queryResult() {
     console.log("sending query string:", querySend);
-    if (!checkbox1 && !checkbox2) {
-      alert("Please select at least one checkbox");
+    if ((!checkbox1 && !checkbox2) || !checkbox3) {
+      alert("Please select ID (at the moment) and one other checkbox");
       return;
     }
     const result = await getData({ query: querySend });
@@ -74,7 +74,7 @@ export default function Demo() {
   useEffect(() => {
     setQueryString();
     setFetch(false);
-  }, [checkbox1, checkbox2, id, currentDropdown]);
+  }, [checkbox1, checkbox2, checkbox3, id, currentDropdown]);
 
   const keys: string[] = [];
   Object.keys(currentFields).forEach((key) => {
@@ -84,8 +84,9 @@ export default function Demo() {
   async function setQueryString() {
     const firstBox = checkbox1 ? `${keys[0]}` : "";
     const secondBox = checkbox2 ? `${keys[1]}` : "";
+    const idBox = checkbox3 ? `(_id:${id})` : "";
     const end = !firstBox && !secondBox ? null : `}`;
-    const result = `query {${currentDropdown} ${id !== "Choose ID" ? `(_id:${id})`:""}{${firstBox}, ${secondBox} ${end}}`;
+    const result = `query {${currentDropdown} ${idBox}{${firstBox}, ${secondBox} ${end}}`;
     setSend(result);
   }
 
@@ -138,13 +139,21 @@ export default function Demo() {
             <option value={"people"}>People</option>
             <option value={"planets"}>Planets</option>
           </select>
-          <select name="select" value={id !== "Choose ID" ? id : "Choose ID"} onChange={(e) => changeId(e)}>
+          <label>
+            <input
+              type="checkbox"
+              checked={checkbox3}
+              onChange={() => updateCheckbox3(!checkbox3)}
+            />
+            _id
+          </label>
+          <div>{checkbox3 ? <select name="select" value={id} onChange={(e) => changeId(e)}>
             <option value={"1"}>1</option>
             <option value={"2"}>2</option>
             <option value={"3"}>3</option>
             <option value={"4"}>4</option>
             <option value={"5"}>5</option>
-          </select>
+          </select> : null}</div>
           <label>
             <input
               type="checkbox"
@@ -174,7 +183,7 @@ export default function Demo() {
               checkbox2={checkbox2}
               keys={keys}
               currentDropdown={currentDropdown}
-              id={id}
+              id={checkbox3 ? id : undefined}
             />
           </div>
         </div>
@@ -188,7 +197,7 @@ export default function Demo() {
                 keys={keys}
                 currentDropdown={currentDropdown}
                 data={data}
-                id={resultId}
+                id={checkbox3 ? resultId : undefined}
               />
             ) : null}
           </div>
