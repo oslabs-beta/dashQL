@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import "../App.css";
 import AppBar from "@mui/material/AppBar";
@@ -11,7 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme, ThemeProvider, Avatar } from "@mui/material";
 import logo from "./github-logo.png";
 
-// const [currentPage, setPage] = useState("About");
+
 
 const theme = createTheme({
   palette: {
@@ -23,6 +23,7 @@ const theme = createTheme({
 
 export default function Nav() {
   return (
+    <div className="nav">
     <ThemeProvider theme={theme}>
       <Box
         sx={{
@@ -44,11 +45,11 @@ export default function Nav() {
             <Button href="/" color="inherit">
               About
             </Button>
-            <Button href="/demo" color="inherit">
-              Demo
+            <Button href="/demo" color="inherit" >
+            Demo
             </Button>
-            <Button href="/docs" color="inherit">
-              Docs
+            <Button href="/docs" color="inherit" >
+            Docs
             </Button>
             <Avatar
               alt="Example Alt"
@@ -59,5 +60,6 @@ export default function Nav() {
         </AppBar>
       </Box>
     </ThemeProvider>
+    </div>
   );
 }

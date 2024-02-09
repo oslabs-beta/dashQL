@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { React, useState } from "react";
 import "./App.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./components/Home";
 import Nav from "./components/Nav";
 import Demo from "./components/Demo";
+
 
 function App() {
   
