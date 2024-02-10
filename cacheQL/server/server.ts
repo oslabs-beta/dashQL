@@ -2,6 +2,8 @@
 // import * as express from 'express';
 const express = require('express');
 // import * as path from 'path';
+// const { Request, Response, NextFunction, RequestHandler } = require('@types/express');
+
 const path = require('path');
 
 const redisTest = require('./redis');
@@ -12,6 +14,7 @@ const cors = require('cors');
 const { schema } = require('./Schemas/schema');
 const { createHandler } = require('graphql-http/lib/use/express');
 // import { createHandler } from 'graphql-http/lib/use/express';
+const dashQL = require('./dashQL/queryHandler');
 
 const app = express();
 const PORT = 5001;
@@ -19,6 +22,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use(express.static(path.resolve(__dirname, '../client')));
+
+app.use('/dashQL', dashQL, (_req: any, res: any) => {
+  return res.status(200).send('End of route');
+});
 
 app.use(
   '/api/query',
