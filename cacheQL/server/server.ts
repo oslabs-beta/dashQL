@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../client')));
 
 app.use('/dashQL', dashQL, (_req: any, res: any) => {
-  return res.status(200).send('End of route');
+  return res.status(200).json(res.locals);
 });
 
 app.use(
