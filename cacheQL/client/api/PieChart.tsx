@@ -1,5 +1,11 @@
 import React from "react";
 import { Pie } from "react-chartjs-2";
+import { Chart, registerables, CategoryScale, ArcElement } from "chart.js";
+Chart.register(ArcElement);
+Chart.register(...registerables)
+Chart.register(CategoryScale);
+
+
 
 export default function PieChart({chartData}){
   return (
