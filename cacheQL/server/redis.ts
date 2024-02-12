@@ -12,4 +12,5 @@ const redis = require('redis').createClient({
   await redis.connect();
 })();
 
-module.exports = redis;
+// module.exports = redis;
+export default redis;
