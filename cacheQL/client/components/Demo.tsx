@@ -4,15 +4,15 @@ import getData from "../api/apiFetch";
 import QueryResult from "../api/QueryResult";
 import QueryCode from "./queryCode";
 import "@fontsource-variable/source-code-pro";
-import { Chart } from "chart.js";
+import { Chart, registerables, CategoryScale } from "chart.js";
 // import { listItemTextClasses } from "@mui/material";
 import { Data } from "../api/Data";
-import { CategoryScale } from "chart.js";
 import PieChart from "../api/PieChart";
 import { ArcElement } from "chart.js";
-import BarChart from "../api/BarChart";
+// import BarChart from "../api/BarChart";
 import LineChart from "../api/LineChart";
 Chart.register(ArcElement);
+Chart.register(...registerables)
 
 type Fields = {
   name: string;
@@ -48,18 +48,8 @@ export default function Demo() {
   const [id, setId] = useState("1");
   const [resultId, setResultId] = useState("1");
   const [fetchData, setFetch] = useState(false);
-  const [chartData, setChartData] = useState({
-    labels: Data.map((data) => data.year),
-    datasets: [
-      {
-        label: "Users Gained ",
-        data: Data.map((data) => data.hits),
-        backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1"],
-        borderColor: "black",
-        borderWidth: 2,
-      },
-    ],
-  });
+  const [chartData, setChartData] = useState(Data)
+  
 
   async function queryResult() {
     console.log("sending query string:", querySend);
@@ -69,6 +59,7 @@ export default function Demo() {
     }
     const result = await getData({ query: querySend });
     setData(result);
+    setChartData(Data)
     setResultId(id);
     setFetch(true);
   }
@@ -131,13 +122,15 @@ export default function Demo() {
       <h1 id="title">Cache Demo</h1>
       <section className="stats">
         <div id="left-stats">
-          <div id="response-graph">Response Graph</div>
+          <div id="line-chart">
+            <LineChart chartData={chartData} />
+            </div>
           <div id="cache-stats">Cache Stats</div>
         </div>
         <div id="right-stats">
           <div id="cache-times">Cache and Uncached times</div>
           <div id="pie-chart">
-            <PieChart chartData={chartData} />
+            {/* <PieChart chartData={chartData} /> */}
           </div>
         </div>
       </section>
