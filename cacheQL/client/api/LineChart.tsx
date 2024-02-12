@@ -10,7 +10,7 @@ Chart.register(CategoryScale);
 function LineChart({ chartData }) {
   
   const lineData = {
-    labels: chartData.map((data) =>  `Run ${data.id}`),
+    labels: chartData.map((data) => chartData.length !==1 ? `Run ${data.id}` : ''),
     datasets: [
       {
         label: "Cached Response Time",

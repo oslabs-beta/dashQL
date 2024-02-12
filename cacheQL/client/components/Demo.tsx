@@ -48,7 +48,7 @@ export default function Demo() {
   const [id, setId] = useState("1");
   const [resultId, setResultId] = useState("1");
   const [fetchData, setFetch] = useState(false);
-  const [chartData, setChartData] = useState(Data)
+  const [chartData, setChartData] = useState([{id: null, response_time: null}])
   
 
   async function queryResult() {
