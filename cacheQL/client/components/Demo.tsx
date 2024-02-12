@@ -9,27 +9,30 @@ import { Chart } from "chart.js";
 import { Data } from "../api/Data";
 import { CategoryScale } from "chart.js";
 import PieChart from "../api/PieChart";
-import {ArcElement} from 'chart.js'
-import BarChart from "../api/BarChart"; 
-import LineChart from "../api/LineChart"; 
+import { ArcElement } from "chart.js";
+import BarChart from "../api/BarChart";
+import LineChart from "../api/LineChart";
 Chart.register(ArcElement);
 
 type Fields = {
   name: string;
   mass?: string;
   population?: number;
+  hair_color?: string;
+  eye_color?: string;
 };
 
 const defaultFields: Fields = {
   name: "",
   mass: "",
+  eye_color: "",
+  hair_color: "",
 };
 
 const defaultPlanet: Fields = {
   name: "",
   population: 0,
 };
-
 
 export default function Demo() {
   Chart.register(CategoryScale);
@@ -39,24 +42,23 @@ export default function Demo() {
   const [checkbox1, updateCheckbox1] = useState(false);
   const [checkbox2, updateCheckbox2] = useState(false);
   const [checkbox3, updateCheckbox3] = useState(true);
+  const [checkbox4, updateCheckbox4] = useState(false);
+  const [checkbox5, updateCheckbox5] = useState(false);
   const [data, setData] = useState(undefined);
   const [id, setId] = useState("1");
   const [resultId, setResultId] = useState("1");
   const [fetchData, setFetch] = useState(false);
   const [chartData, setChartData] = useState({
-    labels: Data.map((data) => data.year), 
+    labels: Data.map((data) => data.year),
     datasets: [
       {
         label: "Users Gained ",
         data: Data.map((data) => data.hits),
-        backgroundColor: [
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
-        ],
+        backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1"],
         borderColor: "black",
-        borderWidth: 2
-      }
-    ]
+        borderWidth: 2,
+      },
+    ],
   });
 
   async function queryResult() {
@@ -74,7 +76,15 @@ export default function Demo() {
   useEffect(() => {
     setQueryString();
     setFetch(false);
-  }, [checkbox1, checkbox2, checkbox3, id, currentDropdown]);
+  }, [
+    checkbox1,
+    checkbox2,
+    checkbox3,
+    checkbox4,
+    checkbox5,
+    id,
+    currentDropdown,
+  ]);
 
   const keys: string[] = [];
   Object.keys(currentFields).forEach((key) => {
@@ -84,9 +94,11 @@ export default function Demo() {
   async function setQueryString() {
     const firstBox = checkbox1 ? `${keys[0]}` : "";
     const secondBox = checkbox2 ? `${keys[1]}` : "";
+    const thirdBox = checkbox4 ? `${keys[2]}` : "";
+    const fourthBox = checkbox5 ? `${keys[3]}` : "";
     const idBox = checkbox3 ? `(_id:${id})` : "";
-    const end = !firstBox && !secondBox ? null : `}`;
-    const result = `query {${currentDropdown} ${idBox}{${firstBox}, ${secondBox} ${end}}`;
+    const end = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
+    const result = `query {${currentDropdown} ${idBox}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
     setSend(result);
   }
 
@@ -124,7 +136,9 @@ export default function Demo() {
         </div>
         <div id="right-stats">
           <div id="cache-times">Cache and Uncached times</div>
-          <div id="pie-chart"><PieChart chartData={chartData} /></div>
+          <div id="pie-chart">
+            <PieChart chartData={chartData} />
+          </div>
         </div>
       </section>
       <section className="input">
@@ -147,13 +161,17 @@ export default function Demo() {
             />
             _id
           </label>
-          <div>{checkbox3 ? <select name="select" value={id} onChange={(e) => changeId(e)}>
-            <option value={"1"}>1</option>
-            <option value={"2"}>2</option>
-            <option value={"3"}>3</option>
-            <option value={"4"}>4</option>
-            <option value={"5"}>5</option>
-          </select> : null}</div>
+          <div>
+            {checkbox3 ? (
+              <select name="select" value={id} onChange={(e) => changeId(e)}>
+                <option value={"1"}>1</option>
+                <option value={"2"}>2</option>
+                <option value={"3"}>3</option>
+                <option value={"4"}>4</option>
+                <option value={"5"}>5</option>
+              </select>
+            ) : null}
+          </div>
           <label>
             <input
               type="checkbox"
@@ -170,6 +188,22 @@ export default function Demo() {
             />
             {keys[1]}
           </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={checkbox4}
+              onChange={() => updateCheckbox4(!checkbox4)}
+            />
+            {keys[2]}
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={checkbox5}
+              onChange={() => updateCheckbox5(!checkbox5)}
+            />
+            {keys[3]}
+          </label>
           <div className="buttons">
             <button onClick={() => queryResult()}>Run Query</button>
             <button onClick={() => resetAll()}>Clear Cache</button>
@@ -181,6 +215,8 @@ export default function Demo() {
             <QueryCode
               checkbox1={checkbox1}
               checkbox2={checkbox2}
+              checkbox4={checkbox4}
+              checkbox5={checkbox5}
               keys={keys}
               currentDropdown={currentDropdown}
               id={checkbox3 ? id : undefined}
