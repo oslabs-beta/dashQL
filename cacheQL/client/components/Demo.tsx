@@ -4,15 +4,17 @@ import getData from "../api/apiFetch";
 import QueryResult from "../api/QueryResult";
 import QueryCode from "./queryCode";
 import "@fontsource-variable/source-code-pro";
-import { Chart } from "chart.js";
+import { Chart, registerables, CategoryScale } from "chart.js";
 // import { listItemTextClasses } from "@mui/material";
 import { Data } from "../api/Data";
-import { CategoryScale } from "chart.js";
 import PieChart from "../api/PieChart";
-import {ArcElement} from 'chart.js'
-import BarChart from "../api/BarChart"; 
-import LineChart from "../api/LineChart"; 
+import { ArcElement } from "chart.js";
+import BarChart from "../api/BarChart";
+import LineChart from "../api/LineChart";
 Chart.register(ArcElement);
+Chart.register(...registerables)
+// Chart.register(...controllers);
+
 
 type Fields = {
   name: string;
@@ -44,11 +46,31 @@ export default function Demo() {
   const [resultId, setResultId] = useState("1");
   const [fetchData, setFetch] = useState(false);
   const [chartData, setChartData] = useState({
-    labels: Data.map((data) => data.year), 
+    // labels: Data.map((data) => data.id), 
+    labels: ['Cache Hit', 'Cache Miss'],
+    datasets: [
+      {
+        label: "Cache Hit Rate ",
+        data: [40, 60],
+        // data: Data.map((data) => data.hits),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        hoverOffset: 4, 
+        rotation: -90,
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
+
+  const [lineData, setLineData] = useState({
+    labels: Data.map((data) => data.cached), 
     datasets: [
       {
         label: "Users Gained ",
-        data: Data.map((data) => data.hits),
+        data: Data.map((data) => data.response_time),
         backgroundColor: [
           "rgba(75,192,192,1)",
           "#ecf0f1",
@@ -59,6 +81,35 @@ export default function Demo() {
     ]
   });
 
+  const [barData, setBarData] = useState({
+    labels: Data.map((data) => data.id), 
+    datasets: [
+      {
+        label: "Users Gained ",
+        data: Data.map((data) => data.response_time),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
+  // function LineChart({ chartData }) {
+  
+  //   const lineData = {
+  //     labels: chartData.map((data) =>  `Run ${data.id}`),
+  //     datasets: [
+  //       {
+  //         label: "Cached Response Time",
+  //         data: chartData.map((data) => data.response_time),
+  //         backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1"],
+  //         borderColor: "black",
+  //         borderWidth: 2,
+  //       },
+  //     ],
+  //   }
   async function queryResult() {
     console.log("sending query string:", querySend);
     if ((!checkbox1 && !checkbox2) || !checkbox3) {
@@ -119,11 +170,11 @@ export default function Demo() {
       <h1 id="title">Cache Demo</h1>
       <section className="stats">
         <div id="left-stats">
-          <div id="response-graph">Response Graph</div>
+          <div id="line-chart"><LineChart chartData={lineData} /></div>
           <div id="cache-stats">Cache Stats</div>
         </div>
         <div id="right-stats">
-          <div id="cache-times">Cache and Uncached times</div>
+          <div id="bar-chart"><BarChart chartData={barData} /></div>
           <div id="pie-chart"><PieChart chartData={chartData} /></div>
         </div>
       </section>
