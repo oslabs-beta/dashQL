@@ -23,9 +23,10 @@ class dashCache {
 */
   async cacheHandler(rawQuery: string) {
     // invoke isCacheEmpty
-    const cacheEmpty = this.isCacheEmpty();
+    const cacheEmpty = await this.isCacheEmpty();
     // if cache is empty:
-    if (await cacheEmpty) {
+    //TO BE UPDATED ONCE QUERY IS BROKEN DOWN INTO SMALLER PIECES
+    if (cacheEmpty || !cacheEmpty) {
       //  invoke queryToDB(raw query)
 
       const responseFromDB = await this.queryToDB(rawQuery);
@@ -40,7 +41,11 @@ class dashCache {
     }
     //if cache is not empty
     //    split up query into individual fields
+
   }
+
+  //BREAK QUERY INTO INDIVIDUAL FIELD LEVEL QUERIES
+
 
   async isCacheEmpty() {
     // invoke redisdb.DBSIZE to check whether cache is empty
