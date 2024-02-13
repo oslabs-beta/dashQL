@@ -32,11 +32,13 @@ async function queryHandler(req: any, res: any, next: any) {
     const cacheResponse = await redisdb.get(queryString);
     console.log('cache response', cacheResponse);
     res.locals.res = cacheResponse;
+    res.locals.cacheHit = true;
   } else {
     const dashCaches = new dash(parsedQuery, redisdb); //-> consider also passing response
     const responseFromDB = await dashCaches.cacheHandler(query);
     console.log(responseFromDB);
     res.locals.res = JSON.stringify(responseFromDB);
+    res.locals.cacheHit = false;
   }
 
   console.log('res.locals', res.locals.res);
