@@ -14,10 +14,12 @@ async function queryHandler(req: any, res: any, next: any) {
   const parsedQuery: any = parse(query);
   console.log('--------LOGGING PARSED QUERY to FIELD LEVEL------------');
 
-  //const parsedFields = parsedQuery.definitions[0].selectionSet.selections[0].selectionSet.selections
-  const type = parsedQuery.definitions[0].selectionSet.selections[0].name.value
-  console.log(type)
-
+  // const parsedFields =
+  //   parsedQuery.definitions[0].selectionSet.selections[0].selectionSet
+  //     .selections;
+  //const type = parsedQuery.definitions[0].selectionSet.selections[0].name.value;
+  //console.log(type);
+  //console.log(parsedFields);
 
   const queryString = JSON.stringify(query);
   // console.log(queryString);
@@ -49,7 +51,7 @@ async function queryHandler(req: any, res: any, next: any) {
 
   //res.locals - response and response time
   res.locals.time = totalTime;
-  console.log(res.locals);
+  //console.log(res.locals);
 
   return next();
 }
