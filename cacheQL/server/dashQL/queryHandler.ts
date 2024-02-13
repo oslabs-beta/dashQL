@@ -12,8 +12,8 @@ async function queryHandler(req: any, res: any, next: any) {
   const query = req.body.query;
   //parse query
   const parsedQuery = parse(query);
-  // console.log('--------LOGGING PARSED QUERY------------');
-  //console.log(parsedQuery.definitions[0].loc);
+  console.log('--------LOGGING PARSED QUERY------------');
+  console.log(parsedQuery.definitions[0]);
 
   const queryString = JSON.stringify(query);
   // console.log(queryString);
@@ -26,15 +26,16 @@ async function queryHandler(req: any, res: any, next: any) {
   //check if string key in is redis.
   if (exists >= 1) {
     const cacheResponse = await redisdb.get(queryString);
-    console.log(cacheResponse);
+    console.log('cache response', cacheResponse);
     res.locals.res = cacheResponse;
   } else {
     const dashCaches = new dash(parsedQuery, redisdb); //-> consider also passing response
     const responseFromDB = await dashCaches.cacheHandler(query);
+    console.log(responseFromDB)
     res.locals.res = JSON.stringify(responseFromDB);
   }
 
-  console.log(res.locals.res);
+  console.log('res.locals', res.locals.res);
   //end time
   const endTime = performance.now();
   const totalTime = endTime - startTime;
@@ -42,6 +43,7 @@ async function queryHandler(req: any, res: any, next: any) {
 
   //res.locals - response and response time
   res.locals.time = totalTime;
+  console.log(res.locals)
 
   return next();
 }
