@@ -26,16 +26,23 @@ export default function LineChart({ chartData }) {
       {
         label: "Cached Response Time",
         data: chartData.map((data) => data.response_time),
+        // borderDash: [5,5],
         backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1"],
         borderColor: "black",
+        pointBorderWidth: 2, 
+        pointBorderColor: 'red', 
+        pointBackgroundColor: 'black', 
         borderWidth: 2,
+        tension: 0.1,
+        fill: false, 
+        drawTicks: true
       },
     ],
   }
 
   return (
     <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Response Time Graph</h2>
+      <h3 style={{ textAlign: "center" }}>Response Time Graph</h3>
       <Line
         data={lineData}
         options={{

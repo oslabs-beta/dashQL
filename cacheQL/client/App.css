@@ -6,9 +6,7 @@ body {
   width: 100%;
   font-size: 16px;
   color: #162345;
-  
 }
-
 
 #logo {
   align-items: center;
@@ -26,16 +24,18 @@ body {
 }
 
 #title {
-  margin-top: 30px;
+  margin-top: 20px;
   font-size: 30px;
 }
 
 .stats {
   display: flex;
-  height: 500px;
-  width: 95%;
+  height: 550px;
+  width: 98%;
   /* background-color: lightgray; */
-  padding: 20px;
+  border: 1px solid #162345;
+  border-radius: 15px;
+  /* padding: 10px; */
 }
 
 #left-stats {
@@ -45,9 +45,9 @@ body {
   width: 50%;
   /* background-color: lightblue; */
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  margin-bottom: 10px;
+  justify-content: start;
+  padding-top: 10px;
+  padding-left: 20px;
 }
 
 #right-stats {
@@ -55,47 +55,61 @@ body {
   flex-direction: column;
   height: 95%;
   width: 50%;
-  /* background-color: lightgreen; */
   align-items: center;
   justify-content: start;
-  padding: 20px;
-  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-right: 20px;
 }
 
 #response-graph {
   display: flex;
-  background-color: green;
-  height: 400px;
-  width: 90%;
-  margin-bottom: 20px;
+  flex: 4;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.chart-container {
+  width: 70%;
 }
 
 #cache-stats {
-  background-color: grey;
-  height: 150px;
-  width: 300px;
-  margin-bottom: 20px;
+  flex: 2;
+  width: 100%;
+  margin-bottom: 10px;
   border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+#cache-card {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(217, 216, 216);
+  width: 250px;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+#cache-card h4 {
+  margin-top: 0px;
 }
 
 #cache-times {
   display: flex;
-  background-color: green;
-  height: 70%;
-  width: 90%;
-  margin-bottom: 20px;
-  flex:1
+  flex: 4;
+  justify-content: center;
+  width: 100%;
 }
 
 #pie-chart {
-  width: 180px;
-  flex:1;
+  flex: 2;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
-
-/* #line-chart {
-  width: 200px; 
-
-} */
 
 .input {
   display: flex;
@@ -104,12 +118,8 @@ body {
   background-color: lightgray;
   padding: 20px;
   border-radius: 15px;
-  margin: 10px 5px 15px 5px
-}
-.chart-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
+  margin: 10px 5px 15px 5px;
+  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #countriesAPI {
@@ -159,7 +169,6 @@ body {
   width: 100px;
 }
 
-
 #query {
   background-color: rgb(53, 53, 53);
   height: 100%;
@@ -187,11 +196,11 @@ body {
   white-space: pre-line;
 }
 #response-query-container {
-    display: flex;
-    flex-direction: column;
-    /* margin-right: 20px; */
-    flex: 2;
-    margin-top: -10px;
+  display: flex;
+  flex-direction: column;
+  /* margin-right: 20px; */
+  flex: 2;
+  margin-top: -10px;
 }
 
 .buttons {
@@ -218,8 +227,6 @@ body {
   align-items: end;
   /* justify-content: end; */
   margin: 10px;
-  
-
 }
 #query-results button {
   display: flex;
@@ -243,12 +250,9 @@ body {
   margin: 20px;
   color: yellow;
   font-size: 15px;
-  font-family: 'Source Code Pro Variable';
+  font-family: "Source Code Pro Variable";
 }
 
 #query-tag {
   color: rgb(253, 88, 116);
 }
-
-
-
