@@ -10,11 +10,12 @@ import { Chart, registerables, CategoryScale } from "chart.js";
 import { Data } from "../api/Data";
 import PieChart from "../api/PieChart";
 import { ArcElement } from "chart.js";
-// import BarChart from "../api/BarChart";
+import BarChart from "../api/BarChart";
 import LineChart from "../api/LineChart";
-
 Chart.register(ArcElement);
 Chart.register(...registerables)
+// Chart.register(...controllers);
+
 
 type Fields = {
   name: string;
@@ -39,7 +40,6 @@ const defaultPlanet: Fields = {
 };
 
 export default function Demo() {
-  Chart.register(CategoryScale);
   const [querySend, setSend] = useState('');
   const [currentFields, setField] = useState(defaultFields);
   const [currentDropdown, setDropdown] = useState('people');
@@ -52,10 +52,63 @@ export default function Demo() {
   const [id, setId] = useState('1');
   const [resultId, setResultId] = useState('1');
   const [fetchData, setFetch] = useState(false);
-  const [chartData, setChartData] = useState([{id: null, response_time: null}])
-  
+  const [chartData, setChartData] = useState(Data)
+
+
+  const [chartData, setChartData] = useState({
+    // labels: Data.map((data) => data.id), 
+    labels: ['Cache Hit', 'Cache Miss'],
+    datasets: [
+      {
+        label: "Cache Hit Rate ",
+        data: [40, 60],
+        // data: Data.map((data) => data.hits),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        hoverOffset: 4, 
+        rotation: -90,
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
+
+  const [lineData, setLineData] = useState({
+    labels: Data.map((data) => data.cached), 
+    datasets: [
+      {
+        label: "Users Gained ",
+        data: Data.map((data) => data.response_time),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
+
+  const [barData, setBarData] = useState({
+    labels: Data.map((data) => data.id), 
+    datasets: [
+      {
+        label: "Users Gained ",
+        data: Data.map((data) => data.response_time),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
 
   async function queryResult() {
+    // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
     console.log('sending query string:', querySend);
     if ((!checkbox1 && !checkbox2) || !checkbox3) {
       alert('Please select ID (at the moment) and one other checkbox');
@@ -63,12 +116,12 @@ export default function Demo() {
     }
     const result = await getData({ query: querySend });
     setData(result);
-    setChartData(Data)
     setResultId(id);
     setFetch(true);
   }
 
   useEffect(() => {
+    // when any checkbox is clicked or dropdown selection edits, will set fetch to false to empty "QUERY RESULTS" part of the dashboard, and wille dit the query string in order to update the "GraphQL Query" part of dashboard
     setQueryString();
     setFetch(false);
   }, [
@@ -87,7 +140,7 @@ export default function Demo() {
   });
 
   async function setQueryString() {
-
+    // logic for creating the "GraphQL Query part of dashboard", only invokes when useEffect triggered by change
     const firstBox = checkbox1 ? `${keys[0]}` : "";
     const secondBox = checkbox2 ? `${keys[1]}` : "";
     const thirdBox = checkbox4 ? `${keys[2]}` : "";
@@ -113,6 +166,7 @@ export default function Demo() {
   }
 
   function resetAll() {
+    // resets all fields when clear cache clicked
     setSend('');
     setResultId('1');
     setId('1');
@@ -120,6 +174,8 @@ export default function Demo() {
     setDropdown('people');
     updateCheckbox1(false);
     updateCheckbox2(false);
+    updateCheckbox4(false);
+    updateCheckbox5(false);
     setData(undefined);
   }
 
@@ -128,13 +184,13 @@ export default function Demo() {
       <h1 id="title">Cache Demo</h1>
       <section className="stats">
         <div id="left-stats">
-          <div id="line-chart">
-            <LineChart chartData={chartData} />
-            </div>
+          <div id="line-chart"><LineChart chartData={chartData} /></div>
           <div id="cache-stats">Cache Stats</div>
         </div>
 
         <div id="right-stats">
+          <div id="bar-chart"><BarChart chartData={chartData} /></div>
+          <div id="pie-chart"><PieChart chartData={chartData} /></div>
           <div id="cache-times">Cache and Uncached times</div>
           <div id="pie-chart">
             {/* <PieChart chartData={chartData} /> */}
@@ -163,7 +219,7 @@ export default function Demo() {
           </label>
           <div>
             {checkbox3 ? (
-
+              // only show id dropdown if id box is checked
               <select name="select" value={id} onChange={(e) => changeId(e)}>
                 <option value={"1"}>1</option>
                 <option value={"2"}>2</option>
@@ -230,10 +286,13 @@ export default function Demo() {
         <div id='response-query-container'>
           <h3>Query Results</h3>
           <div id='query-results'>
+            {/* check if user is editing fields, if so, this part is null */}
             {fetchData ? (
               <QueryResult
                 checkbox1={checkbox1}
                 checkbox2={checkbox2}
+                checkbox4={checkbox4}
+                checkbox5={checkbox5}
                 keys={keys}
                 currentDropdown={currentDropdown}
                 data={data}

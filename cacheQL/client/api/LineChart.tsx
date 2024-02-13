@@ -7,7 +7,18 @@ Chart.register(CategoryScale);
 
 
 
-function LineChart({ chartData }) {
+
+export default function LineChart({ chartData }) {
+  // const { responseTime } = useResponseTime();
+  // let count = 0;
+  // const totalCache = responseTime.length - 1;
+  // responseTime.forEach((obj) => {
+  //   if (obj.cached === 'Cached') {
+  //     count++;
+  //   }
+  // });
+  // const cacheMiss = totalCache - count;
+  // const hitRate = Math.floor((count / totalCache) * 100);
   
   const lineData = {
     labels: chartData.map((data) => chartData.length !==1 ? `Run ${data.id}` : ''),
@@ -24,7 +35,7 @@ function LineChart({ chartData }) {
 
   return (
     <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Line Chart</h2>
+      <h2 style={{ textAlign: "center" }}>Response Time Graph</h2>
       <Line
         data={lineData}
         options={{
@@ -42,4 +53,3 @@ function LineChart({ chartData }) {
     </div>
   );
 }
-export default LineChart;
