@@ -11,9 +11,13 @@ async function queryHandler(req: any, res: any, next: any) {
   //console.log(req.body.query);
   const query = req.body.query;
   //parse query
-  const parsedQuery = parse(query);
-  console.log('--------LOGGING PARSED QUERY------------');
-  console.log(parsedQuery.definitions[0]);
+  const parsedQuery: any = parse(query);
+  console.log('--------LOGGING PARSED QUERY to FIELD LEVEL------------');
+
+  //const parsedFields = parsedQuery.definitions[0].selectionSet.selections[0].selectionSet.selections
+  const type = parsedQuery.definitions[0].selectionSet.selections[0].name.value
+  console.log(type)
+
 
   const queryString = JSON.stringify(query);
   // console.log(queryString);
@@ -31,7 +35,7 @@ async function queryHandler(req: any, res: any, next: any) {
   } else {
     const dashCaches = new dash(parsedQuery, redisdb); //-> consider also passing response
     const responseFromDB = await dashCaches.cacheHandler(query);
-    console.log(responseFromDB)
+    console.log(responseFromDB);
     res.locals.res = JSON.stringify(responseFromDB);
   }
 
@@ -43,7 +47,7 @@ async function queryHandler(req: any, res: any, next: any) {
 
   //res.locals - response and response time
   res.locals.time = totalTime;
-  console.log(res.locals)
+  console.log(res.locals);
 
   return next();
 }
