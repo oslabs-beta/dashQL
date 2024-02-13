@@ -13,13 +13,17 @@ class dashCache {
 
   /*
 
-  check redis method
-    
-        //if true invoke get method
+  Tuesday to do:
+  1. breakup query string - loop through parsed query
+  2. add individual queries to cache
+  3. assume second query is subset of first
+  4. breakup query string
+  5. query for individual fields - if not in cache add
+  6. build response
 
-        //if false do a lot of other stuff
-//
 
+
+data[type][fieldName] = fieldVal
 */
   async cacheHandler(rawQuery: string) {
     // invoke isCacheEmpty
