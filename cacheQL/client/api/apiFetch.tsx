@@ -18,7 +18,6 @@ export default async function getData (finalQuery: Querystr)  {
       return res.json();
     })
     .then((data) => {
-      !data ? console.log("Error") : console.log(data);
       return data
     });
     return result
