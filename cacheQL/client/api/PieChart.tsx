@@ -17,14 +17,16 @@ export default function PieChart({chartData, cacheHits}){
         label: "Cache Hit Rate ",
         data: [hitPercentage, 100 - hitPercentage ],
         backgroundColor: [
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
+          "#CBC3E3",
+          "#D3D3D3",
+          // "rgba(75,192,192,1)",
+          // "#ecf0f1",
         ], 
         hoverOffset: 4, 
         rotation: -90,
         borderColor: "black",
         aspectRatio: 0, 
-        borderWidth: 2,
+        borderWidth: 1,
         // boxWidth: -10, 
         
       }

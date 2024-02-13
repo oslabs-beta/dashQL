@@ -15,8 +15,8 @@ export default function BarChart({ chartData })  {
         label: "Users Gained ",
         data: chartData.map((data) => data.response_time),
         backgroundColor: [
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
+          "#C3B1E1",
+          "#021c41",
         ],
         borderColor: "black",
         borderWidth: 2
