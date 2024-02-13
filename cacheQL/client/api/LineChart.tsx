@@ -24,7 +24,7 @@ function LineChart({ chartData }) {
 
   return (
     <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Line Chart</h2>
+      <h2 style={{ textAlign: "center" }}>Response Time Graph</h2>
       <Line
         data={lineData}
         options={{
@@ -42,4 +42,3 @@ function LineChart({ chartData }) {
     </div>
   );
 }
-export default LineChart;

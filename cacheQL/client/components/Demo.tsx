@@ -10,11 +10,12 @@ import { Chart, registerables, CategoryScale } from "chart.js";
 import { Data } from "../api/Data";
 import PieChart from "../api/PieChart";
 import { ArcElement } from "chart.js";
-// import BarChart from "../api/BarChart";
+import BarChart from "../api/BarChart";
 import LineChart from "../api/LineChart";
-
 Chart.register(ArcElement);
 Chart.register(...registerables)
+// Chart.register(...controllers);
+
 
 type Fields = {
   name: string;
@@ -51,9 +52,71 @@ export default function Demo() {
   const [id, setId] = useState('1');
   const [resultId, setResultId] = useState('1');
   const [fetchData, setFetch] = useState(false);
-  const [chartData, setChartData] = useState([{}])
-  
+  const [chartData, setChartData] = useState({
+    // labels: Data.map((data) => data.id), 
+    labels: ['Cache Hit', 'Cache Miss'],
+    datasets: [
+      {
+        label: "Cache Hit Rate ",
+        data: [40, 60],
+        // data: Data.map((data) => data.hits),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        hoverOffset: 4, 
+        rotation: -90,
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
 
+  const [lineData, setLineData] = useState({
+    labels: Data.map((data) => data.cached), 
+    datasets: [
+      {
+        label: "Users Gained ",
+        data: Data.map((data) => data.response_time),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
+
+  const [barData, setBarData] = useState({
+    labels: Data.map((data) => data.id), 
+    datasets: [
+      {
+        label: "Users Gained ",
+        data: Data.map((data) => data.response_time),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+        ],
+        borderColor: "black",
+        borderWidth: 2
+      }
+    ]
+  });
+  // function LineChart({ chartData }) {
+  
+  //   const lineData = {
+  //     labels: chartData.map((data) =>  `Run ${data.id}`),
+  //     datasets: [
+  //       {
+  //         label: "Cached Response Time",
+  //         data: chartData.map((data) => data.response_time),
+  //         backgroundColor: ["rgba(75,192,192,1)", "#ecf0f1"],
+  //         borderColor: "black",
+  //         borderWidth: 2,
+  //       },
+  //     ],
+  //   }
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
     console.log('sending query string:', querySend);
@@ -131,17 +194,13 @@ export default function Demo() {
       <h1 id="title">Cache Demo</h1>
       <section className="stats">
         <div id="left-stats">
-          <div id="line-chart">
-            <LineChart chartData={chartData} />
-            </div>
+          <div id="line-chart"><LineChart chartData={lineData} /></div>
           <div id="cache-stats">Cache Stats</div>
         </div>
 
         <div id="right-stats">
-          <div id="cache-times">Cache and Uncached times</div>
-          <div id="pie-chart">
-            {/* <PieChart chartData={chartData} /> */}
-          </div>
+          <div id="bar-chart"><BarChart chartData={barData} /></div>
+          <div id="pie-chart"><PieChart chartData={chartData} /></div>
         </div>
       </section>
       <section className='input'>
