@@ -88,6 +88,9 @@ export default function Demo() {
     ]
   });
 
+//   const [chartData, setChartData] = useState([{}])
+
+
   const [barData, setBarData] = useState({
     labels: Data.map((data) => data.id), 
     datasets: [
@@ -201,6 +204,10 @@ export default function Demo() {
         <div id="right-stats">
           <div id="bar-chart"><BarChart chartData={barData} /></div>
           <div id="pie-chart"><PieChart chartData={chartData} /></div>
+          <div id="cache-times">Cache and Uncached times</div>
+          <div id="pie-chart">
+            {/* <PieChart chartData={chartData} /> */}
+          </div>
         </div>
       </section>
       <section className='input'>
