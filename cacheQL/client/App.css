@@ -99,7 +99,7 @@ body {
 
 .input {
   display: flex;
-  height: 300px;
+  height: 350px;
   width: 95%;
   background-color: lightgray;
   padding: 20px;
@@ -125,7 +125,6 @@ body {
   width: 100px;
   height: 40px;
   align-self: start;
-  margin-top: 10px;
   background-color: #162345;
   border-radius: 10px;
   color: white;
@@ -147,8 +146,8 @@ body {
   align-self: start;
   border-radius: 10px;
   color: #162345;
-  margin-top: 10px;
-  margin-bottom: 15px;
+  margin-top: 5px;
+  margin-bottom: 10px;
 }
 #countriesAPI input {
   margin-top: 10px;
@@ -163,8 +162,8 @@ body {
 
 #query {
   background-color: rgb(53, 53, 53);
-  height: 95%;
-  margin-bottom: 10px;
+  height: 100%;
+  /* margin-bottom: 10px; */
   border-radius: 15px;
   /* margin: 10px; */
   white-space: pre-line;
@@ -182,8 +181,8 @@ body {
 }
 #query-results {
   background-color: rgb(53, 53, 53);
-  height: 95%;
-  margin-bottom: 10px;
+  height: 100%;
+  /* margin-bottom: 10px; */
   border-radius: 15px;
   white-space: pre-line;
 }

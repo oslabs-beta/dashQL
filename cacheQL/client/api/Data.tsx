@@ -1,26 +1,23 @@
 export const Data = [
   {
     id: 1,
-    hits: 3,
-    response_time: 3.65,
-    cached : 'cached'
+    hit: false,
+    response_time: 2.20,
+    cache_hit: 0,
+    cache_miss: 100
   },
   {
     id: 2,
-    hits: 2,
-    response_time: 2.06,
-    cached : 'cached'
+    hit: true,
+    response_time: .10,
+    cache_hit: 100,
+    cache_miss: 0
   },
   {
     id: 3,
-    hits: 1,
-    response_time: 1.65,
-    cached: 'cached'
-  },
-  {
-    id: 4,
-    hits: 7,
-    response_time: 6.24, 
-    cached: 'uncached'
+    hit: false,
+    response_time: 1.60,
+    cache_hit: 25,
+    cache_miss: 75
   },
 ]

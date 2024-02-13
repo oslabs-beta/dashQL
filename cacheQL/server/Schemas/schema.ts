@@ -1,21 +1,21 @@
 const db = require('../models/model');
-// import {
+
+// const {
 //   GraphQLSchema,
 //   GraphQLObjectType,
 //   GraphQLString,
-//   // GraphQLInt,
+//   GraphQLInt,
 //   // GraphQLList,
 //   // GraphQLNonNull,
-// } from 'graphql';
-
-const {
+// } = require('graphql');
+import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
   // GraphQLList,
   // GraphQLNonNull,
-} = require('graphql');
+} from 'graphql';
 
 const peopleType = new GraphQLObjectType({
   name: 'People',
@@ -25,6 +25,15 @@ const peopleType = new GraphQLObjectType({
       type: GraphQLString,
     },
     mass: {
+      type: GraphQLInt,
+    },
+    hair_color: {
+      type: GraphQLString,
+    },
+    eye_color: {
+      type: GraphQLString,
+    },
+    height: {
       type: GraphQLInt,
     },
   }),
@@ -59,8 +68,11 @@ const RootQuery = new GraphQLObjectType({
 // export const schema = new GraphQLSchema({
 //   query: RootQuery,
 // });
-module.exports = {
-  schema: new GraphQLSchema({
-    query: RootQuery,
-  }),
-};
+// module.exports = {
+//   schema: new GraphQLSchema({
+//     query: RootQuery,
+//   }),
+// };
+export default new GraphQLSchema({
+  query: RootQuery,
+});
