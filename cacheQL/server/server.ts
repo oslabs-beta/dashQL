@@ -41,6 +41,11 @@ app.use(
   })
 );
 
+app.use('/clearCache', (_req, res) => {
+  redisTest.FLUSHDB();
+  return res.status(200).send('Cache cleared');
+});
+
 app.get('/redis', async (req: any, res: any) => {
   console.log(req);
   const response = await redisTest.get('Hello');

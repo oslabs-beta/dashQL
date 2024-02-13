@@ -39,13 +39,17 @@ class dashCache {
       //  return out of function with response from server
       return responseFromDB;
     }
-    //if cache is not empty
-    //    split up query into individual fields
 
+    //if cache is not empty
+    else {
+      //  create object to store individual fields
+      //  iterate through fields arr
+      //    add each field as a key to the object in the form of "fieldName + id" maybe?
+      //  split up query into individual fields
+    }
   }
 
   //BREAK QUERY INTO INDIVIDUAL FIELD LEVEL QUERIES
-
 
   async isCacheEmpty() {
     // invoke redisdb.DBSIZE to check whether cache is empty
