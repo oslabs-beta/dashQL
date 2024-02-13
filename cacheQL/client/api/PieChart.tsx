@@ -8,10 +8,10 @@ Chart.register(CategoryScale);
 
 
 export default function PieChart({chartData, cacheHits}){
-  const hitPercentage = cacheHits !== 0 ? cacheHits/chartData.length : 0
+  const hitPercentage = cacheHits !== 0 ? cacheHits/chartData.length * 100 : 0
   const pieData = {
     // labels: Data.map((data) => data.id), 
-    labels: ['Cache Hit', 'Cache Miss'],
+    labels: ['Cache Hits', 'Cache Misses'],
     datasets: [
       {
         label: "Cache Hit Rate ",
@@ -22,7 +22,6 @@ export default function PieChart({chartData, cacheHits}){
         ], 
         hoverOffset: 4, 
         rotation: -90,
-        
         borderColor: "black",
         aspectRatio: 0, 
         borderWidth: 2,

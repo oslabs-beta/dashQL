@@ -60,9 +60,10 @@ export default function Demo() {
       return;
     }
     const result = await getData({ query: querySend });
+    // grab data 
     setData(result);
     addData(result.time);
-    // result.hit ? setCacheHits(cacheHits + 1) : null
+    result.cacheHit ? setCacheHits(cacheHits + 1) : null
     setResultId(id);
     setFetch(true);
   }
@@ -146,6 +147,10 @@ export default function Demo() {
           <div id="cache-stats">
             <div id="cache-card">
               <h4>Result Details</h4>
+              <p>Response time: {chartData.length > 0 ? Math.round(chartData[chartData.length-1]["response_time"]) : null} ms</p>
+              <p>Cache Hits: {cacheHits}</p>
+              <p>Cache Misses: {chartData.length > 0 ? chartData.length - cacheHits : 0}</p>
+              <p>Hit Rate: {chartData.length > 0 ? Math.round((cacheHits/chartData.length) * 100) : 0}%</p>
             </div>
           </div>
         </div>
