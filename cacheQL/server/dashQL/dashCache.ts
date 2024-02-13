@@ -105,7 +105,7 @@ data[type][fieldName] = fieldVal
 
   //TO UPDATE ANY ANY TO CREATE AN INTERFACE
   async checkQueries(map: Map<any, any>) {
-    for (let key of map) {
+    for (let [key, _value] of map) {
       //console.log('individual key', key);
       let stringifyKey: string = JSON.stringify(key);
       let cacheResponse = await this.checkRedis(stringifyKey);
