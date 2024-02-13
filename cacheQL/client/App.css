@@ -1,4 +1,4 @@
-/* import '@fontsource-variable/source-code-pro'; */
+/* import '@fontsource-variable/source-code-pro';  */
 
 html,
 body {
@@ -6,6 +6,7 @@ body {
   width: 100%;
   font-size: 16px;
   color: #162345;
+
 }
 
 #logo {
@@ -25,13 +26,13 @@ body {
 
 #title {
   margin-top: 20px;
-  font-size: 30px;
+  font-size: 24px;
 }
 
 .stats {
   display: flex;
   height: 550px;
-  width: 98%;
+  width: 97%;
   /* background-color: lightgray; */
   border: 1px solid #162345;
   border-radius: 15px;
@@ -46,7 +47,7 @@ body {
   /* background-color: lightblue; */
   align-items: center;
   justify-content: start;
-  padding-top: 10px;
+
   padding-left: 20px;
 }
 
@@ -57,7 +58,7 @@ body {
   width: 50%;
   align-items: center;
   justify-content: start;
-  padding-top: 10px;
+ 
   padding-right: 20px;
 }
 

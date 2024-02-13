@@ -33,7 +33,7 @@ export default function BarChart({ chartData })  {
           plugins: {
             title: {
               display: true,
-              text: ""
+              text: "Cache vs. Uncached Response Times"
             },
             legend: {
               display: false

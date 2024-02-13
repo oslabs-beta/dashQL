@@ -21,9 +21,8 @@ export default function PieChart({chartData, cacheHits}){
           "#ecf0f1",
         ], 
         hoverOffset: 4, 
-        responsive: true, 
-        maintainAspectRatio: false, 
         rotation: -90,
+        
         borderColor: "black",
         aspectRatio: 0, 
         borderWidth: 2,
@@ -39,11 +38,8 @@ export default function PieChart({chartData, cacheHits}){
       <Pie width={"200px"} height={"200px"} 
         data={pieData}
         options={{
-          plugins: {
-            title: {
-              display: true,
-            }
-          }
+          responsive: true, 
+          maintainAspectRatio: false, 
         }}
       />
     </div>

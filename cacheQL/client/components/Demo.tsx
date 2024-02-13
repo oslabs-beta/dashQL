@@ -137,7 +137,7 @@ export default function Demo() {
 
   return (
     <div className="demo">
-      <h1 id="title">Cache Demo</h1>
+      <h1 id="title">dashQL Cache Demo</h1>
       <section className="stats">
         <div id="left-stats">
           <div id="response-graph">
@@ -149,7 +149,6 @@ export default function Demo() {
             </div>
           </div>
         </div>
-
         <div id="right-stats">
           <div id="cache-times">
             <BarChart chartData={chartData} />
