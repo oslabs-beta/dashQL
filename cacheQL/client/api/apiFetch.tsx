@@ -2,16 +2,23 @@ interface Querystr {
   query: string;
 }
 
-export default async function getData(finalQuery: Querystr) {
+interface QueryResponse {
+  res: any,
+  time: number,
+  cacheHit: boolean,
+
+}
+
+export default async function getData(finalQuery: Querystr): Promise<any> {
   console.log("------in fetch---------");
 
-  const request: RequestInfo = new Request("http://localhost:5001/dashQL", {
+  const request:any = new Request("http://localhost:5001/dashQL", {
     method: "POST",
     body: JSON.stringify(finalQuery),
     headers: { "Content-Type": "application/json" },
   });
 
-  const result = await fetch(request)
+  const result:QueryResponse = await fetch(request)
     .then((res) => {
       return res.json();
     })
