@@ -48,6 +48,9 @@ export default function Nav() {
               marginRight: "200px",
             }}
           >
+            <div>
+            <h1 className="nav-title"><strong>dashQL</strong></h1>
+            </div>
             <Button href="/" color="inherit">
               About
             </Button>
