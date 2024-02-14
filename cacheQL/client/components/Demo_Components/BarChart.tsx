@@ -12,24 +12,44 @@ export default function BarChart({ chartData })  {
     labels: chartData.map((data) => data.id), 
     datasets: [
       {
-        label: "Users Gained ",
+        labels: "Cache vs. Uncached",
         data: chartData.map((data) => data.response_time),
         backgroundColor: [
-          "#C3B1E1",
-          "#021c41",
+          "#4682B4",
+          "#c0c0c0 ",
         ],
         borderColor: "black",
-        borderWidth: 2
-      }
-    ]
+        borderWidth: 1
+      },
+      // {
+      //   labels: "Cache vs. Uncached",
+      //   data: chartData.map((data) => data.hitPercentage),
+      //   backgroundColor: [
+      //     "#4682B4",
+      //     "#c0c0c0 ",
+      //   ],
+      //   borderColor: "black",
+      //   borderWidth: 1
+      // },
+
+    ],
   };
 
   return (
     <div className="chart-container">
       <h3 style={{ textAlign: "center" }}>Bar Chart</h3>
-      <Bar 
+      <Bar  
         data={barData}
         options={{
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: false,
+              beginAtZero: true, 
+            }
+          },
           plugins: {
             title: {
               display: true,
@@ -38,7 +58,8 @@ export default function BarChart({ chartData })  {
             legend: {
               display: false
             }
-          }
+          },
+          responsive: true
         }}
       />
     </div>

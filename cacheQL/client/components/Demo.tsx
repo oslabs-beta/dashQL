@@ -82,6 +82,8 @@ export default function Demo() {
     const newData: Data = {
       id: len,
       response_time: result,
+      hitPercentage: 75,
+      missPercentage: 25
     };
 
     setChartData([...chartData, newData]);
