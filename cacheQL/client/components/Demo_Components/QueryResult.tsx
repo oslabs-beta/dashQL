@@ -13,17 +13,20 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   const res = JSON.parse(data.res)
   console.log('IN QUERY RESULT-----','data is', data)
 
-  let firstValue: string = res.data.people[keys[0]];
-  let secondValue: string = res.data.people[keys[1]];
-  let thirdValue: string = res.data.people[keys[2]];
-  let fourthValue: string = res.data.people[keys[3]];
-
+  
+  // define what which properties will be displayed (ex: name, mass). These are used for being able to create the query code format to display
   const firstBox:string | null = checkbox1 ? `${keys[0]}` : null;
   const secondBox: string | null = checkbox2 ? `${keys[1]}` : null;
   const thirdBox: string | null = checkbox3 ? `${keys[2]}` : null;
   const fourthBox: string | null = checkbox4 ? `${keys[3]}` : null;
   const idBox: string = id ? `(_id:${id})` : "";
   const end: null | string = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
+
+  // define values to be displayed for each property
+  const firstValue: string = res.data.people[keys[0]];
+  const secondValue: string = res.data.people[keys[1]];
+  const thirdValue: string = res.data.people[keys[2]];
+  const fourthValue: string = res.data.people[keys[3]];
   
 
   return (

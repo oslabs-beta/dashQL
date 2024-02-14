@@ -10,6 +10,8 @@ type Querystr = {
 };
 
 export default function QueryCode({checkbox1, checkbox2, checkbox3, checkbox4, keys, currentDropdown, id}: Querystr) {
+
+  // define what which properties will be displayed (ex: name, mass). These are used for being able to create the query code format to display
   const firstBox:string = checkbox1 ? `${keys[0]}` : "";
   const secondBox: string = checkbox2 ? `${keys[1]}` : "";
   const thirdBox: string = checkbox3 ? `${keys[2]}` : "";

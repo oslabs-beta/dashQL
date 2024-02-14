@@ -1,12 +1,12 @@
 import { React, useState, useEffect } from "react";
 import "../App.css";
 import getData from "../api/apiFetch";
-import QueryResult from "../api/QueryResult";
-import QueryCode from "./QueryCode";
+import QueryResult from "./Demo_Components/QueryResult";
+import QueryCode from "./Demo_Components/queryCode";
 import "@fontsource-variable/source-code-pro";
-import BarChart from "../api/BarChart";
-import PieChart from "../api/PieChart";
-import LineChart from "../api/LineChart";
+import BarChart from "./Demo_Components/BarChart";
+import PieChart from "./Demo_Components/PieChart";
+import LineChart from "./Demo_Components/LineChart";
 import clearCache from "../api/clearCache";
 
 type Fields = {
