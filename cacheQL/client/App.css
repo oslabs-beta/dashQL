@@ -1,4 +1,4 @@
-/* import '@fontsource-variable/source-code-pro'; */
+/* import '@fontsource-variable/source-code-pro';  */
 
 html,
 body {
@@ -6,6 +6,9 @@ body {
   width: 100%;
   font-size: 16px;
   color: #162345;
+  font-family: Arial, Helvetica, sans-serif;
+  
+  /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
 }
 
 #logo {
@@ -25,13 +28,13 @@ body {
 
 #title {
   margin-top: 20px;
-  font-size: 30px;
+  font-size: 24px;
 }
 
 .stats {
   display: flex;
   height: 550px;
-  width: 98%;
+  width: 97%;
   /* background-color: lightgray; */
   border: 1px solid #162345;
   border-radius: 15px;
@@ -46,7 +49,6 @@ body {
   /* background-color: lightblue; */
   align-items: center;
   justify-content: start;
-  padding-top: 10px;
   padding-left: 20px;
 }
 
@@ -57,7 +59,7 @@ body {
   width: 50%;
   align-items: center;
   justify-content: start;
-  padding-top: 10px;
+
   padding-right: 20px;
 }
 
@@ -67,33 +69,49 @@ body {
   justify-content: center;
   width: 100%;
   margin-bottom: 5px;
+  max-width: 750px;
 }
 
 .chart-container {
   width: 70%;
 }
 
+
+
 #cache-stats {
   flex: 2;
-  width: 100%;
-  margin-bottom: 10px;
+  /* width: 100%; */
+  /* margin-bottom: 10px; */
   border-radius: 15px;
   display: flex;
   justify-content: center;
   margin-top: 5px;
+  width: 40%;
+  max-width: 40%;
+  max-height: 200px;
 }
 
 #cache-card {
+  flex: 2;
   display: flex;
   flex-direction: column;
   background-color: rgb(217, 216, 216);
-  width: 250px;
+  width: 300px;
+  height: 160px;
   border-radius: 15px;
   padding: 15px;
+  border: 1px solid #162345;
 }
 
 #cache-card h4 {
   margin-top: 0px;
+  font-size: 18px;
+  align-self: center;
+}
+
+#cache-card p {
+  margin-top: 0px;
+  font-size: 15px;
 }
 
 #cache-times {
@@ -101,6 +119,7 @@ body {
   flex: 4;
   justify-content: center;
   width: 100%;
+  max-width: 750px;
 }
 
 #pie-chart {
@@ -111,7 +130,7 @@ body {
   margin-bottom: 20px;
 }
 
-.input {
+.input-container {
   display: flex;
   height: 350px;
   width: 95%;
@@ -122,7 +141,7 @@ body {
   box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#countriesAPI {
+#query-fields {
   height: 95%;
   flex: 1;
   margin-bottom: 20px;
@@ -131,7 +150,7 @@ body {
   align-items: start;
   justify-content: start;
 }
-#countriesAPI button {
+#query-fields button {
   width: 100px;
   height: 40px;
   align-self: start;
@@ -141,30 +160,30 @@ body {
   margin-right: 10px;
 }
 
-#countriesAPI button:hover {
+#query-fields button:hover {
   cursor: pointer;
 }
 
-#countriesAPI h1 {
+#query-fields h1 {
   align-self: start;
   border-radius: 10px;
   color: #162345;
   margin-top: 10px;
 }
 
-#countriesAPI p {
+#query-fields p {
   align-self: start;
   border-radius: 10px;
   color: #162345;
   margin-top: 5px;
   margin-bottom: 10px;
 }
-#countriesAPI input {
+#query-fields input {
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
-#countriesAPI select {
+#query-fields select {
   margin-bottom: 10px;
   width: 100px;
 }
