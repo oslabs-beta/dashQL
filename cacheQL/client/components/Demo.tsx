@@ -52,11 +52,12 @@ export default function Demo() {
 
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
-    console.log("sending query string:", queryString);
+
     if ((!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) || !idBox) {
       alert("Please select ID (at the moment) and one other checkbox");
       return;
     }
+    // must send in object with query property due to how backend uses the request
     const result = await getData({ query: queryString });
     // get data from backend, update
     setQueryData(result);
@@ -68,18 +69,24 @@ export default function Demo() {
 
   function addData(result: number) {
     // this function adds data to chartData after each query is ran
-    const len = chartData.length + 1;
-    const newData = {
+    const len: number = chartData.length + 1;
+    type Data = {
+      id: number;
+      response_time: number;
+    };
+
+    const newData: Data = {
       id: len,
       response_time: result,
     };
+
     setChartData([...chartData, newData]);
   }
 
   useEffect(() => {
     // when any checkbox is clicked or dropdown selection edits, will set fetch to false to empty "QUERY RESULTS" part of the dashboard, and will update the query string in order to update the "GraphQL Query" part of dashboard
-    updateQueryString();
     setDisplayResults(false);
+    updateQueryString();
   }, [
     idBox,
     checkbox1,
@@ -91,17 +98,18 @@ export default function Demo() {
   ]);
 
   // current checkboxes to be used for making the query string and query boxes
-  const keys = Object.keys(currentFields);
+  const keys: string[] = Object.keys(currentFields);
 
   async function updateQueryString() {
     // logic for creating the "GraphQL Query" display box of dashboard, as well as updating the string to be sent to backend, only invokes when useEffect triggered by change
-    const firstBox = checkbox1 ? `${keys[0]}` : "";
-    const secondBox = checkbox2 ? `${keys[1]}` : "";
-    const thirdBox = checkbox3 ? `${keys[2]}` : "";
-    const fourthBox = checkbox4 ? `${keys[3]}` : "";
-    const idWanted = idBox ? `(_id:${selectedId})` : "";
-    const end = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
-    const result = `query {${currentDropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
+    const firstBox: string = checkbox1 ? `${keys[0]}` : "";
+    const secondBox: string = checkbox2 ? `${keys[1]}` : "";
+    const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
+    const fourthBox: string = checkbox4 ? `${keys[3]}` : "";
+    const idWanted: string = idBox ? `(_id:${selectedId})` : "";
+    const end: string | null =
+      !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
+    const result: string = `query {${currentDropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
     setQueryString(result);
   }
 
@@ -132,7 +140,7 @@ export default function Demo() {
     updateCheckbox2(false);
     updateCheckbox3(false);
     updateCheckbox4(false);
-    setQueryData(undefined);
+    setQueryData("");
     setSelectedId("1");
     setDisplayResults(false);
     setChartData([]);
@@ -273,7 +281,6 @@ export default function Demo() {
         <div id="response-query-container">
           <h3>Query Results</h3>
           <div id="query-results">
-            {/*  */}
             {displayResults ? (
               <QueryResult
                 checkbox1={checkbox1}
