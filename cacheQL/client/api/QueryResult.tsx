@@ -12,7 +12,9 @@ type Querystr = {
 
 export default function QueryResult({data, keys, currentDropdown, checkbox1, checkbox2, checkbox4, checkbox5, id}: Querystr) {
   // const useData = data.data.people
-  console.log(' IN QUERY RESULT', data, keys, currentDropdown, checkbox1, checkbox2)
+  const res = JSON.parse(data.res)
+  console.log('IN QUERY RESULT-----','data is', res, 'response time is', data.time)
+  
   let firstValue;
   let secondValue;
   let thirdValue;
@@ -24,22 +26,22 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   const fourthBox = checkbox5 ? `${keys[3]}` : "";
   const idBox = id ? `(_id:${id})` : "";
   const end = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
-
-  if (data){
-    firstValue = data.data.people[keys[0]]
-    secondValue = data.data.people[keys[1]]
-    thirdValue = data.data.people[keys[2]]
-    fourthValue = data.data.people[keys[3]]
+  
+  if (res){
+    firstValue = res.data.people[keys[0]]
+    secondValue = res.data.people[keys[1]]
+    thirdValue =res.data.people[keys[2]]
+    fourthValue = res.data.people[keys[3]]
   } 
 
   return (
     <div className="query-text">
       <div id="query-tag">{`query {`}</div>
       <div className="first-indent">{`${currentDropdown} ${idBox} {`}</div>
-      <div className="second-indent">{firstValue && checkbox1 ? `${firstBox}: ${firstValue},` : null}</div>
-      <div className="second-indent">{secondValue && checkbox2 ? `${secondBox}: ${secondValue},` : null}</div>
-      <div className="second-indent">{thirdValue && checkbox4 ? `${secondBox}: ${thirdValue},` : null}</div>
-      <div className="second-indent">{fourthValue && checkbox5 ? `${secondBox}: ${fourthValue},` : null}</div>
+      <div className="second-indent">{firstValue ? `${firstBox}: ${firstValue},` : null}</div>
+      <div className="second-indent">{secondValue ? `${secondBox}: ${secondValue},` : null}</div>
+      <div className="second-indent">{thirdValue ? `${thirdBox}: ${thirdValue},` : null}</div>
+      <div className="second-indent">{fourthValue ? `${fourthBox}: ${fourthValue},` : null}</div>
       <div className="first-indent">{end}</div>
       <div>{"}"}</div>
     </div>

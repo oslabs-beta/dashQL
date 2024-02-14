@@ -6,7 +6,7 @@ export default async function getData (finalQuery: Querystr)  {
   console.log("------in fetch---------");
 
   const request: RequestInfo = new Request(
-    "http://localhost:5001/api/query",
+    "http://localhost:5001/dashQL",
     {
       method: "POST",
       body: JSON.stringify(finalQuery),
@@ -18,7 +18,6 @@ export default async function getData (finalQuery: Querystr)  {
       return res.json();
     })
     .then((data) => {
-      !data ? console.log("Error") : console.log(data);
       return data
     });
     return result
