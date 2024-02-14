@@ -14,7 +14,7 @@ export default function PieChart({chartData, cacheHits}){
     labels: ['Hit', 'Miss'],
     datasets: [
       {
-        label: "Cache Hit Rate ",
+        label: "Cache Hit Rate",
         data: [hitPercentage, 100 - hitPercentage ],
         backgroundColor: [
           "#4682B4",
@@ -27,7 +27,7 @@ export default function PieChart({chartData, cacheHits}){
         borderColor: "black",
         aspectRatio: 0, 
         borderWidth: 1,
-      }
+      },
     ]
   };
 

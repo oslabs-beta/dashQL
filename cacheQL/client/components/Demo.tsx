@@ -53,6 +53,13 @@ export default function Demo() {
   // chartData and cacheHits are the data stored from backend for the charts
   const [chartData, setChartData] = useState([]);
   const [cacheHits, setCacheHits] = useState(0);
+  const [newPage, setNewPage] = useState(true);
+  
+  if (newPage){
+    setNewPage(false)
+    clearCache()
+  }
+  
 
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
@@ -75,8 +82,10 @@ export default function Demo() {
     // this function adds data to chartData after each query is ran
     const len: number = chartData.length + 1;
     type Data = {
-      id: number;
-      response_time: number;
+      id: number
+      response_time: number
+      hitPercentage: number
+      missPercentage:number
     };
 
     const newData: Data = {
@@ -151,6 +160,7 @@ export default function Demo() {
     setDisplayResults(false);
     setChartData([]);
     setCacheHits(0);
+    alert("Cache cleared")
   }
 
   return (

@@ -1,67 +1,79 @@
-import React from 'react'; 
+import React from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale, ArcElement } from "chart.js";
 Chart.register(ArcElement);
-Chart.register(...registerables)
+Chart.register(...registerables);
 Chart.register(CategoryScale);
 
-
-export default function BarChart({ chartData })  {
-
+export default function BarChart({ chartData }) {
   const barData = {
-    labels: chartData.map((data) => data.id), 
+    labels: chartData.map((data) => `Run ${data.id}`),
     datasets: [
       {
-        labels: "Cache vs. Uncached",
-        data: chartData.map((data) => data.response_time),
-        backgroundColor: [
-          "#4682B4",
-          "#c0c0c0 ",
-        ],
+        label: "Hit Percentage",
+        backgroundColor: "#4682B4",
+        data: chartData.map((data) => data.hitPercentage),
         borderColor: "black",
-        borderWidth: 1
+        borderWidth: 1,
+        maxBarThickness: 70,
+        hoverBorderColor: 'red',
+        hoverBackgroundColor: 'green'
       },
-      // {
-      //   labels: "Cache vs. Uncached",
-      //   data: chartData.map((data) => data.hitPercentage),
-      //   backgroundColor: [
-      //     "#4682B4",
-      //     "#c0c0c0 ",
-      //   ],
-      //   borderColor: "black",
-      //   borderWidth: 1
-      // },
-
+      {
+        label: "Miss Percentage",
+        backgroundColor: "#c0c0c0",
+        data: chartData.map((data) => data.missPercentage),
+        borderColor: "black",
+        borderWidth: 1,
+        maxBarThickness: 70,
+        hoverBorderColor: 'green',
+        hoverBackgroundColor: 'red'
+      },
     ],
+    
   };
 
   return (
     <div className="chart-container">
       <h3 style={{ textAlign: "center" }}>Bar Chart</h3>
-      <Bar  
+      <Bar
         data={barData}
         options={{
-          scales: {
-            x: {
-              stacked: true
-            },
-            y: {
-              stacked: false,
-              beginAtZero: true, 
-            }
-          },
           plugins: {
             title: {
               display: true,
-              text: "Cache vs. Uncached Response Times"
+              text: "Cache vs. Uncached Response Times",
             },
-            legend: {
-              display: false
+            tooltip: {
+              callbacks: {
+                  label: function(context) {
+                      let label = context.dataset.label || '';
+                      if (context.parsed.y !== null) {
+                          label += ' ' +context.parsed.y + '%';
+                      }
+                      return label;
+                  }
+              }
             }
           },
-          responsive: true
+          scales: {
+            x: {
+              stacked: true,
+              beginAtZero: true,
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: {
+                stepSize: 20,
+                callback: function (value) {
+                  return value + "%";
+                }
+              }
+            },
+          },
         }}
       />
     </div>
   );
-};
+}

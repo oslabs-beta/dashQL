@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme, ThemeProvider, Avatar } from "@mui/material";
-import logo from "./github-logo.png";
+import logo from "../assets/github-logo.png";
 
 
 
@@ -34,6 +34,12 @@ export default function Nav() {
           display: "flex",
         }}
       >
+         {/* <Avatar
+              alt="Example Alt"
+              src={logo}
+              sx={{ width: "25px", height: "25px", alignItems: "center" }}
+            /> */}
+        
         <AppBar position="static" sx={{ display: "flex" }}>
           <Toolbar
             sx={{
@@ -54,7 +60,7 @@ export default function Nav() {
             <Avatar
               alt="Example Alt"
               src={logo}
-              sx={{ width: "25px", height: "auto", marginLeft: "10px" }}
+              sx={{ width: "25px", height: "auto", marginLeft: "10px" , marginBottom: "1px"}}
             />
           </Toolbar>
         </AppBar>

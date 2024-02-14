@@ -7,7 +7,7 @@ export default async function clearCache() {
   });
   await fetch(request)
     .then(() => {
-      alert("Cache cleared");
+      // alert("Cache cleared");
     })
     .catch((error) => {
       console.error({ error: `Error in setting cache` });
