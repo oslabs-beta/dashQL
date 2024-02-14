@@ -14,10 +14,12 @@ async function queryHandler(req: any, res: any, next: any) {
   const parsedQuery: any = parse(query);
   console.log('--------LOGGING PARSED QUERY to FIELD LEVEL------------');
 
-  //const parsedFields = parsedQuery.definitions[0].selectionSet.selections[0].selectionSet.selections
-  const type = parsedQuery.definitions[0].selectionSet.selections[0].name.value
-  console.log(type)
-
+  // const parsedFields =
+  //   parsedQuery.definitions[0].selectionSet.selections[0].selectionSet
+  //     .selections;
+  //const type = parsedQuery.definitions[0].selectionSet.selections[0].name.value;
+  //console.log(type);
+  //console.log(parsedFields);
 
   const queryString = JSON.stringify(query);
   // console.log(queryString);
@@ -27,19 +29,24 @@ async function queryHandler(req: any, res: any, next: any) {
 
   const exists = await redisdb.exists(queryString);
 
+  let hitPercentage: number;
+
   //check if string key in is redis.
   if (exists >= 1) {
     const cacheResponse = await redisdb.get(queryString);
     console.log('cache response', cacheResponse);
     res.locals.res = cacheResponse;
     res.locals.cacheHit = true;
+    hitPercentage = 1;
   } else {
     const dashCaches = new dash(parsedQuery, redisdb); //-> consider also passing response
-    const responseFromDB = await dashCaches.cacheHandler(query);
-    console.log(responseFromDB);
-    res.locals.res = JSON.stringify(responseFromDB);
-    res.locals.cacheHit = false;
+    const responseFromdashCache = await dashCaches.cacheHandler(query);
+    console.log(responseFromdashCache);
+    res.locals.res = JSON.stringify(responseFromdashCache);
+    hitPercentage = dashCaches.totalHits / dashCaches.mapLength;
   }
+  res.locals.hitPercentage = hitPercentage;
+  res.locals.missPercentage = 1 - hitPercentage;
 
   console.log('res.locals', res.locals.res);
   //end time
@@ -49,7 +56,7 @@ async function queryHandler(req: any, res: any, next: any) {
 
   //res.locals - response and response time
   res.locals.time = totalTime;
-  console.log(res.locals);
+  //console.log(res.locals);
 
   return next();
 }
