@@ -14,7 +14,7 @@ export default function LineChart({ chartData }) {
     labels: chartData.map((data) => chartData.length !==0 ? `Run ${data.id}` : ''),
     datasets: [
       {
-        label: "Cached Response Time",
+        label: "Response Time",
         data: chartData.map((data) => data.response_time),
         // borderDash: [5,5],
         backgroundColor: ["rgba(75,192,192,1)", "#557373"],
@@ -23,7 +23,6 @@ export default function LineChart({ chartData }) {
         pointBorderColor: '#4682B4', 
         pointBackgroundColor: '#4682B4', 
         borderWidth: 1,
-        fill: false, 
         drawTicks: true
       },
     ],
@@ -38,12 +37,23 @@ export default function LineChart({ chartData }) {
           plugins: {
             title: {
               display: true,
-              text: "Response Times"
+              text: "Response Times",
             },
             legend: {
-              display: false
-            }
-          }
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = `${context.dataset.label}: ` || "";
+                  if (context.parsed.y !== null) {
+                    label += " " + Math.round(context.parsed.y) + " ms";
+                  }
+                  return label;
+                },
+              },
+            },
+          },
         }}
       />
     </div>

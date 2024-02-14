@@ -49,7 +49,6 @@ body {
   /* background-color: lightblue; */
   align-items: center;
   justify-content: start;
-
   padding-left: 20px;
 }
 
@@ -70,6 +69,7 @@ body {
   justify-content: center;
   width: 100%;
   margin-bottom: 5px;
+  max-width: 750px;
 }
 
 .chart-container {
@@ -84,9 +84,13 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 5px;
+  width: 40%;
+  max-width: 40%;
+  max-height: 200px;
 }
 
 #cache-card {
+  flex: 2;
   display: flex;
   flex-direction: column;
   background-color: rgb(217, 216, 216);
@@ -113,6 +117,7 @@ body {
   flex: 4;
   justify-content: center;
   width: 100%;
+  max-width: 750px;
 }
 
 #pie-chart {
