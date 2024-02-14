@@ -1,15 +1,21 @@
 // import { DashCache } from '../types/types';
 import { DocumentNode } from 'graphql';
-import { parse } from 'graphql/language/parser';
+// import { parse } from 'graphql/language/parser';
 
 class dashCache {
   query: DocumentNode;
   redisdb: any;
   response: any;
+  responseReady: boolean;
+  totalHits: number;
+  mapLength: number;
   constructor(parsedQuery: DocumentNode, redisdb: any, response?: any) {
     this.query = parsedQuery;
     this.redisdb = redisdb;
     this.response = response;
+    this.responseReady = false;
+    this.totalHits = 0;
+    this.mapLength = 0;
   }
 
   /*
@@ -65,25 +71,39 @@ data[type][fieldName] = fieldVal
     else {
       const splitQuery = this.splitQuery();
       //console.log('logging splitQuery:', splitQuery);
+      //populate map with keys
       await this.checkQueries(splitQuery);
       // we want to do some logic to determine whether this needs to be called
-      const subGQLQuery = this.buildSubGraphQLQuery(splitQuery);
-      const subQueryResponse = await this.queryToDB(subGQLQuery);
-      //console.log(subQueryResponse)
-      const responseToParse = subQueryResponse.data
-      console.log('line 74', responseToParse)
-      console.log('line 75', parse(JSON.stringify(responseToParse)))
-  
-    //const parsedSubQueryResponse = parse(JSON.stringify(subQueryResponse));
-     // const parseString = JSON.stringify(subQueryResponse)
-      //console.log('line 73', typeof parseString)
-      //console.log('sub query response', parseString);
-      //console.log('logging parsed sub query response', parsedSubQueryResponse);
+      this.responseReady = this.isResponseReady(splitQuery);
+      if (this.responseReady) {
+        return this.maptoGQLResponse(splitQuery);
+      } else {
+        const subGQLQuery = this.buildSubGraphQLQuery(splitQuery);
+        const subQueryResponse = await this.queryToDB(subGQLQuery);
+        //console.log(subQueryResponse)
+        const responseToParse = subQueryResponse.data;
+        console.log('line 74', responseToParse);
+        // console.log('line 75', parse(JSON.stringify(responseToParse)));
+        this.splitResponse(splitQuery, responseToParse);
+        // console.log('logging map after splitresponse: ', splitQuery);
+        this.responseReady = this.isResponseReady(splitQuery);
+        if (this.responseReady) {
+          return this.maptoGQLResponse(splitQuery);
+        } else {
+          console.log('we have a problem');
+        }
+        //const parsedSubQueryResponse = parse(JSON.stringify(subQueryResponse));
+        // const parseString = JSON.stringify(subQueryResponse)
+        //console.log('line 73', typeof parseString)
+        //console.log('sub query response', parseString);
+        //console.log('logging parsed sub query response', parsedSubQueryResponse);
+      }
     }
   }
 
   //BREAK QUERY INTO INDIVIDUAL FIELD LEVEL QUERIES
   splitQuery() {
+    const startTime = performance.now();
     // create object to store individual fields
     const keyMap = new Map();
     // have to make anyQuery bc typescript is annoying
@@ -103,6 +123,7 @@ data[type][fieldName] = fieldVal
           args: typesArr[i].arguments,
           field: fieldsArr[j].name.value,
         };
+        console.log('LOGGING SPLITQUERY args: ', keyObj.args);
         // ASK MEREDITH FOR THOUGHTS ON THIS:
         // we could just check the cache for this keyObj right here
         // and assign the result of that to the value in the map,
@@ -112,6 +133,9 @@ data[type][fieldName] = fieldVal
         keyMap.set(keyObj, null);
       }
     }
+    this.mapLength = keyMap.size;
+    const endTime = performance.now();
+    console.log('splitQueries time: ', endTime - startTime);
     return keyMap;
   }
 
@@ -120,35 +144,33 @@ data[type][fieldName] = fieldVal
   //TO UPDATE ANY ANY TO CREATE AN INTERFACE
   //modifies map
   async checkQueries(map: Map<any, any>) {
+    const startTime = performance.now();
     for (let [key, _value] of map) {
       //console.log('individual key', key);
       let stringifyKey: string = JSON.stringify(key);
       let cacheResponse = await this.checkRedis(stringifyKey);
-      if (cacheResponse === null) {
-        //build query to get from database
-        console.log('-----------ENTERING IF-------------');
-
-        //TO REMOVE AFTER TESTING _ FOR TESTING ONLY
-        await this.redisdb.set(stringifyKey, 'test');
-      } else {
+      if (cacheResponse !== null) {
         //return response
         //console.log('line 115', value);
-        console.log('array key?', key);
+        // console.log('array key?', key);
         map.set(key, cacheResponse);
-        console.log('-----------ENTERING ELSE-------------');
-        console.log(cacheResponse);
+        //console.log('-----------ENTERING ELSE-------------');
+        // console.log(cacheResponse);
       }
     }
     console.log('updated map', map);
+    const endTime = performance.now();
+    console.log('checkQueries time: ', endTime - startTime);
   }
 
   buildSubGraphQLQuery(map: Map<any, any>) {
+    const startTime = performance.now();
     const queryArr: any[] = [];
 
     for (let [key, value] of map) {
       if (value === null) {
         queryArr.push(key);
-      }
+      } else this.totalHits++;
     }
     console.log('logging queryArr: ', queryArr);
 
@@ -167,30 +189,23 @@ data[type][fieldName] = fieldVal
         fields += queryArr[i].field + ', ';
       }
     }
-    //iterate through queryArr
-    /* 
-    query {
-      people (id: x) {
-        field1
-        field2
-      }
-      planet(id: y){
-        field1
-        field2
-      }
-    } 
-    */
+
     let query = `query {  ${type} (${arg}) { ${fields}} }`;
     console.log(query);
+    const endTime = performance.now();
+    console.log('buildSubGraphQLQuery time: ', endTime - startTime);
     return query;
   }
 
   async isCacheEmpty() {
+    const startTime = performance.now();
     // invoke redisdb.DBSIZE to check whether cache is empty
     // return true if empty, false if not
     const dbSize = await this.redisdb.DBSIZE();
     console.log('in isCacheEmpty');
     console.log(dbSize);
+    const endTime = performance.now();
+    console.log('isCacheEmpty time: ', endTime - startTime);
     if (dbSize === 0) {
       return true;
     } else {
@@ -199,6 +214,7 @@ data[type][fieldName] = fieldVal
   }
 
   async queryToDB(query: string) {
+    const startTime = performance.now();
     console.log('logging query argument ', JSON.stringify(query));
     const bodyObj = { query: query };
     // make request to server (/api/query) with entire query string
@@ -215,7 +231,8 @@ data[type][fieldName] = fieldVal
 
     // const response from db = server responds with query response using data from db
     console.log('logging dbresponse', dbRes);
-
+    const endTime = performance.now();
+    console.log('query to DB time: ', endTime - startTime);
     // return response from db
     return dbRes;
   }
@@ -224,15 +241,56 @@ data[type][fieldName] = fieldVal
 //get from database -> request to route api/query sending query string in body
 //store key value pair on cache -> redis.set('key'), 'value'
 
-  splitResponse(map, response) {
-    for(const [key, value] of Object.entries(response)) {
-      
-    }
-  }
-
+  
 
   get / check redis method
    */
+
+  splitResponse(map: Map<any, any>, response: any) {
+    const startTime = performance.now();
+    let index = 0;
+    let mapIterator = map.keys();
+    const refObj: any = {};
+    for (const key of mapIterator) {
+      refObj[key.field] = key;
+    }
+    for (const [_name, fields] of Object.entries(response)) {
+      const anyFields: any = fields;
+      for (const [field, fieldVal] of Object.entries(anyFields)) {
+        map.set(refObj[field], fieldVal);
+        this.redisdb.set(JSON.stringify(refObj[field]), fieldVal);
+      }
+      index++;
+    }
+    const endTime = performance.now();
+    console.log('splitResponse time: ', endTime - startTime);
+  }
+
+  isResponseReady(map: Map<any, any>) {
+    for (let [key, _value] of map) {
+      if (map.get(key) === null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  maptoGQLResponse(map: Map<any, any>) {
+    const startTime = performance.now();
+    let type,
+      fields = '';
+    for (let [key, value] of map) {
+      fields += key.field + ': ' + value + ', ';
+      type = key.type;
+    }
+    // {"data":{"people":{"name":"Luke Skywalker","mass":77,"eye_color":"blue"}}}
+    const response = `{ data: {  ${type}:  { ${fields}} } }`;
+    // console.log(response);
+    const endTime = performance.now();
+    console.log('maptoGQLResponse time: ', endTime - startTime);
+    return response;
+  }
+
   async checkRedis(key: any) {
     if (this.redisdb.get(key) !== null) {
       //return response
