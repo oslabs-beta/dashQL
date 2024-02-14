@@ -16,8 +16,7 @@ export default function BarChart({ chartData }) {
         borderColor: "black",
         borderWidth: 1,
         maxBarThickness: 70,
-        hoverBorderColor: 'red',
-        hoverBackgroundColor: 'green'
+        hoverBackgroundColor: "lightgreen",
       },
       {
         label: "Miss Percentage",
@@ -26,11 +25,9 @@ export default function BarChart({ chartData }) {
         borderColor: "black",
         borderWidth: 1,
         maxBarThickness: 70,
-        hoverBorderColor: 'green',
-        hoverBackgroundColor: 'red'
+        hoverBackgroundColor: "#FF7F7F",
       },
     ],
-    
   };
 
   return (
@@ -46,30 +43,31 @@ export default function BarChart({ chartData }) {
             },
             tooltip: {
               callbacks: {
-                  label: function(context) {
-                      let label = context.dataset.label || '';
-                      if (context.parsed.y !== null) {
-                          label += ' ' +context.parsed.y + '%';
-                      }
-                      return label;
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (context.parsed.y !== null) {
+                    label += ": " + context.parsed.y + "%";
                   }
-              }
-            }
+                  return label;
+                },
+              },
+            },
           },
           scales: {
             x: {
               stacked: true,
-              beginAtZero: true,
             },
             y: {
               stacked: true,
               beginAtZero: true,
+              min: 0,
+              max: 100,
               ticks: {
                 stepSize: 20,
                 callback: function (value) {
                   return value + "%";
-                }
-              }
+                },
+              },
             },
           },
         }}

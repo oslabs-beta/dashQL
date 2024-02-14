@@ -10,7 +10,7 @@ export default function ResultCard({ chartData, cacheHits }: ResultTypes) {
     <div id="cache-card">
       <h4>Result Details</h4>
       <p>
-        Response time:{" "}
+        Response Time:{" "}
         {chartData.length > 0
           ? `${Math.round(chartData[chartData.length - 1]["response_time"])} ms`
           : null}
