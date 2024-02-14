@@ -1,5 +1,6 @@
 // import { DashCache } from '../types/types';
 import { DocumentNode } from 'graphql';
+import { parse } from 'graphql/language/parser';
 
 class dashCache {
   query: DocumentNode;
@@ -59,12 +60,25 @@ data[type][fieldName] = fieldVal
     }
 
     //if cache is not empty
+    // ADD LOGIC TO DETERMINE WHETHER QUERY RESPONSE IS COMPLETE
+    // AFTER GETTING INFO FROM THE CACHE
     else {
       const splitQuery = this.splitQuery();
       //console.log('logging splitQuery:', splitQuery);
       await this.checkQueries(splitQuery);
       // we want to do some logic to determine whether this needs to be called
-      this.buildSubGraphQLQuery(splitQuery);
+      const subGQLQuery = this.buildSubGraphQLQuery(splitQuery);
+      const subQueryResponse = await this.queryToDB(subGQLQuery);
+      //console.log(subQueryResponse)
+      const responseToParse = subQueryResponse.data
+      console.log('line 74', responseToParse)
+      console.log('line 75', parse(JSON.stringify(responseToParse)))
+  
+    //const parsedSubQueryResponse = parse(JSON.stringify(subQueryResponse));
+     // const parseString = JSON.stringify(subQueryResponse)
+      //console.log('line 73', typeof parseString)
+      //console.log('sub query response', parseString);
+      //console.log('logging parsed sub query response', parsedSubQueryResponse);
     }
   }
 
@@ -104,6 +118,7 @@ data[type][fieldName] = fieldVal
   //Loop through map and check to see if in cache
 
   //TO UPDATE ANY ANY TO CREATE AN INTERFACE
+  //modifies map
   async checkQueries(map: Map<any, any>) {
     for (let [key, _value] of map) {
       //console.log('individual key', key);
@@ -165,7 +180,7 @@ data[type][fieldName] = fieldVal
       }
     } 
     */
-    let query = `query {  ${type} (${arg}) { ${fields}}`;
+    let query = `query {  ${type} (${arg}) { ${fields}} }`;
     console.log(query);
     return query;
   }
@@ -209,7 +224,11 @@ data[type][fieldName] = fieldVal
 //get from database -> request to route api/query sending query string in body
 //store key value pair on cache -> redis.set('key'), 'value'
 
-
+  splitResponse(map, response) {
+    for(const [key, value] of Object.entries(response)) {
+      
+    }
+  }
 
 
   get / check redis method
