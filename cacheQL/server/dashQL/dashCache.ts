@@ -137,7 +137,22 @@ data[type][fieldName] = fieldVal
     }
     console.log('logging queryArr: ', queryArr);
 
-    // let type: string, arg: string, fieldArr: string;
+    let type = '';
+    let arg = '';
+    let fields = '';
+    if (queryArr.length > 0) {
+      // probably wanna change this part when we add functionality
+      // for accepting multiple types
+      type += queryArr[0].type;
+      queryArr[0].args.forEach((el: any) => {
+        arg += el.name.value + ': ' + el.value.value + ', ';
+      });
+
+      for (let i = 0; i < queryArr.length; i++) {
+        fields += queryArr[i].field + ', ';
+      }
+    }
+    //iterate through queryArr
     /* 
     query {
       people (id: x) {
@@ -150,7 +165,9 @@ data[type][fieldName] = fieldVal
       }
     } 
     */
-    //let query = `query {  ${type} (${arg}) { ${fiel   dArr}}`;
+    let query = `query {  ${type} (${arg}) { ${fields}}`;
+    console.log(query);
+    return query;
   }
 
   async isCacheEmpty() {
