@@ -7,8 +7,10 @@ import "@fontsource-variable/source-code-pro";
 import BarChart from "./Demo_Components/BarChart";
 import PieChart from "./Demo_Components/PieChart";
 import LineChart from "./Demo_Components/LineChart";
+import ResultCard from "./Demo_Components/ResultCard";
 import clearCache from "../api/clearCache";
 
+// for which api part is selected by user (people, planets etc)
 type Fields = {
   name: string;
   mass?: string;
@@ -17,6 +19,7 @@ type Fields = {
   eye_color?: string;
 };
 
+// people fields
 const defaultFields: Fields = {
   name: "",
   mass: "",
@@ -24,6 +27,7 @@ const defaultFields: Fields = {
   hair_color: "",
 };
 
+// planet fields
 const defaultPlanet: Fields = {
   name: "",
   population: 0,
@@ -41,9 +45,9 @@ export default function Demo() {
   const [checkbox2, updateCheckbox2] = useState(false);
   const [checkbox3, updateCheckbox3] = useState(false);
   const [checkbox4, updateCheckbox4] = useState(false);
-  // for if idBox is checked, this updates current id selected
+  //  if idBox is checked, this updates current id selected
   const [selectedId, setSelectedId] = useState("1");
-  // data recieved from backend, queryData is used to display results, and displayResults is a boolean to determine if they should be displayed or not based on if user is changing fields
+  // data recieved from backend, queryData is data used when displaying results, and displayResults is a boolean to determine if they should be displayed or not based on if user is changing fields
   const [queryData, setQueryData] = useState({});
   const [displayResults, setDisplayResults] = useState(false);
   // chartData and cacheHits are the data stored from backend for the charts
@@ -156,28 +160,7 @@ export default function Demo() {
             <LineChart chartData={chartData} />
           </div>
           <div id="cache-stats">
-            <div id="cache-card">
-              <h4>Result Details</h4>
-              <p>
-                Response time:{" "}
-                {chartData.length > 0
-                  ? `${Math.round(
-                      chartData[chartData.length - 1]["response_time"]
-                    )} ms`
-                  : null}
-              </p>
-              <p>Cache Hits: {chartData.length > 0 ? cacheHits : null}</p>
-              <p>
-                Cache Misses:{" "}
-                {chartData.length > 0 ? chartData.length - cacheHits : null}
-              </p>
-              <p>
-                Hit Rate:{" "}
-                {chartData.length > 0
-                  ? `${Math.round((cacheHits / chartData.length) * 100)}%`
-                  : null}
-              </p>
-            </div>
+            <ResultCard chartData={chartData} cacheHits={cacheHits} />
           </div>
         </div>
         <div id="right-stats">
@@ -189,8 +172,8 @@ export default function Demo() {
           </div>
         </div>
       </section>
-      <section className="input">
-        <div id="countriesAPI">
+      <section className="input-container">
+        <div id="query-fields">
           <h1>Star Wars API</h1>
           <p>Select the fields to query:</p>
           <select
@@ -214,7 +197,7 @@ export default function Demo() {
               // only show id dropdown if id box is checked
               // can have a way to populate this field with more id's based on query selection
               <select
-                name="select"
+                name="id selection"
                 value={selectedId}
                 onChange={(e) => changeId(e)}
               >
@@ -242,7 +225,6 @@ export default function Demo() {
             />
             {keys[1]}
           </label>
-
           <label>
             <input
               type="checkbox"

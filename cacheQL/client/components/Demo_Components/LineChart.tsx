@@ -21,7 +21,7 @@ export default function LineChart({ chartData }) {
   // const hitRate = Math.floor((count / totalCache) * 100);
   
   const lineData = {
-    labels: chartData.map((data) => chartData.length !==1 ? `Run ${data.id}` : ''),
+    labels: chartData.map((data) => chartData.length !==0 ? `Run ${data.id}` : ''),
     datasets: [
       {
         label: "Cached Response Time",
