@@ -1,4 +1,4 @@
-import {React, useState} from "react";
+import {React} from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale, ArcElement } from "chart.js";
 Chart.register(ArcElement);

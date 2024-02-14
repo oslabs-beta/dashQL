@@ -1,7 +1,3 @@
-interface Querystr {
-  query: string;
-}
-
 export default async function clearCache() {
   console.log("clearing cache");
 

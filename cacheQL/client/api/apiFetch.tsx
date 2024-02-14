@@ -6,10 +6,9 @@ interface QueryResponse {
   res: any,
   time: number,
   cacheHit: boolean,
-
 }
 
-export default async function getData(finalQuery: Querystr): Promise<any> {
+export default async function getData(finalQuery: Querystr): Promise<QueryResponse> {
   console.log("------in fetch---------");
 
   const request:any = new Request("http://localhost:5001/dashQL", {

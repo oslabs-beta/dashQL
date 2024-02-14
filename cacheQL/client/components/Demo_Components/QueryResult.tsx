@@ -13,7 +13,6 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   const res = JSON.parse(data.res)
   console.log('IN QUERY RESULT-----','data is', data)
 
-  
   // define what which properties will be displayed (ex: name, mass). These are used for being able to create the query code format to display
   const firstBox:string | null = checkbox1 ? `${keys[0]}` : null;
   const secondBox: string | null = checkbox2 ? `${keys[1]}` : null;
