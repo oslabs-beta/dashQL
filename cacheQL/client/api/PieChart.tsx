@@ -11,14 +11,14 @@ export default function PieChart({chartData, cacheHits}){
   const hitPercentage = cacheHits !== 0 ? cacheHits/chartData.length * 100 : 0
   const pieData = {
     // labels: Data.map((data) => data.id), 
-    labels: ['Cache Hits', 'Cache Misses'],
+    labels: ['Hit', 'Miss'],
     datasets: [
       {
         label: "Cache Hit Rate ",
         data: [hitPercentage, 100 - hitPercentage ],
         backgroundColor: [
-          "#CBC3E3",
-          "#D3D3D3",
+          "#4682B4",
+          "#c0c0c0 ",
           // "rgba(75,192,192,1)",
           // "#ecf0f1",
         ], 
@@ -27,20 +27,30 @@ export default function PieChart({chartData, cacheHits}){
         borderColor: "black",
         aspectRatio: 0, 
         borderWidth: 1,
-        // boxWidth: -10, 
-        
       }
     ]
   };
 
+
+
+
+  
   return (
     <div className="chart-contrainer">
       {/* <h2 style={{ textAlign: "center" }}>Hit/Miss Rate Chart</h2> */}
       <Pie width={"200px"} height={"200px"} 
         data={pieData}
         options={{
-          responsive: true, 
-          maintainAspectRatio: false, 
+          plugins: {
+            title: {
+              display: true, 
+              text: "Cache Hit/Miss Rate Chart"
+            },
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+          }
         }}
       />
     </div>
