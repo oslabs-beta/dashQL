@@ -53,6 +53,7 @@ export default function Demo() {
   // chartData and cacheHits are the data stored from backend for the charts
   const [chartData, setChartData] = useState([]);
   const [cacheHits, setCacheHits] = useState(0);
+  const [hitPercentage, setHitPercentage] = useState(0)
   const [newPage, setNewPage] = useState(true);
   
   if (newPage){
@@ -95,7 +96,7 @@ export default function Demo() {
       hitPercentage: chartData.length===0 ? 0 : result.hitPercentage * 100,
       missPercentage: chartData.length===0 ? 100 : result.missPercentage * 100,
     };
-
+    setHitPercentage(hitPercentage + result.hitPercentage)
     setChartData([...chartData, newData]);
   }
 
@@ -181,7 +182,7 @@ export default function Demo() {
             <BarChart chartData={chartData} />
           </div>
           <div id="pie-chart">
-            <PieChart chartData={chartData} cacheHits={cacheHits} />
+            <PieChart chartData={chartData} cacheHits={cacheHits} hitPercentage={hitPercentage} />
           </div>
         </div>
       </section>
