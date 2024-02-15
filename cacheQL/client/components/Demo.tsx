@@ -144,6 +144,10 @@ export default function Demo() {
 
   function changeId(event: any) {
     // invokes when user changes id value
+    updateCheckbox1(false);
+    updateCheckbox2(false);
+    updateCheckbox3(false);
+    updateCheckbox4(false)
     setSelectedId(event.target.value);
   }
 
