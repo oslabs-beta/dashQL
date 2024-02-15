@@ -53,6 +53,7 @@ export default function Demo() {
   // chartData and cacheHits are the data stored from backend for the charts
   const [chartData, setChartData] = useState([]);
   const [cacheHits, setCacheHits] = useState(0);
+  const [hitPercentage, setHitPercentage] = useState(0)
   const [newPage, setNewPage] = useState(true);
   
   if (newPage){
@@ -72,17 +73,17 @@ export default function Demo() {
     const result = await getData({ query: queryString });
     // get data from backend, update
     setQueryData(result);
-    addData(result.time);
+    addData(result);
     result.cacheHit ? setCacheHits(cacheHits + 1) : null;
-    // setResultId(selectedId);
     setDisplayResults(true);
   }
 
-  function addData(result: number) {
+  function addData(result: any) {
     // this function adds data to chartData after each query is ran
     const len: number = chartData.length + 1;
     type Data = {
       id: number
+      cacheHit: boolean
       response_time: number
       hitPercentage: number
       missPercentage:number
@@ -90,11 +91,12 @@ export default function Demo() {
 
     const newData: Data = {
       id: len,
-      response_time: result,
-      hitPercentage: 75,
-      missPercentage: 25
+      cacheHit: result.cacheHit,
+      response_time: result.time,
+      hitPercentage: chartData.length===0 ? 0 : result.hitPercentage * 100,
+      missPercentage: chartData.length===0 ? 100 : result.missPercentage * 100,
     };
-
+    setHitPercentage(hitPercentage + result.hitPercentage)
     setChartData([...chartData, newData]);
   }
 
@@ -180,7 +182,7 @@ export default function Demo() {
             <BarChart chartData={chartData} />
           </div>
           <div id="pie-chart">
-            <PieChart chartData={chartData} cacheHits={cacheHits} />
+            <PieChart chartData={chartData} cacheHits={cacheHits} hitPercentage={hitPercentage} />
           </div>
         </div>
       </section>

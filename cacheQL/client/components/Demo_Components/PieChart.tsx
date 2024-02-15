@@ -5,16 +5,16 @@ Chart.register(ArcElement);
 Chart.register(...registerables);
 Chart.register(CategoryScale);
 
-export default function PieChart({ chartData, cacheHits }) {
-  const hitPercentage =
-    cacheHits !== 0 ? (cacheHits / chartData.length) * 100 : 0;
+export default function PieChart({ chartData, cacheHits, hitPercentage }) {
+  const currentPercentage =
+    cacheHits !== 0 ? (hitPercentage / chartData.length) * 100 : 0;
   const pieData = {
     // labels: Data.map((data) => data.id),
     labels: ["Hits", "Misses"],
     datasets: [
       {
         label: "Cache Hit Rate",
-        data: [hitPercentage, 100 - hitPercentage],
+        data: [currentPercentage, 100 - currentPercentage],
         backgroundColor: ["#4682B4", "#c0c0c0 "],
         hoverBackgroundColor: ["lightgreen", "#FF7F7F"],
         hoverOffset: 4,

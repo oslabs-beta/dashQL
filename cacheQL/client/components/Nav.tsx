@@ -33,51 +33,6 @@ export default function Nav() {
             display: "flex",
           }}
         >
-          {/* <Toolbar
-            sx={{
-              alignItems: "center",
-              justifyContent: "start",
-              marginRight: "200px",
-            }}
-          >
-<<<<<<< HEAD
-            <div>
-            <h1 className="nav-title"><strong>dashQL</strong></h1>
-            </div>
-            <Button href="/" color="inherit">
-              About
-            </Button>
-            <Button href="/demo" color="inherit" >
-            Demo
-            </Button>
-            <Button href="/docs" color="inherit" >
-            Docs
-            </Button>
-            <Avatar
-              alt="Example Alt"
-              src={logo}
-              sx={{ width: "25px", height: "auto", marginLeft: "10px" , marginBottom: "1px"}}
-            />
-          </Toolbar>
-        </AppBar>
-      </Box>
-    </ThemeProvider>
-=======
-            <Link href="/about">
-              <Avatar
-                alt="Example Alt"
-                src={dashQL_Logo}
-                sx={{
-                  width: "130px",
-                  marginTop: "10px",
-                  alignItems: "center",
-                  justifyContent: "end",
-                  // marginLeft: "100px",
-                }}
-              />
-            </Link>
-          </Toolbar> */}
-
           <AppBar
             position="static"
             sx={{
@@ -129,7 +84,6 @@ export default function Nav() {
           </AppBar>
         </Box>
       </ThemeProvider>
->>>>>>> 45c186f8eed79089ec6a777965ef44969461e8a9
     </div>
   );
 }

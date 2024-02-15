@@ -150,6 +150,7 @@ data[type][fieldName] = fieldVal
       let stringifyKey: string = JSON.stringify(key);
       let cacheResponse = await this.checkRedis(stringifyKey);
       if (cacheResponse !== null) {
+        this.totalHits++;
         //return response
         //console.log('line 115', value);
         // console.log('array key?', key);
@@ -170,7 +171,7 @@ data[type][fieldName] = fieldVal
     for (let [key, value] of map) {
       if (value === null) {
         queryArr.push(key);
-      } else this.totalHits++;
+      }
     }
     console.log('logging queryArr: ', queryArr);
 
@@ -277,20 +278,26 @@ data[type][fieldName] = fieldVal
 
   maptoGQLResponse(map: Map<any, any>) {
     const startTime = performance.now();
-    let type,
-      fields = '';
+    const responseObj: any = { data: {} };
+    const type: string = map.keys().next().value.type;
+    responseObj.data[type] = {};
+
     for (let [key, value] of map) {
-      fields += key.field + ': ' + value + ', ';
-      type = key.type;
+      responseObj.data[type][key.field] = value;
     }
+    // let type,
+    //   fields = '';
+    // for (let [key, value] of map) {
+    //   fields += key.field + ': ' + value + ', ';
+    //   type = key.type;
+    // }
     // {"data":{"people":{"name":"Luke Skywalker","mass":77,"eye_color":"blue"}}}
-    const response = `{ data: {  ${type}:  { ${fields}} } }`;
-    // console.log(response);
+    // const response = `{ data: {  ${type}:  { ${fields}} } }`;
+    console.log(responseObj);
     const endTime = performance.now();
     console.log('maptoGQLResponse time: ', endTime - startTime);
-    return response;
+    return responseObj;
   }
-
   async checkRedis(key: any) {
     if (this.redisdb.get(key) !== null) {
       //return response
