@@ -36,7 +36,7 @@ async function queryHandler(req: any, res: any, next: any) {
     const cacheResponse = await redisdb.get(queryString);
     console.log('cache response', cacheResponse);
     res.locals.res = cacheResponse;
-    res.locals.cacheHit = true;
+
     hitPercentage = 1;
   } else {
     const dashCaches = new dash(parsedQuery, redisdb); //-> consider also passing response
@@ -47,7 +47,7 @@ async function queryHandler(req: any, res: any, next: any) {
   }
   res.locals.hitPercentage = hitPercentage;
   res.locals.missPercentage = 1 - hitPercentage;
-
+  res.locals.cacheHit = hitPercentage === 1;
   console.log('res.locals', res.locals.res);
   //end time
   const endTime = performance.now();
