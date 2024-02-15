@@ -10,7 +10,7 @@ export default function PieChart({ chartData, cacheHits, hitPercentage }) {
     cacheHits !== 0 ? (hitPercentage / chartData.length) * 100 : 0;
   const pieData = {
     // labels: Data.map((data) => data.id),
-    labels: ["Hits", "Misses"],
+    labels: ["Hit %", "Miss %"],
     datasets: [
       {
         label: "Cache Hit Rate",
@@ -43,7 +43,7 @@ export default function PieChart({ chartData, cacheHits, hitPercentage }) {
           plugins: {
             title: {
               display: true,
-              text: "Cache Hit/Miss Rate Chart",
+              text: "Total Hit vs. Miss %",
             },
             legend: {
               display: true,

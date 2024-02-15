@@ -93,8 +93,8 @@ export default function Demo() {
       id: len,
       cacheHit: result.cacheHit,
       response_time: result.time,
-      hitPercentage: chartData.length===0 ? 0 : result.hitPercentage * 100,
-      missPercentage: chartData.length===0 ? 100 : result.missPercentage * 100,
+      hitPercentage: result.hitPercentage * 100,
+      missPercentage: result.missPercentage * 100,
     };
     setHitPercentage(hitPercentage + result.hitPercentage)
     setChartData([...chartData, newData]);
