@@ -7,7 +7,7 @@ Chart.register(CategoryScale);
 
 type ResultTypes = {
   chartData: any;
-  cacheHits: number;
+  cacheHits?: number;
   hitsWithTotal: number[];
 };
 

@@ -2,11 +2,11 @@ import {React} from "react";
 
 type ResultTypes = {
   chartData: any,
-  hitPercentage: number
+  hitPercentage?: number
   hitsWithTotal: number[];
 };
 
-export default function ResultCard({ chartData, hitPercentage, hitsWithTotal }: ResultTypes) {
+export default function ResultCard({ chartData, hitsWithTotal }: ResultTypes) {
   return (
     <div id="cache-card">
       <h4>Result Details</h4>
