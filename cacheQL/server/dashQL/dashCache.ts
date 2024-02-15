@@ -18,57 +18,30 @@ class dashCache {
     this.mapLength = 0;
   }
 
-  /*
 
-  Tuesday to do:
-  1. breakup query string - loop through parsed query
-  2. add individual queries to cache
-  3. assume second query is subset of first
-  4. breakup query string
-
-
-    const type = parsedQuery.definitions[0].selectionSet.selections[0].name.value
-
-              
-  // MAP
-    {
-      {
-      "People" : {
-        fields: mass
-        _id: 1
-      }"} : "77"
-      "mass _id: 1": "77" || null
-    }  
-  5. query for individual fields - if not in cache add
-  6. build response
-
-
-
-data[type][fieldName] = fieldVal
-*/
-  async cacheHandler(rawQuery: string) {
+  async cacheHandler(_rawQuery: string) {
     // invoke isCacheEmpty
-    const cacheEmpty = await this.isCacheEmpty();
+    //const cacheEmpty = await this.isCacheEmpty();
     // if cache is empty:
     //TO BE UPDATED ONCE QUERY IS BROKEN DOWN INTO SMALLER PIECES
-    if (cacheEmpty /*|| !cacheEmpty */) {
-      //  invoke queryToDB(raw query)
+    // if (cacheEmpty /*|| !cacheEmpty */) {
+    //   //  invoke queryToDB(raw query)
 
-      const responseFromDB = await this.queryToDB(rawQuery);
-      //  set key/value pair in cache with query string and query response
-      console.log('logging typeof response', typeof responseFromDB);
-      this.redisdb.set(
-        JSON.stringify(rawQuery),
-        JSON.stringify(responseFromDB)
-      );
-      //  return out of function with response from server
-      return responseFromDB;
-    }
+    //   const responseFromDB = await this.queryToDB(rawQuery);
+    //   //  set key/value pair in cache with query string and query response
+    //   console.log('logging typeof response', typeof responseFromDB);
+    //   this.redisdb.set(
+    //     JSON.stringify(rawQuery),
+    //     JSON.stringify(responseFromDB)
+    //   );
+    //   //  return out of function with response from server
+    //   return responseFromDB;
+    // }
 
     //if cache is not empty
     // ADD LOGIC TO DETERMINE WHETHER QUERY RESPONSE IS COMPLETE
     // AFTER GETTING INFO FROM THE CACHE
-    else {
+    //else {
       const splitQuery = this.splitQuery();
       //console.log('logging splitQuery:', splitQuery);
       //populate map with keys
@@ -97,7 +70,7 @@ data[type][fieldName] = fieldVal
         //console.log('line 73', typeof parseString)
         //console.log('sub query response', parseString);
         //console.log('logging parsed sub query response', parsedSubQueryResponse);
-      }
+      //}
     }
   }
 
