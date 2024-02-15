@@ -22,6 +22,7 @@ export default async function getData(finalQuery: Querystr): Promise<QueryRespon
       return res.json();
     })
     .then((data) => {
+      console.log('got data', data)
       return data;
     })
     .catch((error) => {
