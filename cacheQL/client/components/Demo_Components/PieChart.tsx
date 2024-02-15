@@ -5,9 +5,15 @@ Chart.register(ArcElement);
 Chart.register(...registerables);
 Chart.register(CategoryScale);
 
-export default function PieChart({ chartData, cacheHits, hitPercentage }) {
+type ResultTypes = {
+  chartData: any;
+  cacheHits: number;
+  hitsWithTotal: number[];
+};
+
+export default function PieChart({ chartData, hitsWithTotal }: ResultTypes) {
   const currentPercentage =
-    cacheHits !== 0 ? (hitPercentage / chartData.length) * 100 : 0;
+    chartData.length !== 0 ? (hitsWithTotal[0] / hitsWithTotal[1]) * 100 : 0;
   const pieData = {
     // labels: Data.map((data) => data.id),
     labels: ["Hit %", "Miss %"],
@@ -29,7 +35,7 @@ export default function PieChart({ chartData, cacheHits, hitPercentage }) {
   Chart.defaults.plugins.tooltip.callbacks.label = function (context) {
     const total = context.dataset.data.reduce((x, y) => x + y, 0);
     const currentValue = context.parsed;
-    const percentage = ((currentValue / total) * 100).toFixed(0);
+    const percentage = ((currentValue / total) * 100).toFixed(1);
     return `${percentage}%`;
   };
   return (
@@ -43,7 +49,7 @@ export default function PieChart({ chartData, cacheHits, hitPercentage }) {
           plugins: {
             title: {
               display: true,
-              text: "Total Hit vs. Miss %",
+              text: "Aggregated Field Hit vs. Miss %",
             },
             legend: {
               display: true,
