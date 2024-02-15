@@ -30,7 +30,9 @@ async function queryHandler(req: any, res: any, next: any) {
   const exists = await redisdb.exists(queryString);
 
   let hitPercentage: number;
-
+  let totalHits: number
+  let mapLength: number
+  
   //check if string key in is redis.
   if (exists >= 1) {
     const cacheResponse = await redisdb.get(queryString);
@@ -38,16 +40,23 @@ async function queryHandler(req: any, res: any, next: any) {
     res.locals.res = cacheResponse;
 
     hitPercentage = 1;
+    totalHits = 0
+    mapLength = 0
   } else {
     const dashCaches = new dash(parsedQuery, redisdb); //-> consider also passing response
     const responseFromdashCache = await dashCaches.cacheHandler(query);
     console.log(responseFromdashCache);
     res.locals.res = JSON.stringify(responseFromdashCache);
     hitPercentage = dashCaches.totalHits / dashCaches.mapLength;
+    totalHits = dashCaches.totalHits
+    mapLength = dashCaches.mapLength
   }
   res.locals.hitPercentage = hitPercentage;
   res.locals.missPercentage = 1 - hitPercentage;
   res.locals.cacheHit = hitPercentage === 1;
+  res.locals.totalHits = totalHits
+  res.locals.totalQueries = mapLength
+  
   console.log('res.locals', res.locals.res);
   //end time
   const endTime = performance.now();
