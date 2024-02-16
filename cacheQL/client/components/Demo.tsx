@@ -53,13 +53,13 @@ export default function Demo() {
   // chartData and cacheHits are the data stored from backend for the charts
   const [chartData, setChartData] = useState([]);
   const [cacheHits, setCacheHits] = useState(0);
+  const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
   const [newPage, setNewPage] = useState(true);
-  
-  if (newPage){
-    setNewPage(false)
-    clearCache()
+
+  if (newPage) {
+    setNewPage(false);
+    clearCache();
   }
-  
 
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
@@ -72,29 +72,33 @@ export default function Demo() {
     const result = await getData({ query: queryString });
     // get data from backend, update
     setQueryData(result);
-    addData(result.time);
+    addData(result);
     result.cacheHit ? setCacheHits(cacheHits + 1) : null;
-    // setResultId(selectedId);
     setDisplayResults(true);
   }
 
-  function addData(result: number) {
+  function addData(result: any) {
     // this function adds data to chartData after each query is ran
     const len: number = chartData.length + 1;
     type Data = {
-      id: number
-      response_time: number
-      hitPercentage: number
-      missPercentage:number
+      id: number;
+      cacheHit: boolean;
+      response_time: number;
+      hitPercentage: number;
+      missPercentage: number;
     };
 
     const newData: Data = {
       id: len,
-      response_time: result,
-      hitPercentage: 75,
-      missPercentage: 25
+      cacheHit: result.cacheHit,
+      response_time: result.time,
+      hitPercentage: result.hitPercentage * 100,
+      missPercentage: result.missPercentage * 100
     };
-
+    setHitsWithTotal([
+      hitsWithTotal[0] + result.totalHits,
+      hitsWithTotal[1] + result.totalQueries,
+    ]);
     setChartData([...chartData, newData]);
   }
 
@@ -140,6 +144,10 @@ export default function Demo() {
 
   function changeId(event: any) {
     // invokes when user changes id value
+    updateCheckbox1(false);
+    updateCheckbox2(false);
+    updateCheckbox3(false);
+    updateCheckbox4(false)
     setSelectedId(event.target.value);
   }
 
@@ -160,7 +168,7 @@ export default function Demo() {
     setDisplayResults(false);
     setChartData([]);
     setCacheHits(0);
-    alert("Cache cleared")
+    alert("Cache cleared");
   }
 
   return (
@@ -172,7 +180,7 @@ export default function Demo() {
             <LineChart chartData={chartData} />
           </div>
           <div id="cache-stats">
-            <ResultCard chartData={chartData} cacheHits={cacheHits} />
+            <ResultCard chartData={chartData} hitsWithTotal={hitsWithTotal} />
           </div>
         </div>
         <div id="right-stats">
@@ -180,7 +188,7 @@ export default function Demo() {
             <BarChart chartData={chartData} />
           </div>
           <div id="pie-chart">
-            <PieChart chartData={chartData} cacheHits={cacheHits} />
+            <PieChart chartData={chartData} hitsWithTotal={hitsWithTotal} />
           </div>
         </div>
       </section>

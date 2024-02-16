@@ -59,7 +59,6 @@ body {
   width: 50%;
   align-items: center;
   justify-content: start;
-
   padding-right: 20px;
 }
 
@@ -76,8 +75,6 @@ body {
   width: 70%;
 }
 
-
-
 #cache-stats {
   flex: 2;
   /* width: 100%; */
@@ -86,8 +83,8 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 5px;
-  width: 40%;
-  max-width: 40%;
+  width: 45%;
+  max-width: 45%;
   max-height: 200px;
 }
 
@@ -96,11 +93,13 @@ body {
   display: flex;
   flex-direction: column;
   background-color: rgb(217, 216, 216);
-  width: 300px;
-  height: 160px;
+  width: 400px;
+  min-width: 150px;
+  height: 85%;
   border-radius: 15px;
   padding: 15px;
   border: 1px solid #162345;
+  overflow: auto
 }
 
 #cache-card h4 {
@@ -111,7 +110,7 @@ body {
 
 #cache-card p {
   margin-top: 0px;
-  font-size: 15px;
+  font-size:calc(12px + .2vw);
 }
 
 #cache-times {

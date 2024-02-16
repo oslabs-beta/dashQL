@@ -33,7 +33,6 @@ export default function Nav() {
             display: "flex",
           }}
         >
-
           <AppBar
             position="static"
             sx={{
