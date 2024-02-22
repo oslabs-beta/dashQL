@@ -17,6 +17,8 @@ type Fields = {
   population?: number;
   hair_color?: string;
   eye_color?: string;
+  terrain?: string,
+  climate?: string
 };
 
 // people fields
@@ -31,6 +33,8 @@ const defaultFields: Fields = {
 const defaultPlanet: Fields = {
   name: "",
   population: 0,
+  terrain: "",
+  climate: ""
 };
 
 export default function Demo() {
@@ -64,10 +68,11 @@ export default function Demo() {
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
 
-    if ((!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) || !idBox) {
-      alert("Please select ID (at the moment) and one other checkbox");
-      return;
-    }
+    // if ((!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) || !idBox) {
+    //   alert("Please select ID (at the moment) and one other checkbox");
+    //   return;
+    // }
+    console.log(queryString)
     // must send in object with query property due to how backend uses the request
     const result = await getData({ query: queryString });
     // get data from backend, update

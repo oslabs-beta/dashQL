@@ -7,8 +7,10 @@ const pool = new Pool({
 });
 
 module.exports = {
-  query: (text: string, params: string, callback: any) => {
+  query: async (text: string, params: string, callback: any) => {
     console.log('executed query', text);
-    return pool.query(text, params, callback);
+    
+    const test = await pool.query(text, params, callback);
+    return test
   },
 };

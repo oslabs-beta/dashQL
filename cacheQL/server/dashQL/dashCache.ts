@@ -26,6 +26,7 @@ class dashCache {
       return this.maptoGQLResponse(splitQuery);
     } else {
       const subGQLQuery = this.buildSubGraphQLQuery(splitQuery);
+      console.log('------======', subGQLQuery)
       const subQueryResponse = await this.queryToDB(subGQLQuery);
       const responseToParse = subQueryResponse.data;
       this.splitResponse(splitQuery, responseToParse);
@@ -105,7 +106,9 @@ class dashCache {
         fields += queryArr[i].field + ', ';
       }
     }
-    let query = `query {  ${type} (${arg}) { ${fields}} }`;
+    let idValue = arg ? `(${arg})` : ''
+    let query = `query {  ${type} ${idValue} { ${fields}} }`;
+    // console.log('arg-----------', arg, '/', query)
     return query;
   }
 
@@ -122,9 +125,10 @@ class dashCache {
         'Content-Type': 'application/json',
       },
     });
-    const dbRes = jsonDBRes.json();
+    const dbRes = await jsonDBRes.json();
     const endTime = performance.now();
     console.log('query to DB time: ', endTime - startTime);
+    console.log(dbRes, '------------------')
     // return response from db
     return dbRes;
   }
