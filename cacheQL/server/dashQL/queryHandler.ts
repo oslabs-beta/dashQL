@@ -9,6 +9,7 @@ async function queryHandler(req: any, res: any, next: any) {
   const queryString = JSON.stringify(query);
   //start time
   const startTime = performance.now();
+  console.log('parsed query', parsedQuery)
 
   const exists = await redisdb.exists(queryString);
 

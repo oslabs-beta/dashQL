@@ -26,8 +26,8 @@ class dashCache {
       return this.maptoGQLResponse(splitQuery);
     } else {
       const subGQLQuery = this.buildSubGraphQLQuery(splitQuery);
-      console.log('------======', subGQLQuery)
       const subQueryResponse = await this.queryToDB(subGQLQuery);
+      console.log('sub query response', subQueryResponse.data)
       const responseToParse = subQueryResponse.data;
       this.splitResponse(splitQuery, responseToParse);
       this.responseReady = this.isResponseReady(splitQuery);
@@ -47,6 +47,7 @@ class dashCache {
     const anyQuery: any = this.query;
     // array of all types
     const typesArr = anyQuery.definitions[0].selectionSet.selections;
+    console.log('typesArr', typesArr)
     //  iterate through selections arr {
     for (let i = 0; i < typesArr.length; i++) {
       const fieldsArr = typesArr[i].selectionSet.selections;
@@ -116,6 +117,7 @@ class dashCache {
     const startTime = performance.now();
     console.log('logging query argument ', JSON.stringify(query));
     const bodyObj = { query: query };
+    console.log('body obj', bodyObj)
     // make request to server (/api/query) with entire query string
     const jsonDBRes = await fetch('http://localhost:5001/api/query', {
       //to confirm using POST method
@@ -154,7 +156,9 @@ class dashCache {
   }
 
   isResponseReady(map: Map<any, any>) {
+    console.log('map', map)
     for (let [key, _value] of map) {
+      console.log(map.get(key))
       if (map.get(key) === null) {
         return false;
       }

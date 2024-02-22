@@ -10,7 +10,7 @@ import {
   Link,
 } from "@mui/material";
 import logo from "../assets/github-logo.png";
-import dashQL_Logo from "../assets/dashQL_logo.png";
+import dashQL_Logo from "../assets/dashQL_Logo.png";
 
 const theme = createTheme({
   palette: {

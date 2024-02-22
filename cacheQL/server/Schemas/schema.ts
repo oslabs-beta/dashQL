@@ -37,7 +37,7 @@ const peopleType = new GraphQLObjectType({
 });
 
 const planetType = new GraphQLObjectType({
-  name: 'Planets',
+  name: "Planets",
   //lazily defined to add a function in fields. opportunity to easily reference inside the function if there was a circular reference.
   fields: () => ({
     name: {
@@ -87,7 +87,8 @@ const RootQuery = new GraphQLObjectType({
         const idStr = args._id ? `WHERE _id=${args._id}` : ""
         const sqlQuery = `SELECT * FROM planets ${idStr}`;
         const data = await db.query(sqlQuery);
-        return data.rows.length > 1 ? data.rows : data.rows[0];
+        console.log("data rows", data.rows);
+        // return data.rows.length > 1 ? data.rows : data.rows[0];
       },
     },
   },
