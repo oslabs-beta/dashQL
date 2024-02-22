@@ -5,12 +5,18 @@ Chart.register(ArcElement);
 Chart.register(...registerables);
 Chart.register(CategoryScale);
 
-export default function PieChart({ chartData, cacheHits, hitPercentage }) {
+type ResultTypes = {
+  chartData: any;
+  cacheHits?: number;
+  hitsWithTotal: number[];
+};
+
+export default function PieChart({ chartData, hitsWithTotal }: ResultTypes) {
   const currentPercentage =
-    cacheHits !== 0 ? (hitPercentage / chartData.length) * 100 : 0;
+    chartData.length !== 0 ? (hitsWithTotal[0] / hitsWithTotal[1]) * 100 : 0;
   const pieData = {
     // labels: Data.map((data) => data.id),
-    labels: ["Hits", "Misses"],
+    labels: ["Hit %", "Miss %"],
     datasets: [
       {
         label: "Cache Hit Rate",
@@ -43,7 +49,7 @@ export default function PieChart({ chartData, cacheHits, hitPercentage }) {
           plugins: {
             title: {
               display: true,
-              text: "Cache Hit/Miss Rate Chart",
+              text: "Aggregated Field Hit vs. Miss %",
             },
             legend: {
               display: true,

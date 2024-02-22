@@ -46,7 +46,7 @@ export default function BarChart({ chartData }) {
                 label: function (context) {
                   let label = context.dataset.label || "";
                   if (context.parsed.y !== null) {
-                    label += ": " + context.parsed.y + "%";
+                    label += ": " + Math.round(context.parsed.y) + "%";
                   }
                   return label;
                 },
