@@ -3,6 +3,8 @@ import * as express from 'express';
 // const express = require('express');
 // const { Request, Response, NextFunction, RequestHandler } = require('@types/express');
 
+import { parse } from 'graphql/language/parser';
+
 import * as path from 'path';
 // const path = require('path');
 
@@ -40,6 +42,16 @@ app.use(
     }),
   })
 );
+
+app.use('/test', (req, res) => {
+  const parsedQuery: any = parse(req.body.query);
+  console.log(
+    'logging parsed query: ',
+    parsedQuery.definitions[0].selectionSet.selections[0].selectionSet
+      .selections[2]
+  );
+  return res.status(200).send('test');
+});
 
 app.use('/clearCache', (_req, res) => {
   redisTest.FLUSHDB();

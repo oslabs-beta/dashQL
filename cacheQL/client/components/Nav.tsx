@@ -1,4 +1,4 @@
-import "../App.css";
+import '../App.css';
 import {
   createTheme,
   ThemeProvider,
@@ -8,76 +8,76 @@ import {
   Box,
   AppBar,
   Link,
-} from "@mui/material";
-import logo from "../assets/github-logo.png";
-import dashQL_Logo from "../assets/dashQL_logo.png";
+} from '@mui/material';
+import logo from '../assets/github-logo.png';
+import dashQL_Logo from '../assets/dashQL_Logo.png';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#162345",
+      main: '#162345',
     },
   },
 });
 
 export default function Nav() {
   return (
-    <div className="nav">
+    <div className='nav'>
       <ThemeProvider theme={theme}>
         <Box
           sx={{
-            bgcolor: "primary.main",
+            bgcolor: 'primary.main',
             // maxWidth: '100em',
-            position: "sticky",
-            top: "0",
-            display: "flex",
+            position: 'sticky',
+            top: '0',
+            display: 'flex',
           }}
         >
           <AppBar
-            position="static"
+            position='static'
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
             }}
           >
-            <Link href="/about">
+            <Link href='/about'>
               <Avatar
-                alt="Example Alt"
+                alt='Example Alt'
                 src={dashQL_Logo}
                 sx={{
-                  width: "130px",
-                  marginTop: "15px",
-                  alignItems: "center",
-                  justifyContent: "end",
-                  marginLeft: "200px",
+                  width: '130px',
+                  marginTop: '15px',
+                  alignItems: 'center',
+                  justifyContent: 'end',
+                  marginLeft: '200px',
                 }}
               />
             </Link>
             <Toolbar
               sx={{
-                alignItems: "center",
-                justifyContent: "end",
-                marginRight: "200px",
+                alignItems: 'center',
+                justifyContent: 'end',
+                marginRight: '200px',
               }}
             >
-              <Button href="/" color="inherit">
+              <Button href='/' color='inherit'>
                 About
               </Button>
-              <Button href="/demo" color="inherit">
+              <Button href='/demo' color='inherit'>
                 Demo
               </Button>
-              <Button href="/docs" color="inherit">
+              <Button href='/docs' color='inherit'>
                 Docs
               </Button>
               <Avatar
-                alt="Example Alt"
+                alt='Example Alt'
                 src={logo}
                 sx={{
-                  width: "25px",
-                  height: "auto",
-                  marginLeft: "10px",
-                  marginBottom: "1px",
+                  width: '25px',
+                  height: 'auto',
+                  marginLeft: '10px',
+                  marginBottom: '1px',
                 }}
               />
             </Toolbar>
