@@ -51,21 +51,59 @@ class dashCache {
       const fieldsArr = typesArr[i].selectionSet.selections;
       //    iterate through fields arr
       for (let j = 0; j < fieldsArr.length; j++) {
-        //    add each field as a key to the map
+        // check whether there's a nested query
         const keyObj = {
-          //    added a "type" property so we don't have to use Object.keys later
           type: typesArr[i].name.value,
           args: typesArr[i].arguments,
-          field: fieldsArr[j].name.value,
+          field: {},
         };
-        // put keyObj in map
-        keyMap.set(keyObj, null);
+
+        this.splitNestedQuery(fieldsArr[j], keyMap, keyObj.field, keyObj);
       }
     }
     this.mapLength = keyMap.size;
+    console.log(keyMap.keys().next().value);
     return keyMap;
   }
+  splitNestedQuery(
+    nestedQueryObj: any,
+    map: any,
+    keyObjField: any,
+    keyObj: any
+  ) {
+    let fieldLevelTest = nestedQueryObj;
 
+    if (!fieldLevelTest.selectionSet) {
+      //base case return name.value
+      // keyObj['field'] = { name: fieldLevelTest.name.value };
+      keyObjField['name'] = fieldLevelTest.name.value;
+      map.set(keyObj, null);
+      return;
+    }
+    keyObjField['field'] = {};
+    // iterate through fieldLevelTest.selectionSet.selections --> fields of the selection set
+    for (let i = 0; i < fieldLevelTest.selectionSet.selections.length; i++) {
+      keyObjField['name'] = fieldLevelTest.name.value;
+      //recursively call SNQ
+      this.splitNestedQuery(
+        fieldLevelTest.selectionSet.selections[i],
+        map,
+        keyObjField['field'],
+        keyObj
+      );
+    }
+
+    /*       const keyObj = {
+        type: type.name.value,
+        args: type.arguments,
+        field: {
+          name: species
+          field: {
+            name: 
+          }
+        }
+        */
+  }
   //Loop through map and check to see if in cache
 
   //TO UPDATE ANY ANY TO CREATE AN INTERFACE
@@ -100,8 +138,12 @@ class dashCache {
       queryArr[0].args.forEach((el: any) => {
         arg += el.name.value + ': ' + el.value.value + ', ';
       });
-
+      // need to create array of all nested fields
+      // then we can iterate through that and create the fields string
       for (let i = 0; i < queryArr.length; i++) {
+        // if(queryArr[i].nestedType) {
+        //   fields += `${queryArr[i].nestedType} { }`
+        // }
         fields += queryArr[i].field + ', ';
       }
     }
