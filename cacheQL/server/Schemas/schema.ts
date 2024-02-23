@@ -1,4 +1,4 @@
-const db = require('../models/model');
+const db = require("../models/model");
 
 // const {
 //   GraphQLSchema,
@@ -13,12 +13,12 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
-  // GraphQLList,
-  // GraphQLNonNull,
-} from 'graphql';
+  GraphQLList,
+  GraphQLNonNull,
+} from "graphql";
 
-const peopleType = new GraphQLObjectType({
-  name: 'People',
+const PeopleType = new GraphQLObjectType({
+  name: "People",
   //lazily defined to add a function in fields. opportunity to easily reference inside the function if there was a circular reference.
   fields: () => ({
     name: {
@@ -36,10 +36,13 @@ const peopleType = new GraphQLObjectType({
   }),
 });
 
-const planetType = new GraphQLObjectType({
+const PlanetType = new GraphQLObjectType({
   name: "Planets",
   //lazily defined to add a function in fields. opportunity to easily reference inside the function if there was a circular reference.
   fields: () => ({
+    _id: { 
+      type: new GraphQLNonNull(GraphQLInt) 
+    },
     name: {
       type: GraphQLString,
     },
@@ -65,10 +68,10 @@ const planetType = new GraphQLObjectType({
 // });
 
 const RootQuery = new GraphQLObjectType({
-  name: 'query',
+  name: "query",
   fields: {
     people: {
-      type: peopleType,
+      type: PeopleType,
       // args: {},
       args: { _id: { type: GraphQLInt } },
       resolve: async (parent: any, args: any) => {
@@ -78,17 +81,37 @@ const RootQuery = new GraphQLObjectType({
         return data.rows[0];
       },
     },
+    peopleNoId: {
+      type: new GraphQLList(PeopleType),
+      resolve: async (parent: any, args: any) => {
+        const sqlQuery = `SELECT * FROM people`;
+        const data = await db.query(sqlQuery);
+        console.log("in non id data", data.rows);
+        console.log(parent, args);
+        return data.rows;
+      },
+    },
     planets: {
-      type: planetType,
+      type: PlanetType,
       // args: {},
       args: { _id: { type: GraphQLInt } },
       resolve: async (parent: any, args: any) => {
-        console.log(parent)
-        const idStr = args._id ? `WHERE _id=${args._id}` : ""
-        const sqlQuery = `SELECT * FROM planets ${idStr}`;
+        const sqlQuery = `SELECT * FROM planets WHERE _id=${args._id}`;
         const data = await db.query(sqlQuery);
-        console.log("data rows", data.rows);
-        // return data.rows.length > 1 ? data.rows : data.rows[0];
+        // console.log("data rows", data.rows);
+        console.log("in id data", data.rows[0]);
+        console.log(parent, args);
+        return data.rows[0];
+      },
+    },
+    planetsNoId: {
+      type: new GraphQLList(PlanetType),
+      resolve: async (parent: any, args: any) => {
+        const sqlQuery = `SELECT * FROM planets`;
+        const data = await db.query(sqlQuery);
+        console.log("in non id data", data.rows);
+        console.log(parent, args);
+        return data.rows;
       },
     },
   },
@@ -102,6 +125,7 @@ const RootQuery = new GraphQLObjectType({
 //     query: RootQuery,
 //   }),
 // };
+
 export default new GraphQLSchema({
   query: RootQuery,
 });

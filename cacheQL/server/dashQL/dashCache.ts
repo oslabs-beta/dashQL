@@ -27,9 +27,16 @@ class dashCache {
     } else {
       const subGQLQuery = this.buildSubGraphQLQuery(splitQuery);
       const subQueryResponse = await this.queryToDB(subGQLQuery);
-      console.log('sub query response', subQueryResponse.data)
+      console.log('sub query response', subQueryResponse.data, 'split query', splitQuery)
       const responseToParse = subQueryResponse.data;
-      this.splitResponse(splitQuery, responseToParse);
+      for (const key of splitQuery.keys()) {
+        if (key.args[0]){
+          this.splitResponse(splitQuery, responseToParse);
+        } else {
+          this.splitResponseArray(splitQuery, responseToParse);
+        }
+      }
+      // this.splitResponse(splitQuery, responseToParse);
       this.responseReady = this.isResponseReady(splitQuery);
       if (this.responseReady) {
         return this.maptoGQLResponse(splitQuery);
@@ -135,30 +142,66 @@ class dashCache {
     return dbRes;
   }
 
+  // split response method for when user asking for fields without specific id associated with them
+  splitResponseArray(map: Map<any, any>, response: any){
+    const startTime = performance.now();
+
+    // create variable for the response data array
+    let type:string = '';
+    for (let key in response){
+      type = key
+    }
+    const responseArr:any = response[type]
+
+    // find which fields need to be logged into cache
+    const fields:string[] = []
+    for (let key in responseArr[0]){
+      fields.push(key)
+    }
+
+    // create temp object to hold array of all fields asked for (ex: name: ['all response names'])
+    const obj:any = {}
+    for (const field of fields){
+      obj[field] = responseArr.map((curr:any) => curr[field])
+    }
+
+    // set map values to be equal to the created arrays
+    for (const [field] of map){
+      map.set(field, obj[field.field])
+      this.redisdb.set(JSON.stringify(field), JSON.stringify(obj[field.field]));
+    }
+
+    console.log('final map is', map)
+
+    // cache map into redis
+
+    const endTime = performance.now();
+    console.log('splitResponseArray time: ', endTime - startTime);
+  }
+
   splitResponse(map: Map<any, any>, response: any) {
     const startTime = performance.now();
-    let index = 0;
     let mapIterator = map.keys();
     const refObj: any = {};
     for (const key of mapIterator) {
+      console.log('key field', key, '/', key.field)
       refObj[key.field] = key;
     }
+
+    
     for (const [_name, fields] of Object.entries(response)) {
       const anyFields: any = fields;
       for (const [field, fieldVal] of Object.entries(anyFields)) {
         map.set(refObj[field], fieldVal);
         this.redisdb.set(JSON.stringify(refObj[field]), fieldVal);
       }
-      index++;
     }
     const endTime = performance.now();
     console.log('splitResponse time: ', endTime - startTime);
   }
 
   isResponseReady(map: Map<any, any>) {
-    console.log('map', map)
     for (let [key, _value] of map) {
-      console.log(map.get(key))
       if (map.get(key) === null) {
         return false;
       }

@@ -212,6 +212,7 @@ body {
   /* margin-bottom: 10px; */
   border-radius: 15px;
   white-space: pre-line;
+  overflow: auto
 }
 #response-query-container {
   display: flex;
