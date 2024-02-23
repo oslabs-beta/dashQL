@@ -36,6 +36,52 @@ const peopleType = new GraphQLObjectType({
     height: {
       type: GraphQLInt,
     },
+    species_id: {
+      type: GraphQLInt,
+    },
+    species: {
+      type: speciesType,
+      resolve: async (parent: any) => {
+        console.log(parent);
+        const sqlQuery = `SELECT * FROM species WHERE _id=${parent.species_id}`;
+        const data = await db.query(sqlQuery);
+        return data.rows[0];
+      },
+    },
+  }),
+});
+
+const planetType = new GraphQLObjectType({
+  name: 'Planets',
+  //lazily defined to add a function in fields. opportunity to easily reference inside the function if there was a circular reference.
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+    },
+    population: {
+      type: GraphQLInt,
+    },
+    terrain: {
+      type: GraphQLString,
+    },
+    climate: {
+      type: GraphQLString,
+    },
+  }),
+});
+
+const speciesType = new GraphQLObjectType({
+  name: 'Species',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+    },
+    classification: {
+      type: GraphQLString,
+    },
+    average_height: {
+      type: GraphQLString,
+    },
   }),
 });
 
@@ -60,6 +106,19 @@ const RootQuery = new GraphQLObjectType({
         const sqlQuery = `SELECT * FROM people WHERE _id=${args._id}`;
         const data = await db.query(sqlQuery);
         return data.rows[0];
+      },
+    },
+    planets: {
+      type: planetType,
+      // args: {},
+      args: { _id: { type: GraphQLInt } },
+      resolve: async (parent: any, args: any) => {
+        console.log(parent);
+        const idStr = args._id ? `WHERE _id=${args._id}` : '';
+        const sqlQuery = `SELECT * FROM planets ${idStr}`;
+        const data = await db.query(sqlQuery);
+        console.log('data rows', data.rows);
+        return data.rows.length > 1 ? data.rows : data.rows[0];
       },
     },
   },

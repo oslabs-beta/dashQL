@@ -16,7 +16,7 @@ class dashCache {
     this.mapLength = 0;
   }
 
-  async cacheHandler(_rawQuery: string) {
+  async cacheHandler() {
     const splitQuery = this.splitQuery();
     //populate map with keys
     await this.checkQueries(splitQuery);
@@ -51,21 +51,60 @@ class dashCache {
       const fieldsArr = typesArr[i].selectionSet.selections;
       //    iterate through fields arr
       for (let j = 0; j < fieldsArr.length; j++) {
-        //    add each field as a key to the map
+        // check whether there's a nested query
         const keyObj = {
-          //    added a "type" property so we don't have to use Object.keys later
           type: typesArr[i].name.value,
           args: typesArr[i].arguments,
-          field: fieldsArr[j].name.value,
+          field: {},
         };
-        // put keyObj in map
-        keyMap.set(keyObj, null);
+
+        this.splitNestedQuery(fieldsArr[j], keyMap, keyObj.field, keyObj);
       }
     }
     this.mapLength = keyMap.size;
+    //console.log('FIRST KEY OF MAP', keyMap.keys().next().value);
+    console.log('MAP ------ >>>>>', keyMap);
     return keyMap;
   }
+  splitNestedQuery(
+    nestedQueryObj: any,
+    map: any,
+    keyObjField: any,
+    keyObj: any
+  ) {
+    const fieldLevelTest = nestedQueryObj;
 
+    if (!fieldLevelTest.selectionSet) {
+      //base case return name.value
+      // keyObj['field'] = { name: fieldLevelTest.name.value };
+      keyObjField['name'] = fieldLevelTest.name.value;
+      map.set(keyObj, null);
+      return;
+    }
+    keyObjField['field'] = {};
+    // iterate through fieldLevelTest.selectionSet.selections --> fields of the selection set
+    for (let i = 0; i < fieldLevelTest.selectionSet.selections.length; i++) {
+      keyObjField['name'] = fieldLevelTest.name.value;
+      //recursively call SNQ
+      this.splitNestedQuery(
+        fieldLevelTest.selectionSet.selections[i],
+        map,
+        keyObjField['field'],
+        keyObj
+      );
+    }
+
+    /*       const keyObj = {
+        type: type.name.value,
+        args: type.arguments,
+        field: {
+          name: species
+          field: {
+            name: 
+          }
+        }
+        */
+  }
   //Loop through map and check to see if in cache
 
   //TO UPDATE ANY ANY TO CREATE AN INTERFACE
@@ -100,12 +139,33 @@ class dashCache {
       queryArr[0].args.forEach((el: any) => {
         arg += el.name.value + ': ' + el.value.value + ', ';
       });
-
+      // need to create array of all nested fields
+      // then we can iterate through that and create the fields string
       for (let i = 0; i < queryArr.length; i++) {
-        fields += queryArr[i].field + ', ';
+        let nestedCount: number = 0;
+        let currentField = queryArr[i].field;
+        while (currentField.field) {
+          fields += `${currentField.name} {`;
+
+          nestedCount++;
+          currentField = currentField.field;
+        }
+        fields += currentField.name + ', ';
+        fields += '}'.repeat(nestedCount);
       }
     }
     let query = `query {  ${type} (${arg}) { ${fields}} }`;
+
+    /*       const keyObj = {
+        type: type.name.value,
+        args: type.arguments,
+        field: {
+          name: species
+          field: {
+            name: 
+          }
+        }
+        */
     return query;
   }
 
@@ -122,28 +182,29 @@ class dashCache {
         'Content-Type': 'application/json',
       },
     });
-    const dbRes = jsonDBRes.json();
+    const dbRes = await jsonDBRes.json();
     const endTime = performance.now();
     console.log('query to DB time: ', endTime - startTime);
+    console.log(dbRes)
     // return response from db
     return dbRes;
   }
 
   splitResponse(map: Map<any, any>, response: any) {
     const startTime = performance.now();
-    let index = 0;
-    let mapIterator = map.keys();
+    const mapIterator = map.keys();
+    console.log('Map Iterator --------->', mapIterator)
     const refObj: any = {};
     for (const key of mapIterator) {
-      refObj[key.field] = key;
+      refObj[key.field.name] = key;
     }
+    console.log('logging refObj: ', refObj);
     for (const [_name, fields] of Object.entries(response)) {
-      const anyFields: any = fields;
+      let anyFields: any = fields;
       for (const [field, fieldVal] of Object.entries(anyFields)) {
         map.set(refObj[field], fieldVal);
         this.redisdb.set(JSON.stringify(refObj[field]), fieldVal);
       }
-      index++;
     }
     const endTime = performance.now();
     console.log('splitResponse time: ', endTime - startTime);
@@ -164,6 +225,7 @@ class dashCache {
     responseObj.data[type] = {};
 
     for (let [key, value] of map) {
+      // change to key.field.name to fix '[object Object]'
       responseObj.data[type][key.field] = value;
     }
     return responseObj;

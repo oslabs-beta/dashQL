@@ -27,8 +27,8 @@ async function queryHandler(req: any, res: any, next: any) {
     mapLength = 0;
   } else {
     const dashCaches = new dash(parsedQuery, redisdb);
-    const responseFromdashCache = await dashCaches.cacheHandler(query);
-    console.log(responseFromdashCache);
+    const responseFromdashCache = await dashCaches.cacheHandler();
+    console.log('response from dash cache', responseFromdashCache);
     res.locals.res = JSON.stringify(responseFromdashCache);
     hitPercentage = dashCaches.totalHits / dashCaches.mapLength;
     totalHits = dashCaches.totalHits;
