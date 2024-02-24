@@ -6,39 +6,20 @@ async function queryHandler(req: any, res: any, next: any) {
   const query = req.body.query;
   //parse query
   const parsedQuery: any = parse(query);
-  const queryString = JSON.stringify(query);
   //start time
   const startTime = performance.now();
 
-  const exists = await redisdb.exists(queryString);
+  const dashCaches = new dash(parsedQuery, redisdb);
+  const responseFromdashCache = await dashCaches.cacheHandler();
 
-  let hitPercentage: number;
-  let totalHits: number;
-  let mapLength: number;
-
-  //check if string key in is redis.
-  if (exists >= 1) {
-    const cacheResponse = await redisdb.get(queryString);
-    console.log('cache response', cacheResponse);
-    res.locals.res = cacheResponse;
-
-    hitPercentage = 1;
-    totalHits = 0;
-    mapLength = 0;
-  } else {
-    const dashCaches = new dash(parsedQuery, redisdb);
-    const responseFromdashCache = await dashCaches.cacheHandler();
-    console.log('response from dash cache', responseFromdashCache);
-    res.locals.res = JSON.stringify(responseFromdashCache);
-    hitPercentage = dashCaches.totalHits / dashCaches.mapLength;
-    totalHits = dashCaches.totalHits;
-    mapLength = dashCaches.mapLength;
-  }
+  //attached responses from dashCache to res.locals
+  const hitPercentage = dashCaches.totalHits / dashCaches.mapLength;
+  res.locals.res = JSON.stringify(responseFromdashCache);
   res.locals.hitPercentage = hitPercentage;
   res.locals.missPercentage = 1 - hitPercentage;
   res.locals.cacheHit = hitPercentage === 1;
-  res.locals.totalHits = totalHits;
-  res.locals.totalQueries = mapLength;
+  res.locals.totalHits = dashCaches.totalHits;
+  res.locals.totalQueries = dashCaches.mapLength;
 
   console.log('res.locals', res.locals.res);
   //end time
@@ -46,7 +27,6 @@ async function queryHandler(req: any, res: any, next: any) {
   const totalTime = endTime - startTime;
   console.log('logging total time', totalTime);
 
-  //res.locals - response and response time
   res.locals.time = totalTime;
 
   return next();
