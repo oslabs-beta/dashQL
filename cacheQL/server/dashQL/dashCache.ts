@@ -16,7 +16,7 @@ class dashCache {
     this.mapLength = 0;
   }
 
-  async cacheHandler(_rawQuery: string) {
+  async cacheHandler() {
     const splitQuery = this.splitQuery();
     //populate map with keys
     await this.checkQueries(splitQuery);
@@ -62,7 +62,11 @@ class dashCache {
       }
     }
     this.mapLength = keyMap.size;
-    console.log(keyMap.keys().next().value);
+    //console.log('FIRST KEY OF MAP', keyMap.keys().next().value);
+    console.log(keyMap);
+    //const mapKeys = keyMap.keys();
+    // console.log('MAP ------ >>>>>', mapKeys.next().value);
+    // console.log('MAP ------ >>>>>', mapKeys.next().value);
     return keyMap;
   }
   splitNestedQuery(
@@ -71,26 +75,41 @@ class dashCache {
     keyObjField: any,
     keyObj: any
   ) {
-    let fieldLevelTest = nestedQueryObj;
-
+    const fieldLevelTest = nestedQueryObj;
+    //const keyObjFieldCopy = Object.assign({}, keyObjField);
+    
     if (!fieldLevelTest.selectionSet) {
       //base case return name.value
       // keyObj['field'] = { name: fieldLevelTest.name.value };
       keyObjField['name'] = fieldLevelTest.name.value;
-      map.set(keyObj, null);
+      //keyObjFieldCopy['name'] = fieldLevelTest.name.value;
+      // const keyObjCopy = Object.assign({}, keyObj);
+      //console.log('key obj copy', keyObjCopy);
+
+      map.set(JSON.stringify(keyObj), null);
+      // console.log('------------LOGGING KEYOBJ: ', keyObj);
+     //console.log('MAP ------ >>>>>', map.keys().next().value);
+
       return;
     }
+
     keyObjField['field'] = {};
+    // keyObjFieldCopy['field'] = {};
     // iterate through fieldLevelTest.selectionSet.selections --> fields of the selection set
+
     for (let i = 0; i < fieldLevelTest.selectionSet.selections.length; i++) {
+      
       keyObjField['name'] = fieldLevelTest.name.value;
+      // keyObjFieldCopy['name'] = fieldLevelTest.name.value;
       //recursively call SNQ
       this.splitNestedQuery(
         fieldLevelTest.selectionSet.selections[i],
         map,
         keyObjField['field'],
+        // keyObjFieldCopy['field'],
         keyObj
       );
+      
     }
 
     /*       const keyObj = {
@@ -109,9 +128,10 @@ class dashCache {
   //TO UPDATE ANY ANY TO CREATE AN INTERFACE
   //modifies map
   async checkQueries(map: Map<any, any>) {
-    for (let [key, _value] of map) {
-      let stringifyKey: string = JSON.stringify(key);
-      let cacheResponse = await this.checkRedis(stringifyKey);
+    for (const [key, _value] of map) {
+      // let stringifyKey: string = JSON.stringify(key);
+      // let cacheResponse = await this.checkRedis(stringifyKey);
+      const cacheResponse = await this.checkRedis(key);
       if (cacheResponse !== null) {
         this.totalHits++;
         map.set(key, cacheResponse);
@@ -122,9 +142,9 @@ class dashCache {
   buildSubGraphQLQuery(map: Map<any, any>) {
     const queryArr: any[] = [];
 
-    for (let [key, value] of map) {
+    for (const [key, value] of map) {
       if (value === null) {
-        queryArr.push(key);
+        queryArr.push(JSON.parse(key));
       }
     }
 
@@ -141,13 +161,30 @@ class dashCache {
       // need to create array of all nested fields
       // then we can iterate through that and create the fields string
       for (let i = 0; i < queryArr.length; i++) {
-        // if(queryArr[i].nestedType) {
-        //   fields += `${queryArr[i].nestedType} { }`
-        // }
-        fields += queryArr[i].field + ', ';
+        let nestedCount: number = 0;
+        let currentField = queryArr[i].field;
+        while (currentField.field) {
+          fields += `${currentField.name} {`;
+
+          nestedCount++;
+          currentField = currentField.field;
+        }
+        fields += currentField.name + ', ';
+        fields += '}'.repeat(nestedCount);
       }
     }
     let query = `query {  ${type} (${arg}) { ${fields}} }`;
+
+    /*       const keyObj = {
+        type: type.name.value,
+        args: type.arguments,
+        field: {
+          name: species
+          field: {
+            name: 
+          }
+        }
+        */
     return query;
   }
 
@@ -164,28 +201,40 @@ class dashCache {
         'Content-Type': 'application/json',
       },
     });
-    const dbRes = jsonDBRes.json();
+    const dbRes = await jsonDBRes.json();
     const endTime = performance.now();
     console.log('query to DB time: ', endTime - startTime);
+    console.log(dbRes);
     // return response from db
     return dbRes;
   }
 
   splitResponse(map: Map<any, any>, response: any) {
     const startTime = performance.now();
-    let index = 0;
-    let mapIterator = map.keys();
+    const mapIterator = map.keys();
+    // console.log('Map Iterator --------->', mapIterator);
     const refObj: any = {};
     for (const key of mapIterator) {
-      refObj[key.field] = key;
+      const parsedKey = JSON.parse(key);
+      refObj[parsedKey.field.name] = parsedKey;
     }
+    // console.log('logging refObj: ', refObj);
     for (const [_name, fields] of Object.entries(response)) {
-      const anyFields: any = fields;
+      let anyFields: any = fields;
       for (const [field, fieldVal] of Object.entries(anyFields)) {
-        map.set(refObj[field], fieldVal);
+        console.log('field val --------', fieldVal)
+        let currentFieldVal = fieldVal;
+        while(typeof currentFieldVal === 'object')
+        
+        /* 
+        field val -------- Luke Skywalker
+        field val -------- { name: 'Human', classification: 'mammal' }
+        */
+        }
+       //console.log('ref object ---------', refObj[field])
+        map.set(JSON.stringify(refObj[field]), fieldVal);
         this.redisdb.set(JSON.stringify(refObj[field]), fieldVal);
       }
-      index++;
     }
     const endTime = performance.now();
     console.log('splitResponse time: ', endTime - startTime);
@@ -206,7 +255,8 @@ class dashCache {
     responseObj.data[type] = {};
 
     for (let [key, value] of map) {
-      responseObj.data[type][key.field] = value;
+      // change to key.field.name to fix '[object Object]'s
+      responseObj.data[type][key.field.name] = value;
     }
     return responseObj;
   }
