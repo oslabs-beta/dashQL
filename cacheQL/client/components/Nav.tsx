@@ -27,5 +27,6 @@ export default function Nav({ currentPage }: string) {
         </div>
       </div>
     </nav>
+
   );
 }
