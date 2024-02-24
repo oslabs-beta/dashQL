@@ -1,18 +1,32 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import path from 'path';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-   proxy: {
-    '/api': {
-      target: 'http://localhost:5001',
-      changeOrigin: true,
-      secure: false,
-    }
-   } 
-  }
-})
-
-//  // "type": "module",
+    proxy: {
+      '/dashQL': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/query': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+    port: 5173,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './__tests__/setup.ts',
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './client'),
+    },
+  },
+});

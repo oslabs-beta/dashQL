@@ -7,7 +7,7 @@ export default function Nav({ currentPage }: string) {
     <nav>
       <div id="left-nav">
         <a href="/">
-          <img src={dashQL_Logo} />
+          <img src={dashQL_Logo} alt="dashQL logo"/>
         </a>
       </div>
       <div id="right-nav">
@@ -21,8 +21,8 @@ export default function Nav({ currentPage }: string) {
           Docs
         </a>
         <div>
-          <a href="https://github.com/orgs/oslabs-beta/teams/dashql">
-            <img id="githubLogo" src={logo} />
+          <a href="https://github.com/orgs/oslabs-beta/teams/dashql" target="_blank" >
+            <img id="githubLogo" src={logo} alt="github logo"/>
           </a>
         </div>
       </div>
