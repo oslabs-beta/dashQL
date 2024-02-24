@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import logo from "../assets/github-logo.png";
 import dashQL_Logo from "../assets/dashQL_Logo.png";
+import { useState } from "react";
 
 const theme = createTheme({
   palette: {
@@ -20,14 +21,31 @@ const theme = createTheme({
   },
 });
 
-export default function Nav() {
+
+
+export default function Nav(currentPage:string) {
+  console.log('in nav', currentPage.currentPage)
+
+  
+  
   return (
-    <div className="nav">
-      <ThemeProvider theme={theme}>
-        <Box
+    <nav>
+      <div id="left-nav">
+        <a href="/"><img src={dashQL_Logo}/></a>
+      </div>
+      <div id="right-nav">
+        <a href="/" id={currentPage.currentPage == "Home" ? "pageStyle" : ""}>Home</a>
+        <a href="/demo" id={currentPage.currentPage == "Demo" ? "pageStyle" : ""}>Demo</a>
+        <a href="/docs" id={currentPage.currentPage == "Docs" ? "pageStyle" : ""}>Docs</a>
+      </div>
+    </nav>
+
+    /* // material ui nav
+    // <div className="nav">
+    //   <ThemeProvider theme={theme}>
+    //     <Box
           sx={{
             bgcolor: "primary.main",
-            // maxWidth: '100em',
             position: "sticky",
             top: "0",
             display: "flex",
@@ -84,6 +102,6 @@ export default function Nav() {
           </AppBar>
         </Box>
       </ThemeProvider>
-    </div>
+    </div> */
   );
 }

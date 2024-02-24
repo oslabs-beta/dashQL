@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useLayoutEffect } from "react";
 import "../App.css";
 import getData from "../api/apiFetch";
 import QueryResult from "./Demo_Components/QueryResult";
@@ -37,7 +37,11 @@ const defaultPlanet: Fields = {
   climate: ""
 };
 
-export default function Demo() {
+interface dataFormProps{
+  changePage: ()=>void
+}
+
+export default function Demo({changePage}:dataFormProps) {
   // updates queryString and currentField (the default fields for what to display)
   const [queryString, setQueryString] = useState("");
   const [currentFields, setField] = useState(defaultFields);
@@ -59,6 +63,9 @@ export default function Demo() {
   const [cacheHits, setCacheHits] = useState(0);
   const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
   const [newPage, setNewPage] = useState(true);
+  useLayoutEffect(()=> {
+    changePage("Demo")
+  })
 
   if (newPage) {
     setNewPage(false);

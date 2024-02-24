@@ -29,13 +29,8 @@ class dashCache {
       const subQueryResponse = await this.queryToDB(subGQLQuery);
       console.log('sub query response', subQueryResponse.data, 'split query', splitQuery)
       const responseToParse = subQueryResponse.data;
-      for (const key of splitQuery.keys()) {
-        if (key.args[0]){
-          this.splitResponse(splitQuery, responseToParse);
-        } else {
-          this.splitResponseArray(splitQuery, responseToParse);
-        }
-      }
+      splitQuery.keys().next().value.args[0] ? this.splitResponse(splitQuery, responseToParse) : this.splitResponseArray(splitQuery, responseToParse);
+      
       // this.splitResponse(splitQuery, responseToParse);
       this.responseReady = this.isResponseReady(splitQuery);
       if (this.responseReady) {
