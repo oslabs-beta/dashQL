@@ -8,6 +8,7 @@ async function queryHandler(req: any, res: any, next: any) {
   const parsedQuery: any = parse(query);
   //start time
   const startTime = performance.now();
+  console.log('parsed query', parsedQuery)
 
   const dashCaches = new dash(parsedQuery, redisdb);
   const responseFromdashCache = await dashCaches.cacheHandler();

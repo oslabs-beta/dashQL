@@ -13,21 +13,22 @@ const PORT = 5001;
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.resolve(__dirname, '../client')));
+app.use(express.static(path.resolve(__dirname, "../client")));
 
-app.use('/dashQL', dashQL, (_req: any, res: any) => {
+app.use("/dashQL", dashQL, (_req: any, res: any) => {
   return res.status(200).json(res.locals);
 });
 
 app.use(
-  '/api/query',
+  "/api/query",
   createHandler({
     schema,
-    context: (req: any) => ({
-      req,
-    }),
+    // context: (req: any) => ({
+    //   req,
+    // }),
   })
 );
+
 
 app.use('/test', (req, res) => {
   const parsedQuery: any = parse(req.body.query);
@@ -41,12 +42,12 @@ app.use('/test', (req, res) => {
 
 app.use('/clearCache', (_req, res) => {
   redisTest.FLUSHDB();
-  return res.status(200).send('Cache cleared');
+  return res.status(200).send("Cache cleared");
 });
 
-app.get('/redis', async (req: any, res: any) => {
+app.get("/redis", async (req: any, res: any) => {
   console.log(req);
-  const response = await redisTest.get('Hello');
+  const response = await redisTest.get("Hello");
   console.log(response);
   return res.status(200).send(response);
 });

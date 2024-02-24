@@ -212,6 +212,7 @@ body {
   /* margin-bottom: 10px; */
   border-radius: 15px;
   white-space: pre-line;
+  overflow: auto
 }
 #response-query-container {
   display: flex;
@@ -231,8 +232,49 @@ body {
   text-decoration: underline;
 }
 
-.nav {
+nav {
+  height: 60px;
+  background-color: #162345;
   margin-top: -8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#left-nav, #right-nav {
+  display: flex;
+  height: 100%;
+  width: 40%;
+  align-items: center;
+  justify-content: center;
+}
+
+#left-nav img {
+  height: 45px;
+  margin-top: 7px;
+}
+
+#right-nav {
+  margin-right: 10px;
+}
+
+#right-nav a{
+  margin: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+#right-nav a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: white;
+}
+#githubLogo {
+  height: 27px;
+  margin-top: 3px;
+}
+
+#pageStyle {
+  text-decoration: underline !important;
 }
 
 #root {
