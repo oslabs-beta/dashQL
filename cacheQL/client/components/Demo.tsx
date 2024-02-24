@@ -17,8 +17,8 @@ type Fields = {
   population?: number;
   hair_color?: string;
   eye_color?: string;
-  terrain?: string,
-  climate?: string
+  terrain?: string;
+  climate?: string;
 };
 
 // people fields
@@ -34,14 +34,14 @@ const defaultPlanet: Fields = {
   name: "",
   population: 0,
   terrain: "",
-  climate: ""
+  climate: "",
 };
 
-interface dataFormProps{
-  changePage: ()=>void
+interface dataFormProps {
+  changePage: () => void;
 }
 
-export default function Demo({changePage}:dataFormProps) {
+export default function Demo({ changePage }: dataFormProps) {
   // updates queryString and currentField (the default fields for what to display)
   const [queryString, setQueryString] = useState("");
   const [currentFields, setField] = useState(defaultFields);
@@ -63,9 +63,9 @@ export default function Demo({changePage}:dataFormProps) {
   const [cacheHits, setCacheHits] = useState(0);
   const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
   const [newPage, setNewPage] = useState(true);
-  useLayoutEffect(()=> {
-    changePage("Demo")
-  })
+  useLayoutEffect(() => {
+    changePage("Demo");
+  });
 
   if (newPage) {
     setNewPage(false);
@@ -75,11 +75,11 @@ export default function Demo({changePage}:dataFormProps) {
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
 
-    if ((!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4)) {
+    if (!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) {
       alert("Please select at least one attribute");
       return;
     }
-    console.log(queryString)
+    console.log(queryString);
     // must send in object with query property due to how backend uses the request
     const result = await getData({ query: queryString });
     // get data from backend, update
@@ -105,7 +105,7 @@ export default function Demo({changePage}:dataFormProps) {
       cacheHit: result.cacheHit,
       response_time: result.time,
       hitPercentage: result.hitPercentage * 100,
-      missPercentage: result.missPercentage * 100
+      missPercentage: result.missPercentage * 100,
     };
     setHitsWithTotal([
       hitsWithTotal[0] + result.totalHits,
@@ -140,18 +140,18 @@ export default function Demo({changePage}:dataFormProps) {
     const idWanted: string = idBox ? `(_id:${selectedId})` : "";
     const end: string | null =
       !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
-    const dropdown = idBox ? currentDropdown : `${currentDropdown}NoId`
+    const dropdown = idBox ? currentDropdown : `${currentDropdown}NoId`;
     const result: string = `query {${dropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
     setQueryString(result);
   }
 
-  function changeIdBox(event){
-    updateIdBox(!idBox)
+  function changeIdBox(event) {
+    updateIdBox(!idBox);
     updateCheckbox1(false);
     updateCheckbox2(false);
     updateCheckbox3(false);
     updateCheckbox4(false);
-    setDisplayResults(false)
+    setDisplayResults(false);
   }
 
   function changeDropdown(event: any) {
@@ -162,7 +162,7 @@ export default function Demo({changePage}:dataFormProps) {
       setField(defaultPlanet);
     }
     setDropdown(event.target.value);
-    setDisplayResults(false)
+    setDisplayResults(false);
   }
 
   function changeId(event: any) {
@@ -170,7 +170,7 @@ export default function Demo({changePage}:dataFormProps) {
     updateCheckbox1(false);
     updateCheckbox2(false);
     updateCheckbox3(false);
-    updateCheckbox4(false)
+    updateCheckbox4(false);
     setSelectedId(event.target.value);
   }
 
@@ -260,30 +260,36 @@ export default function Demo({changePage}:dataFormProps) {
             />
             {keys[0]}
           </label>
-          {idBox ? <label>
-            <input
-              type="checkbox"
-              checked={checkbox2}
-              onChange={() => updateCheckbox2(!checkbox2)}
-            />
-            {keys[1]}
-          </label>: null}
-          {idBox ? <label>
-            <input
-              type="checkbox"
-              checked={checkbox3}
-              onChange={() => updateCheckbox3(!checkbox3)}
-            />
-            {keys[2]}
-          </label>: null}
-          {idBox ? <label>
-            <input
-              type="checkbox"
-              checked={checkbox4}
-              onChange={() => updateCheckbox4(!checkbox4)}
-            />
-            {keys[3]}
-          </label>: null}
+          {idBox ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={checkbox2}
+                onChange={() => updateCheckbox2(!checkbox2)}
+              />
+              {keys[1]}
+            </label>
+          ) : null}
+          {idBox ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={checkbox3}
+                onChange={() => updateCheckbox3(!checkbox3)}
+              />
+              {keys[2]}
+            </label>
+          ) : null}
+          {idBox ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={checkbox4}
+                onChange={() => updateCheckbox4(!checkbox4)}
+              />
+              {keys[3]}
+            </label>
+          ) : null}
           <div className="buttons">
             <button onClick={() => queryResult()}>Run Query</button>
             <button onClick={() => resetAll()}>Clear Cache</button>
@@ -313,7 +319,7 @@ export default function Demo({changePage}:dataFormProps) {
                 checkbox3={checkbox3}
                 checkbox4={checkbox4}
                 keys={keys}
-                dataField = {idBox ? currentDropdown : currentDropdown + 'NoId'}
+                dataField={idBox ? currentDropdown : currentDropdown + "NoId"}
                 currentDropdown={currentDropdown}
                 data={queryData}
                 id={idBox ? selectedId : undefined}
