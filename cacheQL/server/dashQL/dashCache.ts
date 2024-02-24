@@ -7,6 +7,7 @@ class dashCache {
   responseReady: boolean;
   totalHits: number;
   mapLength: number;
+  nestedResponseCounter: number;
   constructor(parsedQuery: DocumentNode, redisdb: any, response?: any) {
     this.query = parsedQuery;
     this.redisdb = redisdb;
@@ -14,6 +15,7 @@ class dashCache {
     this.responseReady = false;
     this.totalHits = 0;
     this.mapLength = 0;
+    this.nestedResponseCounter = 0;
   }
 
   async cacheHandler() {
@@ -77,7 +79,7 @@ class dashCache {
   ) {
     const fieldLevelTest = nestedQueryObj;
     //const keyObjFieldCopy = Object.assign({}, keyObjField);
-    
+
     if (!fieldLevelTest.selectionSet) {
       //base case return name.value
       // keyObj['field'] = { name: fieldLevelTest.name.value };
@@ -88,7 +90,7 @@ class dashCache {
 
       map.set(JSON.stringify(keyObj), null);
       // console.log('------------LOGGING KEYOBJ: ', keyObj);
-     //console.log('MAP ------ >>>>>', map.keys().next().value);
+      //console.log('MAP ------ >>>>>', map.keys().next().value);
 
       return;
     }
@@ -98,7 +100,6 @@ class dashCache {
     // iterate through fieldLevelTest.selectionSet.selections --> fields of the selection set
 
     for (let i = 0; i < fieldLevelTest.selectionSet.selections.length; i++) {
-      
       keyObjField['name'] = fieldLevelTest.name.value;
       // keyObjFieldCopy['name'] = fieldLevelTest.name.value;
       //recursively call SNQ
@@ -109,7 +110,6 @@ class dashCache {
         // keyObjFieldCopy['field'],
         keyObj
       );
-      
     }
 
     /*       const keyObj = {
@@ -211,33 +211,58 @@ class dashCache {
 
   splitResponse(map: Map<any, any>, response: any) {
     const startTime = performance.now();
-    const mapIterator = map.keys();
+    const mapIterator = map.entries();
     // console.log('Map Iterator --------->', mapIterator);
+    //console.log('map itertor', mapIterator);
+    //console.log('response-------', response);
+
     const refObj: any = {};
-    for (const key of mapIterator) {
-      const parsedKey = JSON.parse(key);
-      refObj[parsedKey.field.name] = parsedKey;
+    let counter = 0;
+    for (const [key, value] of mapIterator) {
+      if (value === null) {
+        const parsedKey = JSON.parse(key);
+        let currentKey = parsedKey;
+        //console.log(currentKey)
+        while (currentKey.field.field) {
+          currentKey = currentKey.field;
+        }
+        //console.log(parsedKey);
+        refObj[currentKey.field.name + counter] = parsedKey;
+        counter++;
+      }
     }
+    console.log('ref Obj -----------------------', refObj);
     // console.log('logging refObj: ', refObj);
+    //console.log('Object.entries ---------------', Object.entries(response))
     for (const [_name, fields] of Object.entries(response)) {
       let anyFields: any = fields;
+
       for (const [field, fieldVal] of Object.entries(anyFields)) {
-        console.log('field val --------', fieldVal)
-        let currentFieldVal = fieldVal;
-        while(typeof currentFieldVal === 'object')
-        
-        /* 
-        field val -------- Luke Skywalker
-        field val -------- { name: 'Human', classification: 'mammal' }
-        */
-        }
-       //console.log('ref object ---------', refObj[field])
-        map.set(JSON.stringify(refObj[field]), fieldVal);
-        this.redisdb.set(JSON.stringify(refObj[field]), fieldVal);
+        this.splitNestedResponse(field, fieldVal, refObj, map);
       }
     }
     const endTime = performance.now();
+    console.log('MAP---------->>>>>>', map);
     console.log('splitResponse time: ', endTime - startTime);
+  }
+
+  splitNestedResponse(field: any, fieldVal: any, refObj: any, map: any) {
+    if (typeof fieldVal !== 'object') {
+      // set in map
+      map.set(
+        JSON.stringify(refObj[field + this.nestedResponseCounter]),
+        fieldVal
+      );
+      this.redisdb.set(
+        JSON.stringify(refObj[field + this.nestedResponseCounter]),
+        fieldVal
+      );
+      this.nestedResponseCounter++;
+      return;
+    }
+    for (const [key, value] of Object.entries(fieldVal)) {
+      this.splitNestedResponse(key, value, refObj, map);
+    }
   }
 
   isResponseReady(map: Map<any, any>) {
@@ -251,12 +276,41 @@ class dashCache {
 
   maptoGQLResponse(map: Map<any, any>) {
     const responseObj: any = { data: {} };
-    const type: string = map.keys().next().value.type;
+
+    //WILL NEED TO LOOP THROUGH TYPES TO HANDLE MULTIPLE TYPES
+    const type: string = JSON.parse(map.keys().next().value).type;
+    console.log('TYPE _____________', type);
     responseObj.data[type] = {};
 
     for (let [key, value] of map) {
+      const parsedKey = JSON.parse(key);
+      if (parsedKey.field.field) {
+        if(!responseObj.data[type][parsedKey.field.name]) responseObj.data[type][parsedKey.field.name] = {};
+        let currentKey = parsedKey.field;
+        let currentObj = responseObj.data[type][currentKey.name];
+
+        //species: {}
+        
+        //if nested because really currentkey.field.field
+        while (currentKey.field) {
+
+
+          currentKey = currentKey.field;
+          //currentKey = {
+            //name: Human,
+            //classification: 
+        //}
+          if(!currentObj[currentKey.name]) currentObj[currentKey.name] = {};
+          if(currentKey.field) currentObj = currentObj[currentKey.name];
+        }
+        
+
+        currentObj[currentKey.name] = value;
+      }
       // change to key.field.name to fix '[object Object]'s
-      responseObj.data[type][key.field.name] = value;
+      else {
+        responseObj.data[type][parsedKey.field.name] = value;
+      }
     }
     return responseObj;
   }
