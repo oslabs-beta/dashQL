@@ -1,10 +1,12 @@
-const db = require("../models/model");
+const db = require('../models/model');
 
 import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
+  GraphQLNonNull,
+  GraphQLList,
 } from 'graphql';
 
 const peopleType = new GraphQLObjectType({
@@ -22,29 +24,6 @@ const peopleType = new GraphQLObjectType({
     eye_color: {
       type: GraphQLString,
     },
-  }),
-});
-
-const PlanetType = new GraphQLObjectType({
-  name: "Planets",
-  //lazily defined to add a function in fields. opportunity to easily reference inside the function if there was a circular reference.
-  fields: () => ({
-    _id: { 
-      type: new GraphQLNonNull(GraphQLInt) 
-    },
-    name: {
-      type: GraphQLString,
-    },
-    population: {
-      type: GraphQLInt,
-    },
-
-    terrain: {
-      type: GraphQLString,
-    },
-    climate: {
-      type: GraphQLString,
-
     species_id: {
       type: GraphQLInt,
     },
@@ -56,19 +35,40 @@ const PlanetType = new GraphQLObjectType({
         const data = await db.query(sqlQuery);
         return data.rows[0];
       },
-
     },
   }),
 });
 
+// const PlanetType = new GraphQLObjectType({
+//   name: 'Planets',
+//   fields: () => ({
+//     _id: {
+//       type: new GraphQLNonNull(GraphQLInt),
+//     },
+//     name: {
+//       type: GraphQLString,
+//     },
+//     population: {
+//       type: GraphQLInt,
+//     },
+//     terrain: {
+//       type: GraphQLString,
+//     },
+//     climate: {
+//       type: GraphQLString,
+//     },
+
+//   }),
+// });
+
 const planetType = new GraphQLObjectType({
   name: 'Planets',
   fields: () => ({
+    _id: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
     name: {
       type: GraphQLString,
-    },
-    population: {
-      type: GraphQLInt,
     },
     terrain: {
       type: GraphQLString,
@@ -107,7 +107,7 @@ const speciesType = new GraphQLObjectType({
 });
 
 const RootQuery = new GraphQLObjectType({
-  name: "query",
+  name: 'query',
   fields: {
     people: {
       type: peopleType,
@@ -121,34 +121,34 @@ const RootQuery = new GraphQLObjectType({
     },
 
     peopleNoId: {
-      type: new GraphQLList(PeopleType),
+      type: new GraphQLList(peopleType),
       resolve: async (parent: any, args: any) => {
         const sqlQuery = `SELECT * FROM people`;
         const data = await db.query(sqlQuery);
-        console.log("in non id data", data.rows);
+        console.log('in non id data', data.rows);
         console.log(parent, args);
         return data.rows;
       },
     },
     planets: {
-      type: PlanetType,
+      type: planetType,
       // args: {},
       args: { _id: { type: GraphQLInt } },
       resolve: async (parent: any, args: any) => {
         const sqlQuery = `SELECT * FROM planets WHERE _id=${args._id}`;
         const data = await db.query(sqlQuery);
         // console.log("data rows", data.rows);
-        console.log("in id data", data.rows[0]);
+        console.log('in id data', data.rows[0]);
         console.log(parent, args);
         return data.rows[0];
       },
     },
     planetsNoId: {
-      type: new GraphQLList(PlanetType),
+      type: new GraphQLList(planetType),
       resolve: async (parent: any, args: any) => {
         const sqlQuery = `SELECT * FROM planets`;
         const data = await db.query(sqlQuery);
-        console.log("in non id data", data.rows);
+        console.log('in non id data', data.rows);
         console.log(parent, args);
         return data.rows;
       },
