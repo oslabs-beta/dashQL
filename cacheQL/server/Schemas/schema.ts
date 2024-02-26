@@ -1,25 +1,14 @@
 const db = require("../models/model");
 
-// const {
-//   GraphQLSchema,
-//   GraphQLObjectType,
-//   GraphQLString,
-//   GraphQLInt,
-//   // GraphQLList,
-//   // GraphQLNonNull,
-// } = require('graphql');
 import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-} from "graphql";
+} from 'graphql';
 
-const PeopleType = new GraphQLObjectType({
-  name: "People",
-  //lazily defined to add a function in fields. opportunity to easily reference inside the function if there was a circular reference.
+const peopleType = new GraphQLObjectType({
+  name: 'People',
   fields: () => ({
     name: {
       type: GraphQLString,
@@ -49,6 +38,38 @@ const PlanetType = new GraphQLObjectType({
     population: {
       type: GraphQLInt,
     },
+
+    terrain: {
+      type: GraphQLString,
+    },
+    climate: {
+      type: GraphQLString,
+
+    species_id: {
+      type: GraphQLInt,
+    },
+    species: {
+      type: speciesType,
+      resolve: async (parent: any) => {
+        console.log(parent);
+        const sqlQuery = `SELECT * FROM species WHERE _id=${parent.species_id}`;
+        const data = await db.query(sqlQuery);
+        return data.rows[0];
+      },
+
+    },
+  }),
+});
+
+const planetType = new GraphQLObjectType({
+  name: 'Planets',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+    },
+    population: {
+      type: GraphQLInt,
+    },
     terrain: {
       type: GraphQLString,
     },
@@ -58,21 +79,38 @@ const PlanetType = new GraphQLObjectType({
   }),
 });
 
-// const languagesType = new GraphQLObjectType({
-//   name: 'Language',
-//   // not lazily defined because there are no circular dependencies
-//   fields: {
-//     code: { type: GraphQLString },
-//     name: { type: GraphQLString },
-//   },
-// });
+const speciesType = new GraphQLObjectType({
+  name: 'Species',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+    },
+    classification: {
+      type: GraphQLString,
+    },
+    average_height: {
+      type: GraphQLString,
+    },
+    homeworld_id: {
+      type: GraphQLInt,
+    },
+    homeworld: {
+      type: planetType,
+      resolve: async (parent: any) => {
+        console.log(parent);
+        const sqlQuery = `SELECT * FROM planets WHERE _id=${parent.homeworld_id}`;
+        const data = await db.query(sqlQuery);
+        return data.rows[0];
+      },
+    },
+  }),
+});
 
 const RootQuery = new GraphQLObjectType({
   name: "query",
   fields: {
     people: {
-      type: PeopleType,
-      // args: {},
+      type: peopleType,
       args: { _id: { type: GraphQLInt } },
       resolve: async (parent: any, args: any) => {
         console.log(parent);
@@ -81,6 +119,7 @@ const RootQuery = new GraphQLObjectType({
         return data.rows[0];
       },
     },
+
     peopleNoId: {
       type: new GraphQLList(PeopleType),
       resolve: async (parent: any, args: any) => {
@@ -116,16 +155,6 @@ const RootQuery = new GraphQLObjectType({
     },
   },
 });
-
-// export const schema = new GraphQLSchema({
-//   query: RootQuery,
-// });
-// module.exports = {
-//   schema: new GraphQLSchema({
-//     query: RootQuery,
-//   }),
-// };
-
 export default new GraphQLSchema({
   query: RootQuery,
 });
