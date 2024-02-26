@@ -28,10 +28,17 @@ class dashCache {
     } else {
       const subGQLQuery = this.buildSubGraphQLQuery();
       const subQueryResponse = await this.queryToDB(subGQLQuery);
-      console.log('sub query response', subQueryResponse.data, 'split query', splitQuery)
+      console.log(
+        'sub query response',
+        subQueryResponse.data,
+        'split query',
+        this.map
+      );
       const responseToParse = subQueryResponse.data;
-      splitQuery.keys().next().value.args[0] ? this.splitResponse(splitQuery, responseToParse) : this.splitResponseArray(splitQuery, responseToParse);
-      // this.splitResponse(splitQuery, responseToParse);
+      console.log('LOGGING .VALUE.ARGS', this.map.keys().next().value);
+      JSON.parse(this.map.keys().next().value).args[0]
+        ? this.splitResponse(responseToParse)
+        : this.splitResponseArray(this.map, responseToParse);
       this.responseReady = this.isResponseReady();
       if (this.responseReady) {
         return this.maptoGQLResponse();
@@ -49,7 +56,7 @@ class dashCache {
     const anyQuery: any = this.query;
     // array of all types
     const typesArr = anyQuery.definitions[0].selectionSet.selections;
-    console.log('typesArr', typesArr)
+    console.log('typesArr', typesArr);
     //  iterate through selections arr {
     for (let i = 0; i < typesArr.length; i++) {
       const fieldsArr = typesArr[i].selectionSet.selections;
@@ -132,7 +139,7 @@ class dashCache {
         fields += '}'.repeat(nestedCount);
       }
     }
-    let idValue = arg ? `(${arg})` : ''
+    let idValue = arg ? `(${arg})` : '';
     let query = `query {  ${type} ${idValue} { ${fields}} }`;
     // console.log('arg-----------', arg, '/', query)
     return query;
@@ -142,7 +149,7 @@ class dashCache {
     const startTime = performance.now();
     console.log('logging query argument ', JSON.stringify(query));
     const bodyObj = { query: query };
-    console.log('body obj', bodyObj)
+    console.log('body obj', bodyObj);
     // make request to server (/api/query) with entire query string
     const jsonDBRes = await fetch('http://localhost:5001/api/query', {
       method: 'POST',
@@ -154,49 +161,50 @@ class dashCache {
     const dbRes = await jsonDBRes.json();
     const endTime = performance.now();
     console.log('query to DB time: ', endTime - startTime);
-    console.log(dbRes, '------------------')
+    console.log(dbRes, '------------------');
     // return response from db
     return dbRes;
   }
 
-
   // split response method for when user asking for fields without specific id associated with them
-  splitResponseArray(map: Map<any, any>, response: any){
+  splitResponseArray(map: Map<any, any>, response: any) {
     const startTime = performance.now();
 
     // create variable for the response data array
-    let type:string = '';
-    for (let key in response){
-      type = key
+    let type: string = '';
+    for (let key in response) {
+      type = key;
     }
-    const responseArr:any = response[type]
+    const responseArr: any = response[type];
 
     // find which fields need to be logged into cache
-    const fields:string[] = []
-    for (let key in responseArr[0]){
-      fields.push(key)
+    const fields: string[] = [];
+    for (let key in responseArr[0]) {
+      fields.push(key);
     }
 
     // create temp object to hold array of all fields asked for (ex: name: ['all response names'])
-    const obj:any = {}
-    for (const field of fields){
-      obj[field] = responseArr.map((curr:any) => curr[field])
+    const obj: any = {};
+    for (const field of fields) {
+      obj[field] = responseArr.map((curr: any) => curr[field]);
     }
 
     // set map values to be equal to the created arrays
-    for (const [field] of map){
-      map.set(field, obj[field.field])
-      this.redisdb.set(JSON.stringify(field), JSON.stringify(obj[field.field]));
+    for (const [field] of map) {
+      const parsedField = JSON.parse(field);
+      console.log('LOGGING FIELD', parsedField);
+      console.log('LOGGING OBJ[FIELD.FIELD]', obj[parsedField.field.name]);
+      map.set(field, obj[parsedField.field.name]);
+      this.redisdb.set(field, JSON.stringify(obj[parsedField.field.name]));
     }
 
-    console.log('final map is', map)
+    console.log('final map is', map);
 
     // cache map into redis
 
     const endTime = performance.now();
     console.log('splitResponseArray time: ', endTime - startTime);
   }
-
 
   splitResponse(response: any) {
     const startTime = performance.now();
@@ -214,10 +222,8 @@ class dashCache {
         refObj[currentKey.field.name + counter] = parsedKey;
         counter++;
       }
-
     }
 
-    
     for (const [_name, fields] of Object.entries(response)) {
       let anyFields: any = fields;
 
