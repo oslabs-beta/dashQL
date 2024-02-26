@@ -63,6 +63,7 @@ export default function Demo({ changePage }: dataFormProps) {
   const [cacheHits, setCacheHits] = useState(0);
   const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
   const [newPage, setNewPage] = useState(true);
+  
   useLayoutEffect(() => {
     changePage("Demo");
   });
