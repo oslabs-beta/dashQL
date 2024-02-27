@@ -168,6 +168,8 @@ export default function Demo({ changePage }: dataFormProps) {
     updateCheckbox2(false);
     updateCheckbox3(false);
     updateCheckbox4(false);
+    updateNestedFirstBox(false)
+    updateNestedSecondBox(false)
     setDisplayResults(false);
   }
 
