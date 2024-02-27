@@ -17,7 +17,16 @@ export default function QueryCode({checkbox1, checkbox2, checkbox3, checkbox4, n
   const firstBox:string = checkbox1 ? `${keys[0]}` : "";
   const secondBox: string = checkbox2 ? `${keys[1]}` : "";
   const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
-  const fourthBox: string = checkbox4 ? `${keys[3]}` : "";
+  let fourthBox: string;
+  if (checkbox4 && currentDropdown === 'People'){
+    fourthBox = `${keys[3]} {`
+  } else if (checkbox4 && currentDropdown !== 'People'){
+    fourthBox = `${keys[3]}`
+  } else {
+    fourthBox = ""
+  }
+
+
   const firstNestedBox: string = nestedBox ? `${keys[4]}` : "";
   const secondNestedBox: string = nestedBox2 ? `${keys[5]}` : "";
   
@@ -33,7 +42,7 @@ export default function QueryCode({checkbox1, checkbox2, checkbox3, checkbox4, n
       <div className="second-indent">{firstBox ? `${firstBox},` : null}</div>
       <div className="second-indent">{secondBox ? `${secondBox},` : null}</div>
       <div className="second-indent">{thirdBox ? `${thirdBox},` : null}</div>
-      <div className="second-indent">{fourthBox ? `${fourthBox} {` : null}</div>
+      <div className="second-indent">{fourthBox ? `${fourthBox}` : null}</div>
       <div className="third-indent">{firstNestedBox ? `name,` : null}</div>
       <div className="third-indent">{secondNestedBox ? `${secondNestedBox}` : null}</div>
       <div className="second-indent">{firstNestedBox || secondNestedBox ? `}` : null}</div>

@@ -21,11 +21,18 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   const secondBox: string | null = checkbox2 ? `${keys[1]}` : null;
   const thirdBox: string | null = checkbox3 ? `${keys[2]}` : null;
   const fourthBox: string | null = checkbox4 ? `${keys[3]}` : null;
+  // if (checkbox4 && currentDropdown == 'people'){
+  //   fourthBox = `${keys[3]}`
+  // } else if (checkbox4 && currentDropdown != 'people'){
+  //   fourthBox = `${keys[3]}`
+  // } else {
+  //   fourthBox = null
+  // }
   const idBox: string = id ? `(_id:${id})` : "";
   const end: null | string = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
 
   // define values to be displayed for each property
-  console.log('res data', res.data[dataField][keys[0]])
+  console.log('res data', res.data[dataField], currentDropdown)
   
   const firstValue = res.data[dataField][keys[0]];
   const secondValue: string = res.data[dataField][keys[1]];
@@ -38,7 +45,7 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   const boxes = []
   if (id){
     for (let i=0;i<4;i++){
-      if (i===3){
+      if (i===3 && currentDropdown == "people"){
         boxes.push(<div className="second-indent">{values[i] ? `${checkboxes[i]} {` : null}</div>)
       } else {
         boxes.push(<div className="second-indent">{values[i] ? `${checkboxes[i]}: ${values[i]},` : null}</div>)
@@ -64,7 +71,7 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
     nestedBox2 ? nestedBoxes.push(<div className="third-indent">{`classification: ${res.data[dataField][keys[3]]['classification']}`}</div>) : null;
   }
   
-  const nestedEnd:string = checkbox4 ? "}": ""
+  const nestedEnd:string = checkbox4 && currentDropdown === "people" ? "}": ""
 
   return (
     <div className="query-text">

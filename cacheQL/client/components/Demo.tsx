@@ -86,7 +86,7 @@ export default function Demo({ changePage }: dataFormProps) {
       alert("Please select at least one attribute");
       return;
     }
-    if (checkbox4 && !nestedFirstBox && !nestedSecondBox ) {
+    if (checkbox4 && !nestedFirstBox && !nestedSecondBox && currentFields === defaultFields ) {
       alert("Please select at least one attribute from species");
       return;
     }
@@ -149,7 +149,14 @@ export default function Demo({ changePage }: dataFormProps) {
     const firstBox: string = checkbox1 ? `${keys[0]}` : "";
     const secondBox: string = checkbox2 ? `${keys[1]}` : "";
     const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
-    const fourthBox: string = checkbox4 ? `${keys[3]} {` : "";
+    let fourthBox: string; 
+    if (checkbox4 && currentFields === defaultFields){
+      fourthBox = `${keys[3]} {`
+    } else if (checkbox4 && currentFields !== defaultFields){
+      fourthBox = `${keys[3]}`
+    } else {
+      fourthBox = ""
+    }
     const firstNestedBox: string = nestedFirstBox ? "name" : "";
     const secondNestedBox: string = nestedSecondBox ? `${keys[5]}` : "";
     const idWanted: string = idBox ? `(_id:${selectedId})` : "";
@@ -182,6 +189,8 @@ export default function Demo({ changePage }: dataFormProps) {
     }
     setDropdown(event.target.value);
     setDisplayResults(false);
+    updateNestedFirstBox(false)
+    updateNestedSecondBox(false)
   }
 
   function changeId(event: any) {
@@ -315,7 +324,7 @@ export default function Demo({ changePage }: dataFormProps) {
               {keys[3]}
             </label>
           ) : null}
-          {idBox && checkbox4 ? (
+          {idBox && checkbox4 && currentFields === defaultFields ? (
             <label id="nested-checkbox">
               <input
                 type="checkbox"
@@ -325,7 +334,7 @@ export default function Demo({ changePage }: dataFormProps) {
               name
             </label>
           ) : null}
-          {idBox && checkbox4 ? (
+          {idBox && checkbox4 && currentFields === defaultFields ? (
             <label id="nested-checkbox">
               <input
                 type="checkbox"
