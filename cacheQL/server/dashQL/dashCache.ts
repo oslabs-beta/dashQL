@@ -1,103 +1,302 @@
-// import { DashCache } from '../types/types';
 import { DocumentNode } from 'graphql';
 
 class dashCache {
   query: DocumentNode;
   redisdb: any;
-  response: any;
-  constructor(parsedQuery: DocumentNode, redisdb: any, response?: any) {
+  responseReady: boolean;
+  totalHits: number;
+  mapLength: number;
+  nestedResponseCounter: number;
+  map: Map<any, any>;
+  constructor(parsedQuery: DocumentNode, redisdb: any) {
     this.query = parsedQuery;
     this.redisdb = redisdb;
-    this.response = response;
+    this.responseReady = false;
+    this.totalHits = 0;
+    this.mapLength = 0;
+    this.nestedResponseCounter = 0;
+    this.map = new Map();
   }
 
-  /*
-
-  Tuesday to do:
-  1. breakup query string - loop through parsed query
-  2. add individual queries to cache
-  3. assume second query is subset of first
-  4. breakup query string
-  5. query for individual fields - if not in cache add
-  6. build response
-
-
-
-data[type][fieldName] = fieldVal
-*/
-  async cacheHandler(rawQuery: string) {
-    // invoke isCacheEmpty
-    const cacheEmpty = await this.isCacheEmpty();
-    // if cache is empty:
-    //TO BE UPDATED ONCE QUERY IS BROKEN DOWN INTO SMALLER PIECES
-    if (cacheEmpty || !cacheEmpty) {
-      //  invoke queryToDB(raw query)
-
-      const responseFromDB = await this.queryToDB(rawQuery);
-      //  set key/value pair in cache with query string and query response
-      console.log('logging typeof response', typeof responseFromDB);
-      this.redisdb.set(
-        JSON.stringify(rawQuery),
-        JSON.stringify(responseFromDB)
+  async cacheHandler() {
+    this.splitQuery();
+    //populate map with keys
+    await this.checkQueries();
+    this.responseReady = this.isResponseReady();
+    if (this.responseReady) {
+      return this.maptoGQLResponse();
+    } else {
+      const subGQLQuery = this.buildSubGraphQLQuery();
+      const subQueryResponse = await this.queryToDB(subGQLQuery);
+      console.log(
+        'sub query response',
+        subQueryResponse.data,
+        'split query',
+        this.map
       );
-      //  return out of function with response from server
-      return responseFromDB;
-    }
-
-    //if cache is not empty
-    else {
-      //  create object to store individual fields
-      //  iterate through fields arr
-      //    add each field as a key to the object in the form of "fieldName + id" maybe?
-      //  split up query into individual fields
+      const responseToParse = subQueryResponse.data;
+      console.log('LOGGING .VALUE.ARGS', this.map.keys().next().value);
+      JSON.parse(this.map.keys().next().value).args[0]
+        ? this.splitResponse(responseToParse)
+        : this.splitResponseArray(this.map, responseToParse);
+      this.responseReady = this.isResponseReady();
+      if (this.responseReady) {
+        return this.maptoGQLResponse();
+      } else {
+        throw new Error('DashQL encountered an error.');
+      }
     }
   }
 
   //BREAK QUERY INTO INDIVIDUAL FIELD LEVEL QUERIES
+  splitQuery() {
+    // create object to store individual fields
+    const keyMap = this.map;
+    // have to make anyQuery bc typescript is annoying
+    const anyQuery: any = this.query;
+    // array of all types
+    const typesArr = anyQuery.definitions[0].selectionSet.selections;
+    console.log('typesArr', typesArr);
+    //  iterate through selections arr {
+    for (let i = 0; i < typesArr.length; i++) {
+      const fieldsArr = typesArr[i].selectionSet.selections;
+      //    iterate through fields arr
+      for (let j = 0; j < fieldsArr.length; j++) {
+        // check whether there's a nested query
+        const keyObj = {
+          type: typesArr[i].name.value,
+          args: typesArr[i].arguments,
+          field: {},
+        };
+        this.splitNestedQuery(fieldsArr[j], keyObj.field, keyObj);
+      }
+    }
+    this.mapLength = keyMap.size;
+  }
+  splitNestedQuery(nestedQueryObj: any, keyObjField: any, keyObj: any) {
+    const fieldLevelTest = nestedQueryObj;
 
-  async isCacheEmpty() {
-    // invoke redisdb.DBSIZE to check whether cache is empty
-    // return true if empty, false if not
-    const dbSize = await this.redisdb.DBSIZE();
-    console.log('in isCacheEmpty');
-    console.log(dbSize);
-    if (dbSize === 0) {
-      return true;
-    } else {
-      return false;
+    if (!fieldLevelTest.selectionSet) {
+      keyObjField['name'] = fieldLevelTest.name.value;
+      this.map.set(JSON.stringify(keyObj), null);
+      return;
+    }
+
+    keyObjField['field'] = {};
+
+    for (let i = 0; i < fieldLevelTest.selectionSet.selections.length; i++) {
+      keyObjField['name'] = fieldLevelTest.name.value;
+      //recursively call SNQ
+      this.splitNestedQuery(
+        fieldLevelTest.selectionSet.selections[i],
+        keyObjField['field'],
+        keyObj
+      );
+    }
+  }
+  //Loop through map and check to see if in cache if so, modify map
+  //* TO UPDATE ANY ANY TO CREATE AN INTERFACE
+  async checkQueries() {
+    for (const [key, _value] of this.map) {
+      const cacheResponse = await this.checkRedis(key);
+      if (cacheResponse !== null) {
+        this.totalHits++;
+        this.map.set(key, cacheResponse);
+      }
     }
   }
 
+  buildSubGraphQLQuery() {
+    const queryArr: any[] = [];
+
+    for (const [key, value] of this.map) {
+      if (value === null) {
+        queryArr.push(JSON.parse(key));
+      }
+    }
+
+    let type = '';
+    let arg = '';
+    let fields = '';
+    if (queryArr.length > 0) {
+      //* probably wanna change this part when we add functionality for accepting multiple types
+      type += queryArr[0].type;
+      queryArr[0].args.forEach((el: any) => {
+        arg += el.name.value + ': ' + el.value.value + ', ';
+      });
+
+      // create array of all nested fields, iterate through to create the fields string
+      for (let i = 0; i < queryArr.length; i++) {
+        let nestedCount: number = 0;
+        let currentField = queryArr[i].field;
+        while (currentField.field) {
+          fields += `${currentField.name} {`;
+
+          nestedCount++;
+          currentField = currentField.field;
+        }
+        fields += currentField.name + ', ';
+        fields += '}'.repeat(nestedCount);
+      }
+    }
+    let idValue = arg ? `(${arg})` : '';
+    let query = `query {  ${type} ${idValue} { ${fields}} }`;
+    // console.log('arg-----------', arg, '/', query)
+    return query;
+  }
+
   async queryToDB(query: string) {
+    const startTime = performance.now();
     console.log('logging query argument ', JSON.stringify(query));
     const bodyObj = { query: query };
+    console.log('body obj', bodyObj);
     // make request to server (/api/query) with entire query string
     const jsonDBRes = await fetch('http://localhost:5001/api/query', {
-      //to confirm using POST method
       method: 'POST',
       body: JSON.stringify(bodyObj),
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    // console.log(jsonDBRes, typeof jsonDBRes);
-    const dbRes = jsonDBRes.json();
-
-    // const response from db = server responds with query response using data from db
-    console.log('logging dbresponse', dbRes);
-
+    const dbRes = await jsonDBRes.json();
+    const endTime = performance.now();
+    console.log('query to DB time: ', endTime - startTime);
+    console.log(dbRes, '------------------');
     // return response from db
     return dbRes;
   }
-  /*
-//we know whole string is not in data base.
-//get from database -> request to route api/query sending query string in body
-//store key value pair on cache -> redis.set('key'), 'value'
 
+  // split response method for when user asking for fields without specific id associated with them
+  splitResponseArray(map: Map<any, any>, response: any) {
+    const startTime = performance.now();
 
+    // create variable for the response data array
+    let type: string = '';
+    for (let key in response) {
+      type = key;
+    }
+    const responseArr: any = response[type];
 
+    // find which fields need to be logged into cache
+    const fields: string[] = [];
+    for (let key in responseArr[0]) {
+      fields.push(key);
+    }
 
-  get redis method
-   */
+    // create temp object to hold array of all fields asked for (ex: name: ['all response names'])
+    const obj: any = {};
+    for (const field of fields) {
+      obj[field] = responseArr.map((curr: any) => curr[field]);
+    }
+
+    // set map values to be equal to the created arrays
+    for (const [field] of map) {
+      const parsedField = JSON.parse(field);
+      console.log('LOGGING FIELD', parsedField);
+      console.log('LOGGING OBJ[FIELD.FIELD]', obj[parsedField.field.name]);
+      map.set(field, obj[parsedField.field.name]);
+      this.redisdb.set(field, JSON.stringify(obj[parsedField.field.name]));
+    }
+
+    console.log('final map is', map);
+
+    // cache map into redis
+
+    const endTime = performance.now();
+    console.log('splitResponseArray time: ', endTime - startTime);
+  }
+
+  splitResponse(response: any) {
+    const startTime = performance.now();
+    const mapIterator = this.map.entries();
+
+    const refObj: any = {};
+    let counter = 0;
+    for (const [key, value] of mapIterator) {
+      if (value === null) {
+        const parsedKey = JSON.parse(key);
+        let currentKey = parsedKey;
+        while (currentKey.field.field) {
+          currentKey = currentKey.field;
+        }
+        refObj[currentKey.field.name + counter] = parsedKey;
+        counter++;
+      }
+    }
+
+    for (const [_name, fields] of Object.entries(response)) {
+      let anyFields: any = fields;
+
+      for (const [field, fieldVal] of Object.entries(anyFields)) {
+        this.splitNestedResponse(field, fieldVal, refObj);
+      }
+    }
+    const endTime = performance.now();
+    console.log('splitResponse time: ', endTime - startTime);
+  }
+
+  splitNestedResponse(field: any, fieldVal: any, refObj: any) {
+    if (typeof fieldVal !== 'object') {
+      // set in map
+      this.map.set(
+        JSON.stringify(refObj[field + this.nestedResponseCounter]),
+        fieldVal
+      );
+      this.redisdb.set(
+        JSON.stringify(refObj[field + this.nestedResponseCounter]),
+        fieldVal
+      );
+      this.nestedResponseCounter++;
+      return;
+    }
+    for (const [key, value] of Object.entries(fieldVal)) {
+      this.splitNestedResponse(key, value, refObj);
+    }
+  }
+
+  isResponseReady() {
+    for (let [key, _value] of this.map) {
+      if (this.map.get(key) === null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  maptoGQLResponse() {
+    const responseObj: any = { data: {} };
+
+    //* WILL NEED TO LOOP THROUGH TYPES TO HANDLE MULTIPLE TYPES
+    const type: string = JSON.parse(this.map.keys().next().value).type;
+    responseObj.data[type] = {};
+
+    for (let [key, value] of this.map) {
+      const parsedKey = JSON.parse(key);
+      if (parsedKey.field.field) {
+        if (!responseObj.data[type][parsedKey.field.name])
+          responseObj.data[type][parsedKey.field.name] = {};
+        let currentKey = parsedKey.field;
+        let currentObj = responseObj.data[type][currentKey.name];
+        while (currentKey.field) {
+          currentKey = currentKey.field;
+          if (!currentObj[currentKey.name]) currentObj[currentKey.name] = {};
+          if (currentKey.field) currentObj = currentObj[currentKey.name];
+        }
+
+        currentObj[currentKey.name] = value;
+      } else {
+        responseObj.data[type][parsedKey.field.name] = value;
+      }
+    }
+    return responseObj;
+  }
+  async checkRedis(key: any) {
+    if (this.redisdb.get(key) !== null) {
+      //return response
+      return await this.redisdb.get(key);
+    } else {
+      return null;
+    }
+  }
 }
 export default dashCache;

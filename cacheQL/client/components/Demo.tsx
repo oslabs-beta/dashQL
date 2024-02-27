@@ -1,29 +1,27 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useLayoutEffect } from "react";
 import "../App.css";
 import getData from "../api/apiFetch";
-import QueryResult from "../api/QueryResult";
-import QueryCode from "./queryCode";
+import QueryResult from "./Demo_Components/QueryResult";
+import QueryCode from "./Demo_Components/queryCode";
 import "@fontsource-variable/source-code-pro";
-import { Chart, registerables, CategoryScale } from "chart.js";
-// import { listItemTextClasses } from "@mui/material";
+import BarChart from "./Demo_Components/BarChart";
+import PieChart from "./Demo_Components/PieChart";
+import LineChart from "./Demo_Components/LineChart";
+import ResultCard from "./Demo_Components/ResultCard";
+import clearCache from "../api/clearCache";
 
-import { Data } from "../api/Data";
-import PieChart from "../api/PieChart";
-import { ArcElement } from "chart.js";
-import BarChart from "../api/BarChart";
-import LineChart from "../api/LineChart";
-Chart.register(ArcElement);
-Chart.register(...registerables);
-// Chart.register(...controllers);
-
+// for which api part is selected by user (people, planets etc)
 type Fields = {
   name: string;
   mass?: string;
   population?: number;
   hair_color?: string;
   eye_color?: string;
+  terrain?: string;
+  climate?: string;
 };
 
+// people fields
 const defaultFields: Fields = {
   name: "",
   mass: "",
@@ -31,136 +29,194 @@ const defaultFields: Fields = {
   hair_color: "",
 };
 
+// planet fields
 const defaultPlanet: Fields = {
   name: "",
   population: 0,
+  terrain: "",
+  climate: "",
 };
 
-export default function Demo() {
-  const [querySend, setSend] = useState("");
+interface dataFormProps {
+  changePage: () => void;
+}
+
+export default function Demo({ changePage }: dataFormProps) {
+  // updates queryString and currentField (the default fields for what to display)
+  const [queryString, setQueryString] = useState("");
   const [currentFields, setField] = useState(defaultFields);
+  // have state for updating the dropdown. Depending on what dropwdown changes, will change the currentFields state
   const [currentDropdown, setDropdown] = useState("people");
+  // states for each checkbox, first being the id box, then the 4 others. This is needed in order to be able to update the displayed queries and query strings as the user is messing around with fields
+  const [idBox, updateIdBox] = useState(true);
   const [checkbox1, updateCheckbox1] = useState(false);
   const [checkbox2, updateCheckbox2] = useState(false);
-  const [checkbox3, updateCheckbox3] = useState(true);
+  const [checkbox3, updateCheckbox3] = useState(false);
   const [checkbox4, updateCheckbox4] = useState(false);
-  const [checkbox5, updateCheckbox5] = useState(false);
-  const [data, setData] = useState(undefined);
-  const [id, setId] = useState("1");
-  const [resultId, setResultId] = useState("1");
-  const [fetchData, setFetch] = useState(false);
+  //  if idBox is checked, this updates current id selected
+  const [selectedId, setSelectedId] = useState("1");
+  // data recieved from backend, queryData is data used when displaying results, and displayResults is a boolean to determine if they should be displayed or not based on if user is changing fields
+  const [queryData, setQueryData] = useState({});
+  const [displayResults, setDisplayResults] = useState(false);
+  // chartData and cacheHits are the data stored from backend for the charts
   const [chartData, setChartData] = useState([]);
   const [cacheHits, setCacheHits] = useState(0);
+  const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
+  const [newPage, setNewPage] = useState(true);
+  useLayoutEffect(() => {
+    changePage("Demo");
+  });
+
+  if (newPage) {
+    setNewPage(false);
+    clearCache();
+  }
 
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
-    console.log("sending query string:", querySend);
-    if ((!checkbox1 && !checkbox2) || !checkbox3) {
-      alert("Please select ID (at the moment) and one other checkbox");
+
+    if (!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) {
+      alert("Please select at least one attribute");
       return;
     }
-    const result = await getData({ query: querySend });
-    setData(result);
-    addData(result.time);
-    // result.hit ? setCacheHits(cacheHits + 1) : null
-    setResultId(id);
-    setFetch(true);
+    console.log(queryString);
+    // must send in object with query property due to how backend uses the request
+    const result = await getData({ query: queryString });
+    // get data from backend, update
+    setQueryData(result);
+    addData(result);
+    result.cacheHit ? setCacheHits(cacheHits + 1) : null;
+    setDisplayResults(true);
   }
 
-  function addData(result: number) {
-    const len = chartData.length + 1;
-    const newData = {
-      id: len,
-      response_time: result,
+  function addData(result: any) {
+    // this function adds data to chartData after each query is ran
+    const len: number = chartData.length + 1;
+    type Data = {
+      id: number;
+      cacheHit: boolean;
+      response_time: number;
+      hitPercentage: number;
+      missPercentage: number;
     };
+
+    const newData: Data = {
+      id: len,
+      cacheHit: result.cacheHit,
+      response_time: result.time,
+      hitPercentage: result.hitPercentage * 100,
+      missPercentage: result.missPercentage * 100,
+    };
+    setHitsWithTotal([
+      hitsWithTotal[0] + result.totalHits,
+      hitsWithTotal[1] + result.totalQueries,
+    ]);
     setChartData([...chartData, newData]);
   }
 
   useEffect(() => {
-    // when any checkbox is clicked or dropdown selection edits, will set fetch to false to empty "QUERY RESULTS" part of the dashboard, and wille dit the query string in order to update the "GraphQL Query" part of dashboard
-    setQueryString();
-    setFetch(false);
+    // when any checkbox is clicked or dropdown selection edits, will set fetch to false to empty "QUERY RESULTS" part of the dashboard, and will update the query string in order to update the "GraphQL Query" part of dashboard
+    setDisplayResults(false);
+    updateQueryString();
   }, [
+    idBox,
     checkbox1,
     checkbox2,
     checkbox3,
     checkbox4,
-    checkbox5,
-    id,
+    selectedId,
     currentDropdown,
   ]);
 
-  const keys: string[] = [];
-  Object.keys(currentFields).forEach((key) => {
-    keys.push(key);
-  });
+  // current checkboxes to be used for making the query string and query boxes
+  const keys: string[] = Object.keys(currentFields);
 
-  async function setQueryString() {
-    // logic for creating the "GraphQL Query part of dashboard", only invokes when useEffect triggered by change
-    const firstBox = checkbox1 ? `${keys[0]}` : "";
-    const secondBox = checkbox2 ? `${keys[1]}` : "";
-    const thirdBox = checkbox4 ? `${keys[2]}` : "";
-    const fourthBox = checkbox5 ? `${keys[3]}` : "";
-    const idBox = checkbox3 ? `(_id:${id})` : "";
-    const end = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
-    const result = `query {${currentDropdown} ${idBox}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
+  async function updateQueryString() {
+    // logic for creating the "GraphQL Query" display box of dashboard, as well as updating the string to be sent to backend, only invokes when useEffect triggered by change
+    const firstBox: string = checkbox1 ? `${keys[0]}` : "";
+    const secondBox: string = checkbox2 ? `${keys[1]}` : "";
+    const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
+    const fourthBox: string = checkbox4 ? `${keys[3]}` : "";
+    const idWanted: string = idBox ? `(_id:${selectedId})` : "";
+    const end: string | null =
+      !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
+    const dropdown = idBox ? currentDropdown : `${currentDropdown}NoId`;
+    const result: string = `query {${dropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
+    setQueryString(result);
+  }
 
-    setSend(result);
+  function changeIdBox(event) {
+    updateIdBox(!idBox);
+    updateCheckbox1(false);
+    updateCheckbox2(false);
+    updateCheckbox3(false);
+    updateCheckbox4(false);
+    setDisplayResults(false);
   }
 
   function changeDropdown(event: any) {
+    // invokes when user changes dropdown value
     if (event.target.value === "people") {
       setField(defaultFields);
     } else if (event.target.value === "planets") {
       setField(defaultPlanet);
     }
     setDropdown(event.target.value);
+    setDisplayResults(false);
   }
 
   function changeId(event: any) {
-    setId(event.target.value);
+    // invokes when user changes id value
+    updateCheckbox1(false);
+    updateCheckbox2(false);
+    updateCheckbox3(false);
+    updateCheckbox4(false);
+    setSelectedId(event.target.value);
   }
 
+  // invoked when clear cache button is clicked
   function resetAll() {
-    // resets all fields when clear cache clicked
-    setSend("");
-    setResultId("1");
-    setId("1");
+    // clear backend cache
+    clearCache();
+    // resets all states
+    setQueryString("");
     setField(defaultFields);
     setDropdown("people");
     updateCheckbox1(false);
     updateCheckbox2(false);
+    updateCheckbox3(false);
     updateCheckbox4(false);
-    updateCheckbox5(false);
-    setData(undefined);
+    setQueryData("");
+    setSelectedId("1");
+    setDisplayResults(false);
+    setChartData([]);
+    setCacheHits(0);
+    alert("Cache cleared");
   }
 
   return (
     <div className="demo">
-      <h1 id="title">Cache Demo</h1>
+      <h1 id="title">dashQL Cache Demo</h1>
       <section className="stats">
         <div id="left-stats">
           <div id="response-graph">
             <LineChart chartData={chartData} />
           </div>
           <div id="cache-stats">
-            <div id="cache-card">
-              <h4>Result Details</h4>
-            </div>
+            <ResultCard chartData={chartData} hitsWithTotal={hitsWithTotal} />
           </div>
         </div>
-
         <div id="right-stats">
           <div id="cache-times">
             <BarChart chartData={chartData} />
           </div>
           <div id="pie-chart">
-            <PieChart chartData={chartData} cacheHits= {cacheHits}/>
-            </div>
+            <PieChart chartData={chartData} hitsWithTotal={hitsWithTotal} />
+          </div>
         </div>
       </section>
-      <section className="input">
-        <div id="countriesAPI">
+      <section className="input-container">
+        <div id="query-fields">
           <h1>Star Wars API</h1>
           <p>Select the fields to query:</p>
           <select
@@ -174,15 +230,20 @@ export default function Demo() {
           <label>
             <input
               type="checkbox"
-              checked={checkbox3}
-              onChange={() => updateCheckbox3(!checkbox3)}
+              checked={idBox}
+              onChange={(e) => changeIdBox(e)}
             />
             _id
           </label>
           <div>
-            {checkbox3 ? (
+            {idBox ? (
               // only show id dropdown if id box is checked
-              <select name="select" value={id} onChange={(e) => changeId(e)}>
+              // can have a way to populate this field with more id's based on query selection
+              <select
+                name="id selection"
+                value={selectedId}
+                onChange={(e) => changeId(e)}
+              >
                 <option value={"1"}>1</option>
                 <option value={"2"}>2</option>
                 <option value={"3"}>3</option>
@@ -199,31 +260,36 @@ export default function Demo() {
             />
             {keys[0]}
           </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={checkbox2}
-              onChange={() => updateCheckbox2(!checkbox2)}
-            />
-            {keys[1]}
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={checkbox4}
-              onChange={() => updateCheckbox4(!checkbox4)}
-            />
-            {keys[2]}
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={checkbox5}
-              onChange={() => updateCheckbox5(!checkbox5)}
-            />
-            {keys[3]}
-          </label>
+          {idBox ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={checkbox2}
+                onChange={() => updateCheckbox2(!checkbox2)}
+              />
+              {keys[1]}
+            </label>
+          ) : null}
+          {idBox ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={checkbox3}
+                onChange={() => updateCheckbox3(!checkbox3)}
+              />
+              {keys[2]}
+            </label>
+          ) : null}
+          {idBox ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={checkbox4}
+                onChange={() => updateCheckbox4(!checkbox4)}
+              />
+              {keys[3]}
+            </label>
+          ) : null}
           <div className="buttons">
             <button onClick={() => queryResult()}>Run Query</button>
             <button onClick={() => resetAll()}>Clear Cache</button>
@@ -235,28 +301,28 @@ export default function Demo() {
             <QueryCode
               checkbox1={checkbox1}
               checkbox2={checkbox2}
+              checkbox3={checkbox3}
               checkbox4={checkbox4}
-              checkbox5={checkbox5}
               keys={keys}
               currentDropdown={currentDropdown}
-              id={checkbox3 ? id : undefined}
+              id={idBox ? selectedId : undefined}
             />
           </div>
         </div>
         <div id="response-query-container">
           <h3>Query Results</h3>
           <div id="query-results">
-            {/* check if user is editing fields, if so, this part is null */}
-            {fetchData ? (
+            {displayResults ? (
               <QueryResult
                 checkbox1={checkbox1}
                 checkbox2={checkbox2}
+                checkbox3={checkbox3}
                 checkbox4={checkbox4}
-                checkbox5={checkbox5}
                 keys={keys}
+                dataField={idBox ? currentDropdown : currentDropdown + "NoId"}
                 currentDropdown={currentDropdown}
-                data={data}
-                id={checkbox3 ? resultId : undefined}
+                data={queryData}
+                id={idBox ? selectedId : undefined}
               />
             ) : null}
           </div>
