@@ -15,10 +15,12 @@ type Fields = {
   name: string;
   mass?: string;
   population?: number;
-  hair_color?: string;
+  species?: string;
   eye_color?: string;
   terrain?: string;
   climate?: string;
+  species_name?: string;
+  classification?: string
 };
 
 // people fields
@@ -26,7 +28,9 @@ const defaultFields: Fields = {
   name: "",
   mass: "",
   eye_color: "",
-  hair_color: "",
+  species: "",
+  species_name: "",
+  classification: ""
 };
 
 // planet fields
@@ -53,6 +57,8 @@ export default function Demo({ changePage }: dataFormProps) {
   const [checkbox2, updateCheckbox2] = useState(false);
   const [checkbox3, updateCheckbox3] = useState(false);
   const [checkbox4, updateCheckbox4] = useState(false);
+  const [nestedFirstBox, updateNestedFirstBox] = useState(false)
+  const [nestedSecondBox, updateNestedSecondBox] = useState(false)
   //  if idBox is checked, this updates current id selected
   const [selectedId, setSelectedId] = useState("1");
   // data recieved from backend, queryData is data used when displaying results, and displayResults is a boolean to determine if they should be displayed or not based on if user is changing fields
@@ -63,7 +69,7 @@ export default function Demo({ changePage }: dataFormProps) {
   const [cacheHits, setCacheHits] = useState(0);
   const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
   const [newPage, setNewPage] = useState(true);
-  
+
   useLayoutEffect(() => {
     changePage("Demo");
   });
@@ -78,6 +84,10 @@ export default function Demo({ changePage }: dataFormProps) {
 
     if (!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) {
       alert("Please select at least one attribute");
+      return;
+    }
+    if (checkbox4 && !nestedFirstBox && !nestedSecondBox ) {
+      alert("Please select at least one attribute from species");
       return;
     }
     console.log(queryString);
@@ -125,6 +135,8 @@ export default function Demo({ changePage }: dataFormProps) {
     checkbox2,
     checkbox3,
     checkbox4,
+    nestedFirstBox,
+    nestedSecondBox,
     selectedId,
     currentDropdown,
   ]);
@@ -137,13 +149,17 @@ export default function Demo({ changePage }: dataFormProps) {
     const firstBox: string = checkbox1 ? `${keys[0]}` : "";
     const secondBox: string = checkbox2 ? `${keys[1]}` : "";
     const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
-    const fourthBox: string = checkbox4 ? `${keys[3]}` : "";
+    const fourthBox: string = checkbox4 ? `${keys[3]} {` : "";
+    const firstNestedBox: string = nestedFirstBox ? "name" : "";
+    const secondNestedBox: string = nestedSecondBox ? `${keys[5]}` : "";
     const idWanted: string = idBox ? `(_id:${selectedId})` : "";
     const end: string | null =
       !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
+    const nestedEnd = firstNestedBox || secondNestedBox ? '}' : ""
     const dropdown = idBox ? currentDropdown : `${currentDropdown}NoId`;
-    const result: string = `query {${dropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${end}}`;
+    const result: string = `query {${dropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${firstNestedBox}, ${secondNestedBox} ${nestedEnd} ${end}}`;
     setQueryString(result);
+    console.log(queryString)
   }
 
   function changeIdBox(event) {
@@ -195,6 +211,7 @@ export default function Demo({ changePage }: dataFormProps) {
     alert("Cache cleared");
   }
 
+
   return (
     <div className="demo">
       <h1 id="title">dashQL Cache Demo</h1>
@@ -228,6 +245,7 @@ export default function Demo({ changePage }: dataFormProps) {
             <option value={"people"}>People</option>
             <option value={"planets"}>Planets</option>
           </select>
+          <div id="checkboxes">
           <label>
             <input
               type="checkbox"
@@ -250,6 +268,10 @@ export default function Demo({ changePage }: dataFormProps) {
                 <option value={"3"}>3</option>
                 <option value={"4"}>4</option>
                 <option value={"5"}>5</option>
+                <option value={"6"}>6</option>
+                <option value={"7"}>7</option>
+                <option value={"8"}>8</option>
+                <option value={"9"}>9</option>
               </select>
             ) : null}
           </div>
@@ -291,6 +313,27 @@ export default function Demo({ changePage }: dataFormProps) {
               {keys[3]}
             </label>
           ) : null}
+          {idBox && checkbox4 ? (
+            <label id="nested-checkbox">
+              <input
+                type="checkbox"
+                checked={nestedFirstBox}
+                onChange={() => updateNestedFirstBox(!nestedFirstBox)}
+              />
+              name
+            </label>
+          ) : null}
+          {idBox && checkbox4 ? (
+            <label id="nested-checkbox">
+              <input
+                type="checkbox"
+                checked={nestedSecondBox}
+                onChange={() => updateNestedSecondBox(!nestedSecondBox)}
+              />
+              {keys[5]}
+            </label>
+          ) : null}
+          </div>
           <div className="buttons">
             <button onClick={() => queryResult()}>Run Query</button>
             <button onClick={() => resetAll()}>Clear Cache</button>
@@ -304,6 +347,8 @@ export default function Demo({ changePage }: dataFormProps) {
               checkbox2={checkbox2}
               checkbox3={checkbox3}
               checkbox4={checkbox4}
+              nestedBox = {nestedFirstBox}
+              nestedBox2 = {nestedSecondBox}
               keys={keys}
               currentDropdown={currentDropdown}
               id={idBox ? selectedId : undefined}
@@ -319,6 +364,8 @@ export default function Demo({ changePage }: dataFormProps) {
                 checkbox2={checkbox2}
                 checkbox3={checkbox3}
                 checkbox4={checkbox4}
+                nestedBox = {nestedFirstBox}
+                nestedBox2 = {nestedSecondBox}
                 keys={keys}
                 dataField={idBox ? currentDropdown : currentDropdown + "NoId"}
                 currentDropdown={currentDropdown}
