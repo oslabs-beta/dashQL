@@ -90,7 +90,7 @@ export default function Demo({ changePage }: dataFormProps) {
       alert("Please select at least one attribute from species");
       return;
     }
-    console.log(queryString);
+    console.log('query string',queryString);
     // must send in object with query property due to how backend uses the request
     const result = await getData({ query: queryString });
     // get data from backend, update

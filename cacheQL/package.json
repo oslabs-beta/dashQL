@@ -16,6 +16,7 @@
     "@fontsource/open-sans": "^5.0.22",
     "@mui/icons-material": "^5.15.8",
     "@mui/material": "^5.15.7",
+    "@types/jest": "^29.5.12",
     "axios": "^1.6.7",
     "chart.js": "^4.4.1",
     "cors": "^2.8.5",
