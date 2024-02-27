@@ -74,7 +74,7 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
       {nestedBoxes}
       <div className="second-indent">{nestedEnd}</div>
       <div className="first-indent">{end}</div>
-      <div>{"}"}</div>
+      <div id="query-tag">{"}"}</div>
     </div>
   );
 }

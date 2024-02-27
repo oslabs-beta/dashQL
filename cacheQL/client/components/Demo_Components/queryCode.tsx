@@ -38,7 +38,7 @@ export default function QueryCode({checkbox1, checkbox2, checkbox3, checkbox4, n
       <div className="third-indent">{secondNestedBox ? `${secondNestedBox}` : null}</div>
       <div className="second-indent">{firstNestedBox || secondNestedBox ? `}` : null}</div>
       <div className="first-indent">{end}</div>
-      <div>{"}"}</div>
+      <div id="query-tag">{"}"}</div>
     </div>
   );
 }
