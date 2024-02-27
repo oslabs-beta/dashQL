@@ -1,5 +1,7 @@
-
+<div align="center">
+  
 ![dashQL_Logo](https://github.com/oslabs-beta/dashQL/assets/129707410/711f1cc0-6076-4a83-8c27-c70e22a665a9)
+
 
 ![graphql](https://img.shields.io/badge/GraphQl-E10098?style=for-the-badge&logo=graphql&logoColor=white)
 ![redis](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white)
@@ -7,25 +9,63 @@
 ![vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
 
 
+![react](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![chartjs](https://img.shields.io/badge/Chart%20js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
+![node](https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+
+</div>
+
+
+
+
+
+
 
 # About
 
 dashQL is a lightweight GraphQL caching tool utilizing Redis to cache queries at the field level to further improve reponse time and decrease the number of redundant requests required 
 
+## Table of Contents
+1. [Features](https://github.com/oslabs-beta/dashQL/edit/main/README.md#features)  
+2. [Getting Started](https://github.com/oslabs-beta/dashQL/edit/main/README.md#getting-started)  
+3. [Demo](https://github.com/oslabs-beta/dashQL/edit/main/README.md#demo)  
+4. [Contributing](https://github.com/oslabs-beta/dashQL/edit/main/README.md#contributing-to-dashql)  
+5. [Authors](https://github.com/oslabs-beta/dashQL/edit/main/README.md#authors)
 
 # Features
 * Allows for caching at the field level from the GraphQL abstract syntax tree
-* Ability to handle query requests both with and without an a parameter
+* Ability to handle query requests both with and without an argument
 * Ability to cache deeply nested queries
 * 
+  
 
 # Getting Started
-Download dashQL as an npm module and save it to your package.json as a dependency   `npm install dashQL`
+1. Download dashQL as an npm module and save it to your package.json as a dependency 
+```Javascript
+npm install dashQL
+```
+2. Import dashQL into server file
+```Javascript
+const dashQL = require('dashQL');
+```
+3. Create an instance of dashQL by passing in your schema, redis host, redis port, and redis password respectively
 
-# How to Use
-1. ? install Redis ?
-2. update server routes to /dashQL
-3. 
+```Javascript
+const dashQL = new dashQL(schema, RedisHost, RedisPort, RedisPassword);
+```
+
+4. On your server file for your graphQL endpoint of '/graphql', simply put in dashQL as your middleware and return res.locals back to your front end
+
+```Javascript
+app.use('/graphql', dashQL, (req: Request, res: Response) => {
+  return res.status(200).send(res.locals);
+});
+```
+
+5. Enjoy significantly faster response times specifically at the field level not just per query string!
+
+ 
 
 # Demo
 Feel free to visit our website to get an interactive demonstration of how our caching tool works and view the significantly improved response times
