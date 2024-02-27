@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import Nav from '../../client/components/Nav';
+import Nav from '../../../client/components/Nav';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach } from 'vitest';
 
+// mock for being able to render nav page
 const currentPage:string = "Home"
 
 describe('Navbar Test', () => {
@@ -37,7 +38,6 @@ describe('Navbar Test', () => {
     const testGithubImage = document.querySelector("#githubLogo") as HTMLImageElement;
     expect(testGithubImage.alt).toBe("github logo");
     expect(testGithubImage.src).toBe("http://localhost:3000/client/assets/github-logo.png");
-
 
   });
 
