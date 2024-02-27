@@ -21,13 +21,6 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   const secondBox: string | null = checkbox2 ? `${keys[1]}` : null;
   const thirdBox: string | null = checkbox3 ? `${keys[2]}` : null;
   const fourthBox: string | null = checkbox4 ? `${keys[3]}` : null;
-  // if (checkbox4 && currentDropdown == 'people'){
-  //   fourthBox = `${keys[3]}`
-  // } else if (checkbox4 && currentDropdown != 'people'){
-  //   fourthBox = `${keys[3]}`
-  // } else {
-  //   fourthBox = null
-  // }
   const idBox: string = id ? `(_id:${id})` : "";
   const end: null | string = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
 
@@ -35,6 +28,7 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
   console.log('res data', res.data[dataField], currentDropdown)
   
   const firstValue = res.data[dataField][keys[0]];
+  console.log('FIRST VALUE', firstValue)
   const secondValue: string = res.data[dataField][keys[1]];
   const thirdValue: string = res.data[dataField][keys[2]];
   const fourthValue: string = res.data[dataField][keys[3]];
@@ -55,7 +49,6 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
     for (let i=0;i<4;i++){
       if (values[i]){
         let jsonValues = values[i];
-        if (typeof values[i] === 'string') jsonValues = JSON.parse(values[i]);
         boxes.push(<div className="second-indent">{`${checkboxes[i]}s:`}</div>)
         for (let j = 0; j<10;j++){
           boxes.push(<div className="second-indent">{jsonValues[j]}</div>)
@@ -67,8 +60,8 @@ export default function QueryResult({data, keys, currentDropdown, checkbox1, che
 
   const nestedBoxes = []
   if (checkbox4) {
-    nestedBox ? nestedBoxes.push(<div className="third-indent">{`name: ${res.data[dataField][keys[3]]['name']}`}</div>) : null;
-    nestedBox2 ? nestedBoxes.push(<div className="third-indent">{`classification: ${res.data[dataField][keys[3]]['classification']}`}</div>) : null;
+    nestedBox ? nestedBoxes.push(<div className="third-indent">{`name: ${res.data[dataField][keys[3]]['name']},`}</div>) : null;
+    nestedBox2 ? nestedBoxes.push(<div className="third-indent">{`classification: ${res.data[dataField][keys[3]]['classification']},`}</div>) : null;
   }
   
   const nestedEnd:string = checkbox4 && currentDropdown === "people" ? "}": ""

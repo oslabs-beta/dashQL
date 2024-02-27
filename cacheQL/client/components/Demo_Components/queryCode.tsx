@@ -18,17 +18,17 @@ export default function QueryCode({checkbox1, checkbox2, checkbox3, checkbox4, n
   const secondBox: string = checkbox2 ? `${keys[1]}` : "";
   const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
   let fourthBox: string;
-  if (checkbox4 && currentDropdown === 'People'){
+  if (checkbox4 && currentDropdown === 'people'){
     fourthBox = `${keys[3]} {`
-  } else if (checkbox4 && currentDropdown !== 'People'){
+  } else if (checkbox4 && currentDropdown !== 'people'){
     fourthBox = `${keys[3]}`
   } else {
     fourthBox = ""
   }
 
 
-  const firstNestedBox: string = nestedBox ? `${keys[4]}` : "";
-  const secondNestedBox: string = nestedBox2 ? `${keys[5]}` : "";
+  const firstNestedBox: string = nestedBox && checkbox4 ? `${keys[4]}` : "";
+  const secondNestedBox: string = nestedBox2 && checkbox4 ? `${keys[5]}` : "";
   
   const idBox: string = id ? `(_id:${id})` : "";
   const end: null | string = !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;

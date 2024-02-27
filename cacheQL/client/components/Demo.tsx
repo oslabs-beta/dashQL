@@ -189,6 +189,10 @@ export default function Demo({ changePage }: dataFormProps) {
     }
     setDropdown(event.target.value);
     setDisplayResults(false);
+    updateCheckbox1(false);
+    updateCheckbox2(false);
+    updateCheckbox3(false);
+    updateCheckbox4(false);
     updateNestedFirstBox(false)
     updateNestedSecondBox(false)
   }
@@ -199,6 +203,8 @@ export default function Demo({ changePage }: dataFormProps) {
     updateCheckbox2(false);
     updateCheckbox3(false);
     updateCheckbox4(false);
+    updateNestedFirstBox(false)
+    updateNestedSecondBox(false)
     setSelectedId(event.target.value);
   }
 
