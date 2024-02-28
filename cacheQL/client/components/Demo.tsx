@@ -169,7 +169,7 @@ export default function Demo({ changePage }: dataFormProps) {
     console.log(queryString)
   }
 
-  function changeIdBox(event) {
+  function changeIdBox() {
     updateIdBox(!idBox);
     updateCheckbox1(false);
     updateCheckbox2(false);
