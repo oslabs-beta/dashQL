@@ -6,7 +6,7 @@ interface currentPageProps {
   currentPage: string
 }
 
-export default function Nav(currentPage:currentPageProps) {
+export default function Nav({currentPage}: currentPageProps) {
   return (
     <nav>
       <div id="left-nav">
