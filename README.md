@@ -37,33 +37,39 @@ dashQL is a lightweight GraphQL caching tool utilizing Redis to cache queries at
 * Allows for caching at the field level from the GraphQL abstract syntax tree
 * Ability to handle query requests both with and without an argument
 * Ability to cache deeply nested queries
-* 
   
 
 # Getting Started
-1. Download dashQL as an npm module and save it to your package.json as a dependency 
+1. Install redis and define host and port in server file
+  ```Javascript
+const redisClient = redis.createClient({
+  host: "localhost",
+  port: 6379,
+});
+```
+2. Download dashQL as an npm module and save it to your package.json as a dependency 
 ```Javascript
 npm install dashQL
 ```
-2. Import dashQL into server file
+3. Import dashQL into server file
 ```Javascript
 const dashQL = require('dashQL');
 ```
-3. Create an instance of dashQL by passing in your schema, redis host, redis port, and redis password respectively
+4. Create an instance of dashQL by passing in redisClient in server file
 
 ```Javascript
-const dashQL = new dashQL(schema, RedisHost, RedisPort, RedisPassword);
+const dashQL = new dashQL(redisClient);
 ```
 
-4. On your server file for your graphQL endpoint of '/graphql', simply put in dashQL as your middleware and return res.locals back to your front end
+5. On your server file which handles graphQL requests, name the endpoint '/dashQL' and put in dashQL as your middleware and return res.locals back to client
 
 ```Javascript
-app.use('/graphql', dashQL, (req: Request, res: Response) => {
+app.use('/dashQL', dashQL, (req: Request, res: Response) => {
   return res.status(200).send(res.locals);
 });
 ```
 
-5. Enjoy significantly faster response times specifically at the field level not just per query string!
+6. Enjoy significantly faster response times specifically at the field level not just per query string!
 
  
 
