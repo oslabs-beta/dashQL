@@ -1,4 +1,3 @@
-import {React} from "react";
 
 type ResultTypes = {
   chartData: any,

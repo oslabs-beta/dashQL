@@ -1,4 +1,3 @@
-import React from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale, ArcElement } from "chart.js";
 Chart.register(ArcElement);
@@ -33,7 +32,7 @@ export default function PieChart({ chartData, hitsWithTotal }: ResultTypes) {
   };
 
   Chart.defaults.plugins.tooltip.callbacks.label = function (context) {
-    const total = context.dataset.data.reduce((x, y) => x + y, 0);
+    const total:any = context.dataset.data.reduce((x:any, y:any) => x + y, 0);
     const currentValue = context.parsed;
     const percentage = ((currentValue / total) * 100).toFixed(0);
     return `${percentage}%`;

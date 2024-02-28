@@ -4,7 +4,7 @@ Chart.register(ArcElement);
 Chart.register(...registerables);
 Chart.register(CategoryScale);
 
-export default function BarChart(chartData: any) {
+export default function BarChart({chartData}:any) {
   const barData = {
     labels: chartData.map((data:any) => `Run ${data.id}`),
     datasets: [

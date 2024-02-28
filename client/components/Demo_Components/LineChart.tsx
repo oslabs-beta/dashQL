@@ -1,4 +1,3 @@
-import { React } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale, ArcElement } from "chart.js";
 Chart.register(ArcElement);
@@ -8,7 +7,7 @@ Chart.register(CategoryScale);
 
 
 
-export default function LineChart(chartData: any) {
+export default function LineChart({chartData}:any) {
   
   const lineData = {
     labels: chartData.map((data:any) => chartData.length !==0 ? `Run ${data.id}` : ''),
