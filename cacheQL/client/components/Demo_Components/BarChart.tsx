@@ -32,7 +32,7 @@ export default function BarChart({ chartData }) {
 
   return (
     <div className="chart-container">
-      <h3 style={{ textAlign: "center" }}>Bar Chart</h3>
+      <h3 id="bar-chart-header" style={{ textAlign: "center" }}>Stacked Bar Chart</h3>
       <Bar
         data={barData}
         options={{

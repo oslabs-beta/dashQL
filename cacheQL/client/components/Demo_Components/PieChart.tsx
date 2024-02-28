@@ -39,7 +39,7 @@ export default function PieChart({ chartData, hitsWithTotal }: ResultTypes) {
     return `${percentage}%`;
   };
   return (
-    <div className="chart-contrainer">
+    <div className="pie-container">
       {/* <h2 style={{ textAlign: "center" }}>Hit/Miss Rate Chart</h2> */}
       <Pie
         width={"200px"}
