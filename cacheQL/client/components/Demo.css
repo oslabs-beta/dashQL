@@ -33,11 +33,12 @@ nav {
 
 #left-nav img {
   height: 45px;
-  margin-top: 7px;
+  margin-top: 14px;
 }
 
 #right-nav {
   margin-right: 10px;
+  margin-top: 2px;
 }
 
 #right-nav a{
