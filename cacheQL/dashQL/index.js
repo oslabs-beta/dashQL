@@ -1,5 +1,5 @@
-const dashCache = require('./dashCache');
-const queryHandler = require('./queryHandler');
+const dashCache = require('./dashCache.ts');
+const queryHandler = require('./queryHandler.ts');
 
 module.exports = {
   dashCache,
