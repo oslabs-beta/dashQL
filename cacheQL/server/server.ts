@@ -23,9 +23,6 @@ app.use(
   "/api/query",
   createHandler({
     schema,
-    // context: (req: any) => ({
-    //   req,
-    // }),
   })
 );
 

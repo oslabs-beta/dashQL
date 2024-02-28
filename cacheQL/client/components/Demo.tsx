@@ -14,13 +14,13 @@ import clearCache from "../api/clearCache";
 type Fields = {
   name: string;
   mass?: string;
-  population?: number;
   species?: string;
   eye_color?: string;
   terrain?: string;
   climate?: string;
   species_name?: string;
-  classification?: string
+  classification?: string;
+  diameter?: number
 };
 
 // people fields
@@ -36,7 +36,7 @@ const defaultFields: Fields = {
 // planet fields
 const defaultPlanet: Fields = {
   name: "",
-  population: 0,
+  diameter: 0,
   terrain: "",
   climate: "",
 };
