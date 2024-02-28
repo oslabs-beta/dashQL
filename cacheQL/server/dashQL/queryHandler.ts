@@ -15,7 +15,9 @@ async function queryHandler(req: any, res: any, next: any) {
 
   //attached responses from dashCache to res.locals
   const hitPercentage = dashCaches.totalHits / dashCaches.mapLength;
-  res.locals.res = JSON.stringify(responseFromdashCache);
+  console.log('RESPONSE FROM DASHCACHE', responseFromdashCache, typeof responseFromdashCache)
+  res.locals.res = typeof responseFromdashCache === 'string' ? responseFromdashCache : JSON.stringify(responseFromdashCache);
+  console.log('after stringiy', res.locals.res)
   res.locals.hitPercentage = hitPercentage;
   res.locals.missPercentage = 1 - hitPercentage;
   res.locals.cacheHit = hitPercentage === 1;

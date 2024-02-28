@@ -14,13 +14,13 @@ import clearCache from "../api/clearCache";
 type Fields = {
   name: string;
   mass?: string;
-  population?: number;
   species?: string;
   eye_color?: string;
   terrain?: string;
   climate?: string;
   species_name?: string;
-  classification?: string
+  classification?: string;
+  diameter?: number
 };
 
 // people fields
@@ -36,7 +36,7 @@ const defaultFields: Fields = {
 // planet fields
 const defaultPlanet: Fields = {
   name: "",
-  population: 0,
+  diameter: 0,
   terrain: "",
   climate: "",
 };
@@ -86,11 +86,11 @@ export default function Demo({ changePage }: dataFormProps) {
       alert("Please select at least one attribute");
       return;
     }
-    if (checkbox4 && !nestedFirstBox && !nestedSecondBox ) {
+    if (checkbox4 && !nestedFirstBox && !nestedSecondBox && currentFields === defaultFields ) {
       alert("Please select at least one attribute from species");
       return;
     }
-    console.log(queryString);
+    console.log('query string',queryString);
     // must send in object with query property due to how backend uses the request
     const result = await getData({ query: queryString });
     // get data from backend, update
@@ -149,7 +149,14 @@ export default function Demo({ changePage }: dataFormProps) {
     const firstBox: string = checkbox1 ? `${keys[0]}` : "";
     const secondBox: string = checkbox2 ? `${keys[1]}` : "";
     const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
-    const fourthBox: string = checkbox4 ? `${keys[3]} {` : "";
+    let fourthBox: string; 
+    if (checkbox4 && currentFields === defaultFields){
+      fourthBox = `${keys[3]} {`
+    } else if (checkbox4 && currentFields !== defaultFields){
+      fourthBox = `${keys[3]}`
+    } else {
+      fourthBox = ""
+    }
     const firstNestedBox: string = nestedFirstBox ? "name" : "";
     const secondNestedBox: string = nestedSecondBox ? `${keys[5]}` : "";
     const idWanted: string = idBox ? `(_id:${selectedId})` : "";
@@ -162,7 +169,7 @@ export default function Demo({ changePage }: dataFormProps) {
     console.log(queryString)
   }
 
-  function changeIdBox(event) {
+  function changeIdBox() {
     updateIdBox(!idBox);
     updateCheckbox1(false);
     updateCheckbox2(false);
@@ -182,6 +189,12 @@ export default function Demo({ changePage }: dataFormProps) {
     }
     setDropdown(event.target.value);
     setDisplayResults(false);
+    updateCheckbox1(false);
+    updateCheckbox2(false);
+    updateCheckbox3(false);
+    updateCheckbox4(false);
+    updateNestedFirstBox(false)
+    updateNestedSecondBox(false)
   }
 
   function changeId(event: any) {
@@ -190,6 +203,8 @@ export default function Demo({ changePage }: dataFormProps) {
     updateCheckbox2(false);
     updateCheckbox3(false);
     updateCheckbox4(false);
+    updateNestedFirstBox(false)
+    updateNestedSecondBox(false)
     setSelectedId(event.target.value);
   }
 
@@ -315,7 +330,7 @@ export default function Demo({ changePage }: dataFormProps) {
               {keys[3]}
             </label>
           ) : null}
-          {idBox && checkbox4 ? (
+          {idBox && checkbox4 && currentFields === defaultFields ? (
             <label id="nested-checkbox">
               <input
                 type="checkbox"
@@ -325,7 +340,7 @@ export default function Demo({ changePage }: dataFormProps) {
               name
             </label>
           ) : null}
-          {idBox && checkbox4 ? (
+          {idBox && checkbox4 && currentFields === defaultFields ? (
             <label id="nested-checkbox">
               <input
                 type="checkbox"
