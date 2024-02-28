@@ -11,6 +11,51 @@ body {
   /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
 }
 
+nav {
+  height: 60px;
+  background-color: #162345;
+  margin-top: -8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#left-nav, #right-nav {
+  display: flex;
+  height: 100%;
+  width: 40%;
+  align-items: center;
+  justify-content: center;
+}
+
+#left-nav img {
+  height: 45px;
+  margin-top: 7px;
+}
+
+#right-nav {
+  margin-right: 10px;
+}
+
+#right-nav a{
+  margin: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+#right-nav a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: white;
+}
+#githubLogo {
+  height: 27px;
+  margin-top: 3px;
+}
+
+#pageStyle {
+  text-decoration: underline !important;
+}
+
 #logo {
   align-items: center;
   justify-content: center;
@@ -77,8 +122,6 @@ body {
 
 #cache-stats {
   flex: 2;
-  /* width: 100%; */
-  /* margin-bottom: 10px; */
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -131,7 +174,7 @@ body {
 
 .input-container {
   display: flex;
-  height: 350px;
+  height: 400px;
   width: 95%;
   background-color: lightgray;
   padding: 20px;
@@ -141,13 +184,14 @@ body {
 }
 
 #query-fields {
-  height: 95%;
+  height: 100%;
   flex: 1;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: start;
+  justify-content: end;
+  /* position: relative; */
 }
 #query-fields button {
   width: 100px;
@@ -157,6 +201,17 @@ body {
   border-radius: 10px;
   color: white;
   margin-right: 10px;
+  flex-shrink: inherit;
+}
+
+#checkboxes {
+  display: flex;
+  flex-direction: column;
+  height: 270px;
+}
+
+#nested-checkbox {
+  margin-left: 35px;
 }
 
 #query-fields button:hover {
@@ -224,57 +279,11 @@ body {
 
 .buttons {
   display: flex;
-  margin-top: 20px;
-  margin-bottom: 30px;
-}
+  width: 100%;
+} 
 
 .underline {
   text-decoration: underline;
-}
-
-nav {
-  height: 60px;
-  background-color: #162345;
-  margin-top: -8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-#left-nav, #right-nav {
-  display: flex;
-  height: 100%;
-  width: 40%;
-  align-items: center;
-  justify-content: center;
-}
-
-#left-nav img {
-  height: 45px;
-  margin-top: 7px;
-}
-
-#right-nav {
-  margin-right: 10px;
-}
-
-#right-nav a{
-  margin: 15px;
-  color: white;
-  text-decoration: none;
-}
-
-#right-nav a:hover {
-  cursor: pointer;
-  text-decoration: underline;
-  color: white;
-}
-#githubLogo {
-  height: 27px;
-  margin-top: 3px;
-}
-
-#pageStyle {
-  text-decoration: underline !important;
 }
 
 #root {
@@ -294,6 +303,11 @@ nav {
   justify-content: end;
   align-items: flex-end;
   /* margin-bottom: 30px; */
+}
+
+.third-indent {
+  text-indent: 100px;
+  margin: 5px;
 }
 
 .second-indent {

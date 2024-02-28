@@ -26,11 +26,14 @@ class queryHandler {
     res.locals.totalHits = dashCaches.totalHits;
     res.locals.totalQueries = dashCaches.mapLength;
 
+
     console.log('res.locals', res.locals.res);
     //end time
     const endTime = performance.now();
     const totalTime = endTime - startTime;
     console.log('logging total time', totalTime);
+
+
 
     res.locals.time = totalTime;
 

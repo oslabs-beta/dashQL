@@ -70,6 +70,9 @@ const planetType = new GraphQLObjectType({
     name: {
       type: GraphQLString,
     },
+    population: {
+      type: GraphQLInt,
+    },
     terrain: {
       type: GraphQLString,
     },
