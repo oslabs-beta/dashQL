@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import {  useState } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
@@ -8,7 +8,7 @@ import Docs from "./components/Docs";
 
 
 function App() {
-  const [currentPage, setPage] = useState("Home");
+  const [currentPage, setPage] = useState<{name:string}>({name:"Home"});
 
   function changePage(page: string): void {
     setPage(page);

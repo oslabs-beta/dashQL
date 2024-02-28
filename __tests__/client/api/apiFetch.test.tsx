@@ -1,14 +1,10 @@
 import getData from "../../../client/api/apiFetch";
 
 // mock for being able to render nav page
-interface QueryResponse {
-  res: any;
-  time: number;
-  cacheHit: boolean;
-}
+
 
 describe("API Fetch Test", () => {
-  let result: any = {
+  const result: any = {
     peopleRes: null,
     planetsRes: null,
     nestedRes: null,
