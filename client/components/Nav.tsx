@@ -2,7 +2,11 @@ import "../App.css";
 import logo from "../assets/github-logo.png";
 import dashQL_Logo from "../assets/dashQL_Logo.png";
 
-export default function Nav({ currentPage }: string) {
+interface currentPageProps {
+  currentPage: string
+}
+
+export default function Nav(currentPage:currentPageProps) {
   return (
     <nav>
       <div id="left-nav">

@@ -42,7 +42,7 @@ const defaultPlanet: Fields = {
 };
 
 interface dataFormProps {
-  changePage: () => void;
+  changePage: (page:string) => void;
 }
 
 export default function Demo({ changePage }: dataFormProps) {

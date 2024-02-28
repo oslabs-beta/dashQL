@@ -8,7 +8,7 @@ import Docs from "./components/Docs";
 
 
 function App() {
-  const [currentPage, setPage] = useState<{name:string}>({name:"Home"});
+  const [currentPage, setPage] = useState<string>("Home");
 
   function changePage(page: string): void {
     setPage(page);
@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="demo" element={<Demo changePage={changePage} />} />
-        <Route path="/docs" element={<Docs changePage={changePage} />} />
+        {/* <Route path="/docs" element={<Docs changePage={changePage} />} /> */}
       </Routes>
     </>
   );
