@@ -27,6 +27,7 @@ export default async function getData(finalQuery: Querystr): Promise<QueryRespon
     })
     .catch((error) => {
       console.error({ error: `Error in fetching query data` });
+      console.log(error)
     });
   return result;
 }

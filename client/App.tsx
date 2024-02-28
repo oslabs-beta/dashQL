@@ -4,7 +4,6 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Nav from "./components/Nav";
 import Demo from "./components/Demo";
-import Docs from "./components/Docs";
 
 
 function App() {

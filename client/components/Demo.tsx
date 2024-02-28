@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import "./Demo.css";
 import getData from "../api/apiFetch";
 import QueryResult from "./Demo_Components/QueryResult";
@@ -65,7 +65,7 @@ export default function Demo({ changePage }: dataFormProps) {
   const [queryData, setQueryData] = useState({});
   const [displayResults, setDisplayResults] = useState(false);
   // chartData and cacheHits are the data stored from backend for the charts
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<Data>([]);
   const [cacheHits, setCacheHits] = useState(0);
   const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
   const [newPage, setNewPage] = useState(true);

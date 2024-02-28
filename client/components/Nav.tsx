@@ -15,7 +15,7 @@ export default function Nav(currentPage:currentPageProps) {
         </a>
       </div>
       <div id="right-nav">
-        <a href="/" id={currentPage == "Home" ? "pageStyle" : ""}>
+        <a href="/" id={currentPage === "Home" ? "pageStyle" : ""}>
           Home
         </a>
         <a href="/demo" id={currentPage == "Demo" ? "pageStyle" : ""}>

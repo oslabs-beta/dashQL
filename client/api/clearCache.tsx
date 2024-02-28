@@ -11,5 +11,6 @@ export default async function clearCache() {
     })
     .catch((error) => {
       console.error({ error: `Error in setting cache` });
+      console.log(error)
     });
 }

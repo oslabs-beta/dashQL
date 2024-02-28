@@ -1,4 +1,4 @@
-import {React} from "react";
+import { React } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale, ArcElement } from "chart.js";
 Chart.register(ArcElement);
@@ -8,14 +8,14 @@ Chart.register(CategoryScale);
 
 
 
-export default function LineChart({ chartData }) {
+export default function LineChart(chartData: any) {
   
   const lineData = {
-    labels: chartData.map((data) => chartData.length !==0 ? `Run ${data.id}` : ''),
+    labels: chartData.map((data:any) => chartData.length !==0 ? `Run ${data.id}` : ''),
     datasets: [
       {
         label: "Response Time",
-        data: chartData.map((data) => data.response_time),
+        data: chartData.map((data:any) => data.response_time),
         // borderDash: [5,5],
         backgroundColor: ["rgba(75,192,192,1)", "#557373"],
         borderColor: "#557373",
