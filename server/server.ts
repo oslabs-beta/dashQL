@@ -4,6 +4,7 @@ import { parse } from 'graphql/language/parser';
 import * as path from 'path';
 // import redisTest from './redis.ts';
 import * as cors from 'cors';
+
 import schema from './Schemas/schema';
 import { createHandler } from 'graphql-http/lib/use/express';
 const redisBase = require('redis');
@@ -11,7 +12,7 @@ const redisBase = require('redis');
 import dashQL from './dashQL/queryHandler';
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
