@@ -83,12 +83,13 @@ nav {
 
 .stats {
   display: flex;
-  height: 550px;
+  height: 560px;
   width: 97%;
   /* background-color: lightgray; */
   border: 1px solid #162345;
   border-radius: 15px;
   /* padding: 10px; */
+  /* margin-bottom: 10px; */
 }
 
 #left-stats {
@@ -123,6 +124,15 @@ nav {
 
 .chart-container {
   width: 70%;
+  align-self: center;
+}
+#bar-chart-header {
+  margin-left: 38px
+}
+
+.pie-container {
+  margin-top: 25px;
+  margin-left: 25px;
 }
 
 #cache-stats {
@@ -169,6 +179,7 @@ nav {
   justify-content: center;
   width: 100%;
   max-width: 750px;
+  margin-right: 20px;
 }
 
 #pie-chart {
@@ -176,7 +187,7 @@ nav {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .input-container {
