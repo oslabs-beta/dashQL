@@ -76,6 +76,9 @@ const planetType = new GraphQLObjectType({
     climate: {
       type: GraphQLString,
     },
+    diameter: {
+      type: GraphQLInt,
+    },
   }),
 });
 
