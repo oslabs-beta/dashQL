@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useLayoutEffect } from "react";
-import "../App.css";
+import "./Demo.css";
 import getData from "../api/apiFetch";
 import QueryResult from "./Demo_Components/QueryResult";
 import QueryCode from "./Demo_Components/queryCode";
@@ -263,7 +263,7 @@ export default function Demo({ changePage }: dataFormProps) {
             <option value={"planets"}>Planets</option>
           </select>
           <div id="checkboxes">
-          <label>
+          <label id="idBox">
             <input
               type="checkbox"
               checked={idBox}
