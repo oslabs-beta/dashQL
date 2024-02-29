@@ -32,11 +32,11 @@ export default function Home() {
       <div id='whatIsWrap'>
         <h1 id='lowerBigText'>What is dashQL?</h1>
         <p id='whatIsText' className='randomText'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-          velit esse cillum dolore eu.
+          DashQL is an open-source caching solution for GraphQL, which leverages
+          an advanced algorithm that breaks down a GraphQL query into its
+          smallest parts before performing caching logic on it. This results in
+          unmatched performance benefits, translating into a more tactile and
+          responsive experience for the users of your application.
         </p>
       </div>
       <div id='horizBar'>
