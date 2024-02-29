@@ -12,7 +12,7 @@ export default defineConfig({
         secure: false,
       },
       '/api/query': {
-        target: 'http://localhost:5001',
+        target: 'http://localhost:5001', 
         changeOrigin: true,
         secure: false,
       },
