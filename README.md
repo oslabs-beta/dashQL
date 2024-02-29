@@ -49,7 +49,7 @@ const redisClient = redis.createClient({
 ```
 2. Download dashQL as an npm module and save it to your package.json as a dependency 
 ```Javascript
-npm install dashQL
+npm install dashql
 ```
 3. Import dashQL into server file
 ```Javascript
