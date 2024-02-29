@@ -7,6 +7,7 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"],
     "esModuleInterop": true,
+    
 
     /* Bundler mode */
     "moduleResolution": "bundler",
