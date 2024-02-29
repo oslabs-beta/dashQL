@@ -1,3 +1,12 @@
+
+import "../App.css";
+import logo from "../assets/github-logo.png";
+import dashQL_Logo from "../assets/dashQL_Logo.png";
+
+interface currentPageProps {
+  currentPage: string
+}
+=======
 import '../App.css';
 import {
   createTheme,
@@ -20,70 +29,3 @@ const theme = createTheme({
   },
 });
 
-export default function Nav() {
-  return (
-    <div className='nav'>
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            bgcolor: 'primary.main',
-            // maxWidth: '100em',
-            position: 'sticky',
-            top: '0',
-            display: 'flex',
-          }}
-        >
-          <AppBar
-            position='static'
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Link href='/about'>
-              <Avatar
-                alt='Example Alt'
-                src={dashQL_Logo}
-                sx={{
-                  width: '130px',
-                  marginTop: '15px',
-                  alignItems: 'center',
-                  justifyContent: 'end',
-                  marginLeft: '200px',
-                }}
-              />
-            </Link>
-            <Toolbar
-              sx={{
-                alignItems: 'center',
-                justifyContent: 'end',
-                marginRight: '200px',
-              }}
-            >
-              <Button href='/' color='inherit'>
-                About
-              </Button>
-              <Button href='/demo' color='inherit'>
-                Demo
-              </Button>
-              <Button href='/docs' color='inherit'>
-                Docs
-              </Button>
-              <Avatar
-                alt='Example Alt'
-                src={logo}
-                sx={{
-                  width: '25px',
-                  height: 'auto',
-                  marginLeft: '10px',
-                  marginBottom: '1px',
-                }}
-              />
-            </Toolbar>
-          </AppBar>
-        </Box>
-      </ThemeProvider>
-    </div>
-  );
-}
