@@ -17,7 +17,7 @@ export default function Home() {
       </div>
       <div id='codeWrapper'>
         <div id='box'>
-          <pre>$ npm install dashQL</pre>
+          <pre><span id='grey'>$</span> npm install dashQL</pre>
         </div>
         <button
           id='copyButton'
