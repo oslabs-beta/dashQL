@@ -42,7 +42,7 @@
     "ts": "^0.0.0"
   },
   "engines": {
-    "node": "20.10.0"
+    "node": ">=16.20.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
