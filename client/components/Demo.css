@@ -285,6 +285,7 @@ nav {
   /* margin: 10px; */
   white-space: pre-line;
   width: 90%;
+  
 }
 #graphql-query-container {
   display: flex;
@@ -364,10 +365,11 @@ nav {
 }
 
 .query-text {
-  margin: 20px;
   color: yellow;
-  font-size: 15px;
+  font-size: 17px;
   font-family: "Source Code Pro Variable";
+  margin-left: 40px;
+  margin-top: 25px;
 }
 
 #query-tag {
