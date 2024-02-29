@@ -1,13 +1,13 @@
 {
   "rewrites": [
     {
-      "source": "/:path(.*)",
-      "destination": "https://dash-ql-final.vercel.app/:path"
+      "source": "/demo",
+      "destination": "https://dash-ql-final.vercel.app/demo"
     }
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
