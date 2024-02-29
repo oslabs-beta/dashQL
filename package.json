@@ -8,7 +8,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "start": "vite"
+    "start": "serve -s build",
+    "heroku-postbuild": "vite"
   },
   "type": "module",
   "dependencies": {
@@ -37,6 +38,7 @@
     "react-router-dom": "^6.22.0",
     "redis": "^4.6.13",
     "scripts": "^0.1.0",
+    "serve": "^14.2.1",
     "supertest": "^6.3.4",
     "ts": "^0.0.0"
   },
