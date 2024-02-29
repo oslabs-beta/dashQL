@@ -1,1 +1,1 @@
-web: bin/vite 
+web: npm run serve-heroku
