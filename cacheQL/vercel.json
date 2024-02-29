@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "https://dash-ql-final.vercel.app/" },
+    {
+      "source": "/demo",
+      "destination": "https://dash-ql-final.vercel.app/demo"
+    }
+  ]
+}
+ 
+  
+
+
