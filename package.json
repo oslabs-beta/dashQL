@@ -8,8 +8,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "start": "serve -s build",
-    "heroku-postbuild": "vite"
+    "start": "serve -s build"
   },
   "type": "module",
   "dependencies": {
