@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
-import "./Demo.css";
+import "./styles/Demo.css";
 import getData from "../api/apiFetch";
 import QueryResult from "./Demo_Components/QueryResult";
 import QueryCode from "./Demo_Components/queryCode";
@@ -241,7 +241,7 @@ export default function Demo({ changePage }: dataFormProps) {
     setSelectedId("1");
     setDisplayResults(false);
     setChartData([]);
-    setCacheHits(0);
+    setHitsWithTotal([0,0])
     alert("Cache cleared");
   }
 

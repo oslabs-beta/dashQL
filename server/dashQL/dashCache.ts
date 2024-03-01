@@ -1,4 +1,4 @@
-import { DocumentNode } from "graphql";
+import { DocumentNode } from 'graphql';
 
 class dashCache {
   query: DocumentNode;
@@ -24,19 +24,25 @@ class dashCache {
   async cacheHandler() {
     this.splitQuery();
     //populate map with keys
+    console.log('going into this.checkQueries');
     await this.checkQueries();
+    console.log('going into this.isResponseReady');
     this.responseReady = this.isResponseReady();
     if (this.responseReady) {
+      console.log('IS READY, returning maptogqlresponse');
       return this.maptoGQLResponse();
     } else {
+      console.log('IS NOT READY, going into this.buildSubGraphQLQuery');
       const subGQLQuery = this.buildSubGraphQLQuery();
+      console.log('going into this.queryToDb');
       const subQueryResponse = await this.queryToDB(subGQLQuery);
       console.log(
-        "sub query response",
+        'sub query response',
         subQueryResponse.data,
-        "split query",
+        'split query',
         this.map
       );
+      console.log('going intomaptogqlresponse from querytodb');
       const responseToParse = subQueryResponse.data;
       JSON.parse(this.map.keys().next().value).args[0]
         ? this.splitResponse(responseToParse)
@@ -45,7 +51,8 @@ class dashCache {
       if (this.responseReady) {
         return this.maptoGQLResponse();
       } else {
-        throw new Error("DashQL encountered an error.");
+        console.log('theres an error---');
+        throw new Error('DashQL encountered an error.');
       }
     }
   }
@@ -58,7 +65,7 @@ class dashCache {
     const anyQuery: any = this.query;
     // array of all types
     const typesArr = anyQuery.definitions[0].selectionSet.selections;
-    console.log("typesArr", typesArr);
+    console.log('typesArr in splitQuery: ', typesArr);
     //  iterate through selections arr {
     for (let i = 0; i < typesArr.length; i++) {
       const fieldsArr = typesArr[i].selectionSet.selections;
@@ -80,19 +87,19 @@ class dashCache {
     const fieldLevelTest = nestedQueryObj;
 
     if (!fieldLevelTest.selectionSet) {
-      keyObjField["name"] = fieldLevelTest.name.value;
+      keyObjField['name'] = fieldLevelTest.name.value;
       this.map.set(JSON.stringify(keyObj), null);
       return;
     }
 
-    keyObjField["field"] = {};
+    keyObjField['field'] = {};
 
     for (let i = 0; i < fieldLevelTest.selectionSet.selections.length; i++) {
-      keyObjField["name"] = fieldLevelTest.name.value;
+      keyObjField['name'] = fieldLevelTest.name.value;
       //recursively call SNQ
       this.splitNestedQuery(
         fieldLevelTest.selectionSet.selections[i],
-        keyObjField["field"],
+        keyObjField['field'],
         keyObj
       );
     }
@@ -118,7 +125,7 @@ class dashCache {
       if (cacheResponse !== null) {
         this.totalHits++;
         this.map.set(key, finalResponse);
-        console.log("IN CACHE!", this.map);
+        console.log('IN CACHE!', this.map);
       }
     }
   }
@@ -132,14 +139,14 @@ class dashCache {
       }
     }
 
-    let type = "";
-    let arg = "";
-    let fields = "";
+    let type = '';
+    let arg = '';
+    let fields = '';
     if (queryArr.length > 0) {
       //* probably wanna change this part when we add functionality for accepting multiple types
       type += queryArr[0].type;
       queryArr[0].args.forEach((el: any) => {
-        arg += el.name.value + ": " + el.value.value + ", ";
+        arg += el.name.value + ': ' + el.value.value + ', ';
       });
 
       // create array of all nested fields, iterate through to create the fields string
@@ -152,13 +159,13 @@ class dashCache {
           nestedCount++;
           currentField = currentField.field;
         }
-        fields += currentField.name + ", ";
-        fields += "}".repeat(nestedCount);
+        fields += currentField.name + ', ';
+        fields += '}'.repeat(nestedCount);
       }
     }
-    let idValue = arg ? `(${arg})` : "";
+    let idValue = arg ? `(${arg})` : '';
     let query = `query {  ${type} ${idValue} { ${fields}} }`;
-    // console.log('arg-----------', arg, '/', query)
+    console.log('arg-----------', arg, '/', query);
     return query;
   }
 
@@ -166,17 +173,20 @@ class dashCache {
     const startTime = performance.now();
     const bodyObj = { query: query };
     // make request to server (/api/query) with entire query string
-    const jsonDBRes = await fetch("http://localhost:5001/api/query", {
-      method: "POST",
-      body: JSON.stringify(bodyObj),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const jsonDBRes = await fetch(
+      'https://dash-ql-backend.vercel.app/api/query',
+      {
+        method: 'POST',
+        body: JSON.stringify(bodyObj),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     const dbRes = await jsonDBRes.json();
     const endTime = performance.now();
-    console.log("query to DB time: ", endTime - startTime);
-    console.log(dbRes, "------------------");
+    console.log('query to DB time: ', endTime - startTime);
+    console.log(dbRes, '------------------');
     // return response from db
     return dbRes;
   }
@@ -186,7 +196,7 @@ class dashCache {
     const startTime = performance.now();
 
     // create variable for the response data array
-    let type: string = "";
+    let type: string = '';
     for (let key in response) {
       type = key;
     }
@@ -207,18 +217,18 @@ class dashCache {
     // set map values to be equal to the created arrays
     for (const [field] of map) {
       const parsedField = JSON.parse(field);
-      console.log("LOGGING FIELD", parsedField);
-      console.log("LOGGING OBJ[FIELD.FIELD]", obj[parsedField.field.name]);
+      console.log('LOGGING FIELD', parsedField);
+      console.log('LOGGING OBJ[FIELD.FIELD]', obj[parsedField.field.name]);
       map.set(field, obj[parsedField.field.name]);
       this.redisdb.set(field, JSON.stringify(obj[parsedField.field.name]));
     }
 
-    console.log("final map is", map);
+    console.log('final map is', map);
 
     // cache map into redis
 
     const endTime = performance.now();
-    console.log("splitResponseArray time: ", endTime - startTime);
+    console.log('splitResponseArray time: ', endTime - startTime);
   }
 
   splitResponse(response: any) {
@@ -247,11 +257,11 @@ class dashCache {
       }
     }
     const endTime = performance.now();
-    console.log("splitResponse time: ", endTime - startTime);
+    console.log('splitResponse time: ', endTime - startTime);
   }
 
   splitNestedResponse(field: any, fieldVal: any, refObj: any) {
-    if (typeof fieldVal !== "object") {
+    if (typeof fieldVal !== 'object') {
       // set in map
       this.map.set(
         JSON.stringify(refObj[field + this.nestedResponseCounter]),

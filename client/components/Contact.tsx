@@ -1,6 +1,7 @@
-import './Contact.css';
+import './styles/Contact.css';
 import ghLogo from '../assets/github-logo.png';
 import linkedinLogo from '../assets/linkedin-logo.png';
+
 export default function Contact(props: any) {
   return (
     <div id='outerBox'>
@@ -13,13 +14,14 @@ export default function Contact(props: any) {
         }}
       >
         <a href={props.github}>
-          <img className='logo' src={ghLogo} />
+          <img id='github' className='logo' src={ghLogo} />
         </a>
         <a href={props.linkedin}>
-          <img className='logo' src={linkedinLogo} />
+          <img id='linked' className='logo' src={linkedinLogo} />
         </a>
       </div>
       <h1 className='contactText'>{props.name}</h1>
+      <img className='photo' src={props.img}></img>
     </div>
   );
 }

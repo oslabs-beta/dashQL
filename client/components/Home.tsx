@@ -1,8 +1,12 @@
-import './Home.css';
+import './styles/Home.css';
 import copyImage from '../assets/copyIcon.png';
 import saveImage from '../assets/save.png';
 import handsImage from '../assets/hands.png';
 import clockImage from '../assets/clock.png';
+import drewImg from '../assets/drew.png';
+import danImg from '../assets/dan.png';
+import meredithImg from '../assets/fronheiser.jpeg';
+import kevinImg from '../assets/kevin.jpg';
 import Contact from './Contact.tsx';
 
 export default function Home() {
@@ -17,7 +21,9 @@ export default function Home() {
       </div>
       <div id='codeWrapper'>
         <div id='box'>
-          <pre>$ npm install dashQL</pre>
+          <pre>
+            <span id='grey'>$</span> npm install dashQL
+          </pre>
         </div>
         <button
           id='copyButton'
@@ -32,11 +38,11 @@ export default function Home() {
       <div id='whatIsWrap'>
         <h1 id='lowerBigText'>What is dashQL?</h1>
         <p id='whatIsText' className='randomText'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-          velit esse cillum dolore eu.
+          DashQL is an open-source caching solution for GraphQL, which leverages
+          an advanced algorithm that breaks down a GraphQL query into its
+          smallest parts before performing caching logic on it. This results in
+          unmatched performance benefits, translating into a more tactile and
+          responsive experience for the users of your application.
         </p>
       </div>
       <div id='horizBar'>
@@ -66,27 +72,31 @@ export default function Home() {
       </div>
       <div id='contactBar'>
         <hr className='grayLine'></hr>
-        <h1>Meet the Team</h1>
+        <h1 id='contact-header'>Meet the Team</h1>
         <div id='contactContain'>
           <Contact
             name={'Dan Bonney'}
             github={'https://github.com/D-Bonney'}
             linkedin={'https://www.linkedin.com/in/dan-bonney/'}
+            img={danImg}
           />
           <Contact
             name={'Drew Williams'}
             github={'https://github.com/avwilliams1995'}
             linkedin={'https://www.linkedin.com/in/andrew-vaughan-williams/'}
+            img={drewImg}
           />
           <Contact
             name={'Kevin Klochan'}
             github={'https://github.com/kevinklochan'}
             linkedin={'https://www.linkedin.com/in/kevin-klochan-7a0ba7218/'}
+            img={kevinImg}
           />
           <Contact
             name={'Meredith Fronheiser'}
             github={'https://github.com/mfronheiser'}
             linkedin={'https://www.linkedin.com/in/meredith-fronheiser/'}
+            img={meredithImg}
           />
         </div>
       </div>

@@ -1,0 +1,55 @@
+#outerBox {
+  border: 2px solid;
+  width: 250px;
+  height: 325px;
+  border-radius: 12px;
+  /* background-color: rgb(105, 105, 105); */
+  background-color: #162345;
+  display: flex;
+  flex-direction: column-reverse;
+  box-shadow: 2px 2px 3px rgb(80, 80, 80);
+  align-items: center;
+  padding-top: 20px;
+  margin-top: 30px;
+  margin-bottom: 110px;
+}
+#horizBar {
+  width: 90%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.logo {
+  height: 50px;
+  width: 50px;
+  color: black;
+  margin-right: 10px;
+  margin: 15px;
+}
+.contactText {
+  color: white;
+  font-size: 1.2em;
+}
+.photo {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+#github {
+  margin-left: 17px;
+  height: 49px;
+  width: auto;
+}
+#linked {
+  padding-top: 1px;
+}
+
+#contact-header {
+  margin-bottom: 20px;
+}
+
+#demoButton:hover {
+  cursor: pointer;
+}
