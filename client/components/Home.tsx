@@ -1,4 +1,4 @@
-import './Home.css';
+import './styles/Home.css';
 import copyImage from '../assets/copyIcon.png';
 import saveImage from '../assets/save.png';
 import handsImage from '../assets/hands.png';
