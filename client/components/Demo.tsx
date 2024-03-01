@@ -241,7 +241,8 @@ export default function Demo({ changePage }: dataFormProps) {
     setSelectedId("1");
     setDisplayResults(false);
     setChartData([]);
-    setHitsWithTotal([0,0])
+    setCacheHits(0);
+    setHitsWithTotal([0, 0]);
     alert("Cache cleared");
   }
 
