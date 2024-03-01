@@ -242,6 +242,7 @@ export default function Demo({ changePage }: dataFormProps) {
     setDisplayResults(false);
     setChartData([]);
     setCacheHits(0);
+    setHitsWithTotal([0, 0]);
     alert("Cache cleared");
   }
 
