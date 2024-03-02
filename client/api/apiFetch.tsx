@@ -11,14 +11,12 @@ interface QueryResponse {
 export default async function getData(
   finalQuery: Querystr
 ): Promise<QueryResponse> {
-  console.log('------in fetch---------');
-
   const request: any = new Request(
-    'https://dash-ql-backend.vercel.app/dashQL',
+    "https://dash-ql-backend.vercel.app/dashQL",
     {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(finalQuery),
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     }
   );
 
@@ -27,12 +25,10 @@ export default async function getData(
       return res.json();
     })
     .then((data) => {
-      console.log('got data', data);
       return data;
     })
     .catch((error) => {
-      console.error({ error: `Error in fetching query data` });
-      console.log(error);
+      console.log(error, "error in fetching data");
     });
   return result;
 }

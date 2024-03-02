@@ -1,19 +1,14 @@
 export default async function clearCache() {
-  console.log('clearing cache');
-
   const request: RequestInfo = new Request(
-    'https://dash-ql-backend.vercel.app/clearCache',
+    "https://dash-ql-backend.vercel.app/clearCache",
     {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
     }
   );
   await fetch(request)
-    .then(() => {
-      // alert("Cache cleared");
-    })
+    .then(() => {})
     .catch((error) => {
-      console.error({ error: `Error in setting cache` });
-      console.log(error);
+      console.log(error, "error in clearing cache");
     });
 }

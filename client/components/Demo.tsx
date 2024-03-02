@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import "./styles/Demo.css";
 import getData from "../api/apiFetch";
 import QueryResult from "./Demo_Components/QueryResult";
@@ -42,66 +42,71 @@ const defaultPlanet: Fields = {
 };
 
 interface dataFormProps {
-  changePage: (page:string) => void;
+  changePage: (page: string) => void;
 }
 
 export default function Demo({ changePage }: dataFormProps) {
   // updates queryString and currentField (the default fields for what to display)
-  const [queryString, setQueryString] = useState("");
-  const [currentFields, setField] = useState(defaultFields);
+  const [queryString, setQueryString] = useState<string>("");
+  const [currentFields, setField] = useState<Fields>(defaultFields);
   // have state for updating the dropdown. Depending on what dropwdown changes, will change the currentFields state
-  const [currentDropdown, setDropdown] = useState("people");
-  // states for each checkbox, first being the id box, then the 4 others. This is needed in order to be able to update the displayed queries and query strings as the user is messing around with fields
-  const [idBox, updateIdBox] = useState(true);
-  const [checkbox1, updateCheckbox1] = useState(false);
-  const [checkbox2, updateCheckbox2] = useState(false);
-  const [checkbox3, updateCheckbox3] = useState(false);
-  const [checkbox4, updateCheckbox4] = useState(false);
-  const [nestedFirstBox, updateNestedFirstBox] = useState(false);
-  const [nestedSecondBox, updateNestedSecondBox] = useState(false);
+  const [currentDropdown, setDropdown] = useState<string>("people");
+  // states for each checkbox, first being the id box, then the 4 others, and nested checkboxes. This is needed in order to be able to update the displayed queries and query strings as the user is messing around with fields
+  const [idBox, updateIdBox] = useState<boolean>(true);
+  const [checkboxes, updateCheckboxes] = useState<boolean[]>([
+    false,
+    false,
+    false,
+    false,
+  ]);
+  const [nestedCheckboxes, updateNestedCheckboxes] = useState<boolean[]>([
+    false,
+    false,
+  ]);
   //  if idBox is checked, this updates current id selected
-  const [selectedId, setSelectedId] = useState("1");
+  const [selectedId, setSelectedId] = useState<string>("1");
   // data recieved from backend, queryData is data used when displaying results, and displayResults is a boolean to determine if they should be displayed or not based on if user is changing fields
-  const [queryData, setQueryData] = useState({});
-  const [displayResults, setDisplayResults] = useState(false);
+  const [queryData, setQueryData] = useState<any>({});
+  const [displayResults, setDisplayResults] = useState<boolean>(false);
   // chartData and cacheHits are the data stored from backend for the charts
   const [chartData, setChartData] = useState<any>([]);
-  const [cacheHits, setCacheHits] = useState(0);
-  const [hitsWithTotal, setHitsWithTotal] = useState([0, 0]);
-  const [newPage, setNewPage] = useState(true);
+  const [hitsWithTotal, setHitsWithTotal] = useState<number[]>([0, 0]);
+  const [newPage, setNewPage] = useState<boolean>(true);
+  const [keys, setKeys] = useState<string[]>([]);
 
-  useLayoutEffect(() => {
-    changePage("Demo");
-  });
+  // set current page to Demo for Nav Bar visibility
 
   if (newPage) {
     setNewPage(false);
     clearCache();
+    setTimeout(() => {
+      changePage("Demo");
+    }, 50);
+    const fieldKeys: string[] = Object.keys(currentFields);
+    setKeys(fieldKeys);
   }
 
   async function queryResult() {
     // function is called when "run query" button clicked. This will send of the query string, and alert the user (for now) if they haven't included the id and another checkbox
 
-    if (!checkbox1 && !checkbox2 && !checkbox3 && !checkbox4) {
+    if (!checkboxes[0] && !checkboxes[1] && !checkboxes[2] && !checkboxes[3]) {
       alert("Please select at least one attribute");
       return;
     }
     if (
-      checkbox4 &&
-      !nestedFirstBox &&
-      !nestedSecondBox &&
+      checkboxes[3] &&
+      !nestedCheckboxes[0] &&
+      !nestedCheckboxes[1] &&
       currentFields === defaultFields
     ) {
       alert("Please select at least one attribute from species");
       return;
     }
-    console.log("query string", queryString);
     // must send in object with query property due to how backend uses the request
     const result = await getData({ query: queryString });
     // get data from backend, update
     setQueryData(result);
     addData(result);
-    result.cacheHit ? setCacheHits(cacheHits + 1) : null;
     setDisplayResults(true);
   }
 
@@ -134,55 +139,40 @@ export default function Demo({ changePage }: dataFormProps) {
     // when any checkbox is clicked or dropdown selection edits, will set fetch to false to empty "QUERY RESULTS" part of the dashboard, and will update the query string in order to update the "GraphQL Query" part of dashboard
     setDisplayResults(false);
     updateQueryString();
-  }, [
-    idBox,
-    checkbox1,
-    checkbox2,
-    checkbox3,
-    checkbox4,
-    nestedFirstBox,
-    nestedSecondBox,
-    selectedId,
-    currentDropdown,
-  ]);
+  }, [idBox, checkboxes, nestedCheckboxes, selectedId, currentDropdown]);
 
   // current checkboxes to be used for making the query string and query boxes
-  const keys: string[] = Object.keys(currentFields);
 
   async function updateQueryString() {
     // logic for creating the "GraphQL Query" display box of dashboard, as well as updating the string to be sent to backend, only invokes when useEffect triggered by change
-    const firstBox: string = checkbox1 ? `${keys[0]}` : "";
-    const secondBox: string = checkbox2 ? `${keys[1]}` : "";
-    const thirdBox: string = checkbox3 ? `${keys[2]}` : "";
+    const firstBox: string = checkboxes[0] ? `${keys[0]}` : "";
+    const secondBox: string = checkboxes[1] ? `${keys[1]}` : "";
+    const thirdBox: string = checkboxes[2] ? `${keys[2]}` : "";
     let fourthBox: string;
-    if (checkbox4 && currentFields === defaultFields) {
+    if (checkboxes[3] && currentFields === defaultFields) {
       fourthBox = `${keys[3]} {`;
-    } else if (checkbox4 && currentFields !== defaultFields) {
+    } else if (checkboxes[3] && currentFields !== defaultFields) {
       fourthBox = `${keys[3]}`;
     } else {
       fourthBox = "";
     }
-    const firstNestedBox: string = nestedFirstBox && checkbox4 ? "name" : "";
+    const firstNestedBox: string =
+      nestedCheckboxes[0] && checkboxes[3] ? "name" : "";
     const secondNestedBox: string =
-      nestedSecondBox && checkbox4 ? `${keys[5]}` : "";
+      nestedCheckboxes[1] && checkboxes[3] ? `${keys[5]}` : "";
     const idWanted: string = idBox ? `(_id:${selectedId})` : "";
     const end: string | null =
       !firstBox && !secondBox && !thirdBox && !fourthBox ? null : `}`;
-    const nestedEnd = firstNestedBox || secondNestedBox ? "}" : "";
-    const dropdown = idBox ? currentDropdown : `${currentDropdown}NoId`;
+    const nestedEnd: string = firstNestedBox || secondNestedBox ? "}" : "";
+    const dropdown: string = idBox ? currentDropdown : `${currentDropdown}NoId`;
     const result: string = `query {${dropdown} ${idWanted}{${firstBox}, ${secondBox}, ${thirdBox}, ${fourthBox} ${firstNestedBox}, ${secondNestedBox} ${nestedEnd} ${end}}`;
     setQueryString(result);
-    console.log(queryString);
   }
 
   function changeIdBox() {
     updateIdBox(!idBox);
-    updateCheckbox1(false);
-    updateCheckbox2(false);
-    updateCheckbox3(false);
-    updateCheckbox4(false);
-    updateNestedFirstBox(false);
-    updateNestedSecondBox(false);
+    updateCheckboxes([false, false, false, false]);
+    updateNestedCheckboxes([false, false]);
     setDisplayResults(false);
   }
 
@@ -190,37 +180,45 @@ export default function Demo({ changePage }: dataFormProps) {
     // invokes when user changes dropdown value
     if (event.target.value === "people") {
       setField(defaultFields);
+      setKeys(Object.keys(defaultFields));
     } else if (event.target.value === "planets") {
       setField(defaultPlanet);
+      setKeys(Object.keys(defaultPlanet));
     }
-    setSelectedId("1")
     setDropdown(event.target.value);
+    setSelectedId("1");
     setDisplayResults(false);
-    updateCheckbox1(false);
-    updateCheckbox2(false);
-    updateCheckbox3(false);
-    updateCheckbox4(false);
-    updateNestedFirstBox(false);
-    updateNestedSecondBox(false);
+    updateCheckboxes([false, false, false, false]);
+    updateNestedCheckboxes([false, false]);
+  }
+
+  function updateCheckboxesFunc(index: any) {
+    const currCheckboxes: boolean[] = [...checkboxes];
+    currCheckboxes[index] = !checkboxes[index];
+    updateCheckboxes(currCheckboxes);
+  }
+
+  function updateNestedCheckboxesFunc(index: any) {
+    const currNestedCheckboxes: boolean[] = [...nestedCheckboxes];
+    currNestedCheckboxes[index] = !nestedCheckboxes[index];
+    updateNestedCheckboxes(currNestedCheckboxes);
+  }
+
+  function updateBoxFour() {
+    const currCheckboxes: boolean[] = [...checkboxes];
+    currCheckboxes[3] = !checkboxes[3];
+    updateCheckboxes(currCheckboxes);
+    if (!checkboxes[3]) {
+      updateNestedCheckboxes([false, false]);
+    }
+    setDisplayResults(false);
   }
 
   function changeId(event: any) {
     // invokes when user changes id value
-    updateCheckbox1(false);
-    updateCheckbox2(false);
-    updateCheckbox3(false);
-    updateCheckbox4(false);
-    updateNestedFirstBox(false);
-    updateNestedSecondBox(false);
+    updateCheckboxes([false, false, false, false]);
+    updateNestedCheckboxes([false, false]);
     setSelectedId(event.target.value);
-  }
-  async function updateCheck4() {
-    updateCheckbox4(!checkbox4);
-    if (!checkbox4) {
-      updateNestedFirstBox(false);
-      updateNestedSecondBox(false);
-    }
-    setDisplayResults(false);
   }
 
   // invoked when clear cache button is clicked
@@ -231,19 +229,13 @@ export default function Demo({ changePage }: dataFormProps) {
     setQueryString("");
     setField(defaultFields);
     setDropdown("people");
-    updateCheckbox1(false);
-    updateCheckbox2(false);
-    updateCheckbox3(false);
-    updateCheckbox4(false);
-    updateNestedFirstBox(false);
-    updateNestedSecondBox(false);
+    updateCheckboxes([false, false, false, false]);
+    updateNestedCheckboxes([false, false]);
     setQueryData("");
     setSelectedId("1");
     setDisplayResults(false);
     setChartData([]);
-    setCacheHits(0);
     setHitsWithTotal([0, 0]);
-    alert("Cache cleared");
   }
 
   return (
@@ -312,8 +304,8 @@ export default function Demo({ changePage }: dataFormProps) {
             <label>
               <input
                 type="checkbox"
-                checked={checkbox1}
-                onChange={() => updateCheckbox1(!checkbox1)}
+                checked={checkboxes[0]}
+                onChange={() => updateCheckboxesFunc(0)}
               />
               {keys[0]}
             </label>
@@ -321,8 +313,8 @@ export default function Demo({ changePage }: dataFormProps) {
               <label>
                 <input
                   type="checkbox"
-                  checked={checkbox2}
-                  onChange={() => updateCheckbox2(!checkbox2)}
+                  checked={checkboxes[1]}
+                  onChange={() => updateCheckboxesFunc(1)}
                 />
                 {keys[1]}
               </label>
@@ -331,8 +323,8 @@ export default function Demo({ changePage }: dataFormProps) {
               <label>
                 <input
                   type="checkbox"
-                  checked={checkbox3}
-                  onChange={() => updateCheckbox3(!checkbox3)}
+                  checked={checkboxes[2]}
+                  onChange={() => updateCheckboxesFunc(2)}
                 />
                 {keys[2]}
               </label>
@@ -341,28 +333,28 @@ export default function Demo({ changePage }: dataFormProps) {
               <label>
                 <input
                   type="checkbox"
-                  checked={checkbox4}
-                  onChange={() => updateCheck4()}
+                  checked={checkboxes[3]}
+                  onChange={() => updateBoxFour()}
                 />
                 {keys[3]}
               </label>
             ) : null}
-            {idBox && checkbox4 && currentFields === defaultFields ? (
+            {idBox && checkboxes[3] && currentFields === defaultFields ? (
               <label id="nested-checkbox">
                 <input
                   type="checkbox"
-                  checked={nestedFirstBox}
-                  onChange={() => updateNestedFirstBox(!nestedFirstBox)}
+                  checked={nestedCheckboxes[0]}
+                  onChange={() => updateNestedCheckboxesFunc(0)}
                 />
                 name
               </label>
             ) : null}
-            {idBox && checkbox4 && currentFields === defaultFields ? (
+            {idBox && checkboxes[3] && currentFields === defaultFields ? (
               <label id="nested-checkbox">
                 <input
                   type="checkbox"
-                  checked={nestedSecondBox}
-                  onChange={() => updateNestedSecondBox(!nestedSecondBox)}
+                  checked={nestedCheckboxes[1]}
+                  onChange={() => updateNestedCheckboxesFunc(1)}
                 />
                 {keys[5]}
               </label>
@@ -377,12 +369,8 @@ export default function Demo({ changePage }: dataFormProps) {
           <h3>GraphQL Query</h3>
           <div id="query">
             <QueryCode
-              checkbox1={checkbox1}
-              checkbox2={checkbox2}
-              checkbox3={checkbox3}
-              checkbox4={checkbox4}
-              nestedBox={nestedFirstBox}
-              nestedBox2={nestedSecondBox}
+              checkboxes={checkboxes}
+              nestedCheckboxes={nestedCheckboxes}
               keys={keys}
               currentDropdown={currentDropdown}
               id={idBox ? selectedId : undefined}
@@ -394,12 +382,8 @@ export default function Demo({ changePage }: dataFormProps) {
           <div id="query-results">
             {displayResults ? (
               <QueryResult
-                checkbox1={checkbox1}
-                checkbox2={checkbox2}
-                checkbox3={checkbox3}
-                checkbox4={checkbox4}
-                nestedBox={nestedFirstBox}
-                nestedBox2={nestedSecondBox}
+                checkboxes={checkboxes}
+                nestedCheckboxes={nestedCheckboxes}
                 keys={keys}
                 dataField={idBox ? currentDropdown : currentDropdown + "NoId"}
                 currentDropdown={currentDropdown}
