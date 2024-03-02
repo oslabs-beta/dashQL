@@ -87,12 +87,8 @@ nav {
   height: 560px;
   height: 560px;
   width: 97%;
-  /* background-color: lightgray; */
   border: 1px solid #162345;
   border-radius: 15px;
-  /* padding: 10px; */
-  /* margin-bottom: 10px; */
-  /* margin-bottom: 10px; */
 }
 
 #left-stats {
@@ -100,7 +96,6 @@ nav {
   flex-direction: column;
   height: 95%;
   width: 50%;
-  /* background-color: lightblue; */
   align-items: center;
   justify-content: start;
   padding-left: 20px;
@@ -211,12 +206,10 @@ nav {
 #query-fields {
   height: 100%;
   flex: 1;
-  /* margin-bottom: 20px; */
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: end;
-  /* position: relative; */
 }
 #query-fields button {
   width: 100px;
@@ -280,9 +273,7 @@ nav {
 #query {
   background-color: rgb(53, 53, 53);
   height: 100%;
-  /* margin-bottom: 10px; */
   border-radius: 15px;
-  /* margin: 10px; */
   white-space: pre-line;
   width: 90%;
   
@@ -290,7 +281,6 @@ nav {
 #graphql-query-container {
   display: flex;
   flex-direction: column;
-  /* margin-right: 20px; */
   flex: 2;
   align-items: start;
   justify-content: start;
@@ -303,7 +293,6 @@ nav {
 #query-results {
   background-color: rgb(53, 53, 53);
   height: 100%;
-  /* margin-bottom: 10px; */
   border-radius: 15px;
   white-space: pre-line;
   overflow: auto
@@ -311,7 +300,6 @@ nav {
 #response-query-container {
   display: flex;
   flex-direction: column;
-  /* margin-right: 20px; */
   flex: 2;
   margin-top: -10px;
 }
@@ -338,7 +326,6 @@ nav {
   height: 80%;
   display: flex;
   align-items: end;
-  /* justify-content: end; */
   margin: 10px;
 }
 #query-results button {
@@ -346,7 +333,6 @@ nav {
   flex-direction: column;
   justify-content: end;
   align-items: flex-end;
-  /* margin-bottom: 30px; */
 }
 
 .third-indent {
@@ -366,7 +352,7 @@ nav {
 
 .query-text {
   color: yellow;
-  font-size: 17px;
+  font-size: 15px;
   font-family: "Source Code Pro Variable";
   margin-left: 40px;
   margin-top: 25px;

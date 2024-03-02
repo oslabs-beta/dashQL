@@ -1,7 +1,6 @@
-
 type ResultTypes = {
-  chartData: any,
-  hitPercentage?: number
+  chartData: any;
+  hitPercentage?: number;
   hitsWithTotal: number[];
 };
 
@@ -15,10 +14,17 @@ export default function ResultCard({ chartData, hitsWithTotal }: ResultTypes) {
           ? `${Math.round(chartData[chartData.length - 1]["response_time"])} ms`
           : null}
       </p>
-      <p>Hit Percentage: {chartData.length > 0 ? `${Math.round(chartData[chartData.length-1]["hitPercentage"])}%` : null}</p>
+      <p>
+        Hit Percentage:{" "}
+        {chartData.length > 0
+          ? `${Math.round(chartData[chartData.length - 1]["hitPercentage"])}%`
+          : null}
+      </p>
       <p>
         Miss Percentage:{" "}
-        {chartData.length > 0 ? `${Math.round(chartData[chartData.length-1]["missPercentage"])}%` : null}
+        {chartData.length > 0
+          ? `${Math.round(chartData[chartData.length - 1]["missPercentage"])}%`
+          : null}
       </p>
       <p>
         Aggregated Field Hit Rate:{" "}

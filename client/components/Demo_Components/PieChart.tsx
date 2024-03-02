@@ -32,7 +32,10 @@ export default function PieChart({ chartData, hitsWithTotal }: ResultTypes) {
   };
 
   Chart.defaults.plugins.tooltip.callbacks.label = function (context) {
-    const total:any = context.dataset.data.reduce((x:any, y:any) => x + y, 0);
+    const total: any = context.dataset.data.reduce(
+      (x: any, y: any) => x + y,
+      0
+    );
     const currentValue = context.parsed;
     const percentage = ((currentValue / total) * 100).toFixed(0);
     return `${percentage}%`;

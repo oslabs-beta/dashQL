@@ -1,0 +1,8 @@
+body {
+  font-family: Khula;
+  background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 0.1558998599439776) 0%,
+    rgba(148, 187, 233, 0.07746848739495793) 100%
+  );
+}

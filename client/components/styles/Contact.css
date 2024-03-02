@@ -3,7 +3,6 @@
   width: 250px;
   height: 325px;
   border-radius: 12px;
-  /* background-color: rgb(105, 105, 105); */
   background-color: #162345;
   display: flex;
   flex-direction: column-reverse;
@@ -16,7 +15,6 @@
 #horizBar {
   width: 90%;
   display: flex;
-  /* align-items: center; */
   justify-content: center;
 }
 
