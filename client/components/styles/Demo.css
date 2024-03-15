@@ -1,10 +1,10 @@
 @font-face {
   font-family: Khula;
-  src: url('./assets/fonts/Khula-Regular.ttf');
+  src: url("./assets/fonts/Khula-Regular.ttf");
 }
 @font-face {
   font-family: KhulaBold;
-  src: url('./assets/fonts/Khula-Bold.ttf');
+  src: url("./assets/fonts/Khula-Bold.ttf");
 }
 html,
 body {
@@ -12,7 +12,7 @@ body {
   width: 100%;
   font-size: 16px;
   color: #162345;
-  font-family: Khula
+  font-family: Khula;
 }
 
 nav {
@@ -23,7 +23,8 @@ nav {
   justify-content: space-between;
 }
 
-#left-nav, #right-nav {
+#left-nav,
+#right-nav {
   display: flex;
   height: 100%;
   width: 40%;
@@ -41,7 +42,7 @@ nav {
   margin-top: 2px;
 }
 
-#right-nav a{
+#right-nav a {
   margin: 15px;
   color: white;
   text-decoration: none;
@@ -102,6 +103,7 @@ nav {
 }
 
 #right-stats {
+  margin-top: 13px;
   display: flex;
   flex-direction: column;
   height: 95%;
@@ -159,7 +161,7 @@ nav {
   border-radius: 15px;
   padding: 15px;
   border: 1px solid #162345;
-  overflow: auto
+  overflow: auto;
 }
 
 #cache-card h4 {
@@ -171,7 +173,7 @@ nav {
 
 #cache-card p {
   margin-top: 0px;
-  font-size:calc(12px + .2vw);
+  font-size: calc(12px + 0.2vw);
   margin-bottom: 7px;
 }
 
@@ -276,7 +278,6 @@ nav {
   border-radius: 15px;
   white-space: pre-line;
   width: 90%;
-  
 }
 #graphql-query-container {
   display: flex;
@@ -295,7 +296,7 @@ nav {
   height: 100%;
   border-radius: 15px;
   white-space: pre-line;
-  overflow: auto
+  overflow: auto;
 }
 #response-query-container {
   display: flex;
@@ -308,11 +309,10 @@ nav {
   font-family: KhulaBold;
 }
 
-
 .buttons {
   display: flex;
   width: 100%;
-} 
+}
 
 .underline {
   text-decoration: underline;
