@@ -309,7 +309,7 @@ export default function Demo({ changePage }: dataFormProps) {
               />
               {keys[0]}
             </label>
-            {idBox ? (
+            {idBox && (
               <label>
                 <input
                   type="checkbox"
@@ -318,8 +318,8 @@ export default function Demo({ changePage }: dataFormProps) {
                 />
                 {keys[1]}
               </label>
-            ) : null}
-            {idBox ? (
+            )}
+            {idBox && (
               <label>
                 <input
                   type="checkbox"
@@ -328,8 +328,8 @@ export default function Demo({ changePage }: dataFormProps) {
                 />
                 {keys[2]}
               </label>
-            ) : null}
-            {idBox ? (
+            )}
+            {idBox && (
               <label>
                 <input
                   type="checkbox"
@@ -338,8 +338,8 @@ export default function Demo({ changePage }: dataFormProps) {
                 />
                 {keys[3]}
               </label>
-            ) : null}
-            {idBox && checkboxes[3] && currentFields === defaultFields ? (
+            )}
+            {(idBox && checkboxes[3] && currentFields === defaultFields) && (
               <label id="nested-checkbox">
                 <input
                   type="checkbox"
@@ -348,8 +348,8 @@ export default function Demo({ changePage }: dataFormProps) {
                 />
                 name
               </label>
-            ) : null}
-            {idBox && checkboxes[3] && currentFields === defaultFields ? (
+            )}
+            {(idBox && checkboxes[3] && currentFields === defaultFields) && (
               <label id="nested-checkbox">
                 <input
                   type="checkbox"
@@ -358,7 +358,7 @@ export default function Demo({ changePage }: dataFormProps) {
                 />
                 {keys[5]}
               </label>
-            ) : null}
+            )}
           </div>
           <div className="buttons">
             <button onClick={() => queryResult()}>Run Query</button>
@@ -380,7 +380,7 @@ export default function Demo({ changePage }: dataFormProps) {
         <div id="response-query-container">
           <h3>Query Results</h3>
           <div id="query-results">
-            {displayResults ? (
+            {displayResults && (
               <QueryResult
                 checkboxes={checkboxes}
                 nestedCheckboxes={nestedCheckboxes}
@@ -390,7 +390,7 @@ export default function Demo({ changePage }: dataFormProps) {
                 data={queryData}
                 id={idBox ? selectedId : undefined}
               />
-            ) : null}
+            )}
           </div>
         </div>
       </section>
